@@ -1,0 +1,218 @@
+{% extends "base.html" %}
+
+{% block css %}
+    {% load staticfiles %}
+    <title>Scans management - Dashboard</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css'%}" rel="stylesheet">
+
+    <!-- MetisMenu CSS -->
+    <link href="{% static 'vendor/metisMenu/metisMenu.min.css'%}" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="{% static 'dist/css/sb-admin-2.css'%}" rel="stylesheet">
+
+    <!-- Morris Charts CSS -->
+    <link href="{% static 'vendor/morrisjs/morris.css'%}" rel="stylesheet">
+
+    <!-- DataTables CSS -->
+    <link href="{% static 'vendor/datatables-plugins/dataTables.bootstrap.css' %}" rel="stylesheet">
+
+    <!-- DataTables Responsive CSS -->
+    <link href=" {% static 'vendor/datatables-responsive/dataTables.responsive.css'%}" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="{% static 'vendor/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block sidebar %}
+    <div class="navbar-default sidebar" role="navigation">
+                <div class="sidebar-nav navbar-collapse">
+                    <ul class="nav" id="side-menu">
+                        <li class="sidebar-search">
+                            <div class="input-group custom-search-form">
+                                <input type="text" class="form-control" placeholder="Search...">
+                                <span class="input-group-btn">
+                                <button class="btn btn-default" type="button">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </span>
+                            </div>
+                            <!-- /input-group -->
+                        </li>
+                        {% autoescape off %}{{ sidebar }}{% endautoescape %}
+                    </ul>
+                </div>
+                <!-- /.sidebar-collapse -->
+            </div>
+            <!-- /.navbar-static-side -->
+{% endblock %}
+
+{% block body%}
+    <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">Hosts</h1>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            <div class="row">
+               <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Hosts Data Table
+                            <div class="pull-right">
+                                <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#addHostModal" data-backdrop="static"><i class="fa fa-plus"></i> Add New Host</button>
+                            </div>
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <table width="100%" class="table table-striped table-bordered table-hover display" id="dataTableHosts">
+                                <thead>
+                                    <tr>
+                                        <th>IP Address</th>
+                                        <th>Hostname</th>
+                                        <th>Platform</th>
+                                        <th>OS Name</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for host in HostData %}
+                                    <tr>
+                                        <td>{{ host.ipAdr }}</td>
+                                        <td>{{ host.hostName }}</td>
+                                        <td>{{ host.platform }}</td>
+                                        <td>{{ host.osNAme }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <!-- /.table-responsive -->
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+            </div>
+            <!-- /.row -->
+            <div class="modal fade" id="addHostModal">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                         <form method="post" id="AddHostPostForm">
+                             {% csrf_token %}
+                            <!-- Modal Header -->
+                            <div class="modal-header">
+                              <h4 class="modal-title">Add New Host</h4>
+                              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+
+                            <!-- Modal body -->
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="alert alert-danger alert-dismissable hidden" id="AfterPostMess">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label>IP Address</label>
+                                            {{ form.ipAdr }}
+                                            <p class="help-block">For example: 192.168.1.1.</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label>Host Name</label>
+                                            {{ form.hostName }}
+                                            <p class="help-block">For example: sm-cital.</p>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label>Platform</label>
+                                            {{ form.platform }}
+                                            <p class="help-block">For example: Windows.</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label>OS Name</label>
+                                            {{ form.osNAme}}
+                                            <p class="help-block">For example: Windows Server 2003.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Modal footer -->
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save</button>
+                            </div>
+                         </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- /#addHostModal -->
+        </div>
+        <!-- /#page-wrapper -->
+{% endblock %}
+
+{% block js %}
+    <!-- jQuery -->
+    <script src="{% static 'vendor/jquery/jquery.min.js'%}"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.min.js'%}"></script>
+
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="{% static 'vendor/metisMenu/metisMenu.min.js'%}"></script>
+
+    <!-- Morris Charts JavaScript -->
+    <script src="{% static 'vendor/raphael/raphael.min.js'%}"></script>
+    <script src="{% static 'vendor/morrisjs/morris.min.js'%}"></script>
+    <script src="{% static 'data/morris-data.js'%}"></script>
+
+    <!-- DataTables JavaScript -->
+    <script src="{% static 'vendor/datatables/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'vendor/datatables-plugins/dataTables.bootstrap.min.js' %}"></script>
+    <script src="{% static 'vendor/datatables-responsive/dataTables.responsive.js' %}"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="{% static 'dist/js/sb-admin-2.js'%}"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#dataTableHosts').DataTable( {
+                responsive: true,
+                "lengthMenu": [[10, 50, 100, 1000], [10, 50, 100, 1000]]
+            } );
+        } );
+
+        $('#AddHostPostForm').submit(function(e){
+            $.post('', $(this).serialize(), function(data){
+                var notification = $('#AfterPostMess');
+                var closebtn = $('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>')
+                notification.removeClass('hidden');
+                notification.html(JSON.parse(data).notification);
+                notification.append(closebtn);
+                if(JSON.parse(data).isSuccess){
+                    notification.removeClass('alert-danger');
+                    notification.addClass('alert-info');
+                }
+               // of course you can do something more fancy with your respone
+            });
+            e.preventDefault();
+        });
+    </script>
+{% endblock %}
+
+
