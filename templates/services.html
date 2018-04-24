@@ -210,13 +210,15 @@
                 var notification = $('#AfterPostMess');
                 var closebtn = '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>';
                 notification.removeClass('hidden');
-                notification.html(JSON.parse(data).notification);
-                notification.append(closebtn);
-                if(JSON.parse(data).isSuccess){
+                if(data.notification != null){
+                    notification.html(data.notification);
+                }
+                else{
+                    notification.html('New service is added.');
                     notification.removeClass('alert-danger');
                     notification.addClass('alert-info');
                 }
-               // of course you can do something more fancy with your respone
+                notification.append(closebtn);
             });
             e.preventDefault();
         });

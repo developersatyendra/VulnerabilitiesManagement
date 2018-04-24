@@ -7,10 +7,9 @@ from .models import ServiceModel
 from .serializers import ServiceSerializer
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse
 from .forms import ServiceForm
 from django.contrib.auth.models import User
-from json import dumps
 
 
 PAGE_DEFAULT = 1
@@ -30,24 +29,6 @@ class ServicesView(TemplateView):
             'form': form,
         }
         return render(request, self.template, context)
-
-    # def post(self, request, *args, **kwargs):
-    #     form = ServiceForm(request.POST)
-    #     if form.is_valid():
-    #         service = form.save(commit=False)
-    #         service.createBy = self.request.user
-    #         service.save()
-    #         retJson = {'notification': 'New service is added', 'isSuccess': True}
-    #     else:
-    #         retNotification = ''
-    #         for field in form:
-    #             for error in field.errors:
-    #                 retNotification += error
-    #                 print('{} {}'.format(field, error))
-    #         for error in form.non_field_errors():
-    #             retNotification += error
-    #         retJson = {'notification': retNotification, 'isSuccess': False}
-    #     return JsonResponse(retJson)
 
 
 class ServiceDetailView(TemplateView):
@@ -111,10 +92,7 @@ class APIAddService(APIView):
             entry.createBy = User.objects.get(pk=1)
             entry.save()
             dataSerialized = ServiceSerializer(entry, many=False)
-            # return Response(dataSerialized.data)
-            retJson = {'notification': 'New service is added', 'isSuccess': True}
-            # return JsonResponse({'notification': 'New service is added', 'isSuccess': True})
-            return HttpResponse(dumps(retJson))
+            return Response(dataSerialized.data)
         else:
             retNotification = ''
             for field in serviceForm:
@@ -122,8 +100,8 @@ class APIAddService(APIView):
                     retNotification += error
             for error in serviceForm.non_field_errors():
                 retNotification += error
-            retJson = {'notification': retNotification, 'isSuccess': False}
-            return HttpResponse(dumps(retJson))
+            retJson = {'notification': retNotification}
+            return JsonResponse(retJson)
 
     def put(self, request):
         pass
