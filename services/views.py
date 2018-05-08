@@ -38,26 +38,30 @@ class ServiceDetailView(TemplateView):
 
 class APIGetServices(APIView):
     def get(self, request):
-        if request.GET.get('search'):
-            search = request.GET.get('search')
+        for key in request.GET:
+            print(key)
+            value = request.GET[key]
+            print(value)
+        if request.GET.get('searchText'):
+            search = request.GET.get('searchText')
             query = Q(name__icontains=search) | Q(port__icontains=search) | Q(description__icontains=search)
             querySet = ServiceModel.objects.filter(query)
         else:
             querySet = ServiceModel.objects.all()
-        if request.GET.get('page'):
-            page = request.GET.get('page')
+        if request.GET.get('pageNumber'):
+            page = request.GET.get('pageNumber')
         else:
             page = PAGE_DEFAULT
         
-        if request.GET.get('entry'):
-            numEntry = request.GET.get('entry')
-            if numEntry < 0:
+        if request.GET.get('pageSize'):
+            numEntry = request.GET.get('pageSize')
+            if numEntry == 'All':
                 dataSerialized = ServiceSerializer(querySet, many=True)
                 return Response(dataSerialized.data)
         else:
             numEntry = NUM_ENTRY_DEFAULT
-
-        querySetPaged = Paginator(querySet, numEntry)
+        print("numEntry: {}".format(numEntry))
+        querySetPaged = Paginator(querySet, int(numEntry))
         dataPaged = querySetPaged.get_page(page)
         
         dataSerialized = ServiceSerializer(dataPaged, many=True)
