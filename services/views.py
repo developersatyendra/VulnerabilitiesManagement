@@ -154,7 +154,9 @@ class APIDeleteService(APIView):
         elif request.GET.get('ids'):
             id = request.GET.get('ids')
         else:
-            return JsonResponse({'retVal': '-1'})
+            return Response({'retVal': '-1'})
+
+        successOnDelete = 0
         for id in ids:
             try:
                 retService = ServiceModel.objects.get(pk=id)
@@ -162,7 +164,8 @@ class APIDeleteService(APIView):
                 pass
             else:
                 retService.delete()
-        return JsonResponse({'retVal': '1'})
+                successOnDelete = successOnDelete + 1
+        return Response({'retVal': successOnDelete})
 
     def put(self, request):
         pass

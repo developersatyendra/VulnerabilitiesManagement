@@ -80,6 +80,7 @@ $(document).ready(
              dataType: "json",
              success: function(msg) {
                  $("#servicetable").bootstrapTable('refresh');
+                 alert(msg.retVal);
              }
         });
     })
