@@ -1,84 +1,4 @@
 
-var data= [
-    {
-        "id": "2",
-        "serviceName": "HTTP",
-        "port": "80",
-        "description": "World Wide Web Protocol"
-    },
-    {
-        "id": "2",
-        "serviceName": "HTTP",
-        "port": "80",
-        "description": "World Wide Web Protocol"
-    },
-    {
-        "id": "2",
-        "serviceName": "HTTP",
-        "port": "80",
-        "description": "World Wide Web Protocol"
-    },
-    {
-        "id": "2",
-        "serviceName": "HTTP",
-        "port": "80",
-        "description": "World Wide Web Protocol"
-    },
-    {
-        "id": "2",
-        "serviceName": "HTTP",
-        "port": "80",
-        "description": "World Wide Web Protocol"
-    },
-    {
-        "id": "2",
-        "serviceName": "HTTP",
-        "port": "80",
-        "description": "World Wide Web Protocol"
-    },
-    {
-        "id": "2",
-        "serviceName": "HTTP",
-        "port": "80",
-        "description": "World Wide Web Protocol"
-    },
-    {
-        "id": "1",
-        "serviceName": "HTTPS",
-        "port": "443",
-        "description": "HTTP secure"
-    },
-    {
-        "id": "1",
-        "serviceName": "HTTPS",
-        "port": "443",
-        "description": "HTTP secure"
-    },
-    {
-        "id": "1",
-        "serviceName": "HTTPS",
-        "port": "443",
-        "description": "HTTP secure"
-    },
-    {
-        "id": "1",
-        "serviceName": "HTTPS",
-        "port": "443",
-        "description": "HTTP secure"
-    },
-    {
-        "id": "1",
-        "serviceName": "HTTPS",
-        "port": "443",
-        "description": "HTTP secure"
-    },
-    {
-        "id": "1",
-        "serviceName": "HTTPS",
-        "port": "443",
-        "description": "HTTP secure"
-    }
-];
 $(document).ready(
 
     $(function () {
@@ -99,7 +19,7 @@ $(document).ready(
                 },
                 {
                   title: "Service Name",
-                  field: "serviceName",
+                  field: "name",
                   align: "center",
                   valign: "middle",
                   sortable: true
@@ -149,6 +69,19 @@ $(document).ready(
     }),
     $("#addServiceModal").on("hidden.bs.modal", function () {
         $("#servicetable").bootstrapTable('refresh');
+    }),
+    $("#delete").click(function () {
+        var data = JSON.stringify($("#servicetable").bootstrapTable('getSelections'));
+        $.ajax({
+             type: "POST",
+             url: "./api/deleteservice",
+             data: data,
+             contentType: "application/json; charset=utf-8",
+             dataType: "json",
+             success: function(msg) {
+                 $("#servicetable").bootstrapTable('refresh');
+             }
+        });
     })
 );
 

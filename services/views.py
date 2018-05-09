@@ -10,6 +10,7 @@ from django.db.models import Q
 from django.http import JsonResponse
 from .forms import ServiceForm
 from django.contrib.auth.models import User
+import json
 
 
 PAGE_DEFAULT = 1
@@ -38,34 +39,50 @@ class ServiceDetailView(TemplateView):
 
 class APIGetServices(APIView):
     def get(self, request):
-        for key in request.GET:
-            print(key)
-            value = request.GET[key]
-            print(value)
+        numObject = ServiceModel.objects.all().count()
+
+        # Filter by search keyword
         if request.GET.get('searchText'):
             search = request.GET.get('searchText')
             query = Q(name__icontains=search) | Q(port__icontains=search) | Q(description__icontains=search)
-            querySet = ServiceModel.objects.filter(query)
+            querySet = ServiceModel.objects.all().filter(query)
         else:
             querySet = ServiceModel.objects.all()
+
+        # Get sort order
+        if request.GET.get('sortOrder') == 'asc':
+            sortString = ''
+        else:
+            sortString = '-'
+
+        # Get sort filed
+        if request.GET.get('sortName'):
+            sortString = sortString + request.GET.get('sortName')
+        else:
+            sortString = sortString + 'id'
+        querySet = querySet.order_by(sortString)
+
+        # Get Page Number
         if request.GET.get('pageNumber'):
             page = request.GET.get('pageNumber')
         else:
             page = PAGE_DEFAULT
-        
+
+        # Get Page Size
         if request.GET.get('pageSize'):
             numEntry = request.GET.get('pageSize')
-            if numEntry == 'All':
-                dataSerialized = ServiceSerializer(querySet, many=True)
-                return Response(dataSerialized.data)
+            # IF Page size is 'ALL'
+            if numEntry.lower() == 'all' or numEntry == -1:
+                numEntry = numObject
         else:
             numEntry = NUM_ENTRY_DEFAULT
-        print("numEntry: {}".format(numEntry))
         querySetPaged = Paginator(querySet, int(numEntry))
         dataPaged = querySetPaged.get_page(page)
-        
         dataSerialized = ServiceSerializer(dataPaged, many=True)
-        return Response(dataSerialized.data)
+        data = {}
+        data["total"] = numObject
+        data['rows'] = dataSerialized.data
+        return Response(data)
 
     def put(self, request):
         pass
@@ -123,6 +140,29 @@ class APIDeleteService(APIView):
             return JsonResponse({'retVal': '0'})
         else:
             return JsonResponse({'retVal': '-1'})
+
+    def post(self, request):
+        # if data is raw from ajax post
+        if request.is_ajax():
+            if request.method == 'POST':
+                print('Raw Data: {}'.format(request.body))
+                dataDeserialized = json.loads(request.body)
+                ids = []
+                for service in dataDeserialized:
+                    ids.append(service["id"])
+        # if data post is object
+        elif request.GET.get('ids'):
+            id = request.GET.get('ids')
+        else:
+            return JsonResponse({'retVal': '-1'})
+        for id in ids:
+            try:
+                retService = ServiceModel.objects.get(pk=id)
+            except ServiceModel.DoesNotExist:
+                pass
+            else:
+                retService.delete()
+        return JsonResponse({'retVal': '1'})
 
     def put(self, request):
         pass
