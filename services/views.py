@@ -12,7 +12,6 @@ from .forms import ServiceForm
 from django.contrib.auth.models import User
 import json
 
-
 PAGE_DEFAULT = 1
 NUM_ENTRY_DEFAULT = 50
 
@@ -128,6 +127,7 @@ class APIAddService(APIView):
         pass
 
 
+
 class APIDeleteService(APIView):
     def get(self, request):
         if request.GET.get('id'):
@@ -142,17 +142,24 @@ class APIDeleteService(APIView):
             return JsonResponse({'retVal': '-1'})
 
     def post(self, request):
+        print("Test---------------------")
+        for key in request.POST:
+            print(key)
+            value = request.POST[key]
+            print(value)
+
         # if data is raw from ajax post
+        ids = []
         if request.is_ajax():
             if request.method == 'POST':
                 print('Raw Data: {}'.format(request.body))
                 dataDeserialized = json.loads(request.body)
-                ids = []
                 for service in dataDeserialized:
                     ids.append(service["id"])
+
         # if data post is object
-        elif request.GET.get('ids'):
-            id = request.GET.get('ids')
+        elif request.POST.get('ids'):
+            ids = request.POST.get('ids')
         else:
             return Response({'retVal': '-1'})
 

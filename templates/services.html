@@ -69,9 +69,9 @@
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             Services Data Table
-                            <div class="pull-right">
-                                <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#addServiceModal"><i class="fa fa-plus"></i> Add New Service</button>
-                            </div>
+                            <!--<div class="pull-right">-->
+                                <!--<button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#addServiceModal"><i class="fa fa-plus"></i> Add New Service</button>-->
+                            <!--</div>-->
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body" >
@@ -79,7 +79,7 @@
                               <button id="delete" class="btn btn-danger">
                                 <i class="fa fa-trash-o"></i> Delete
                               </button>
-                              <button id="add" class="btn btn-primary">
+                              <button id="add" class="btn btn-primary" data-toggle="modal" data-target="#addServiceModal">
                                 <i class="fa fa-plus"></i> Add New Service
                               </button>
                             </div>
@@ -146,6 +146,26 @@
                     </div>
                 </div>
             </div>
+            <!-- Modal Warning on Deleting Services -->
+            <div class="modal" id="warningOnDelete" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Warning</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Are you sure to delete selected service(s)?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="button" id="confirmDelete" class="btn btn-danger">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <!-- /#page-wrapper -->
 {% endblock %}
@@ -174,7 +194,29 @@
 
     <!-- Service JavaScript -->
     <script src="{% static 'pages/js/services.js'%}"></script>
-
+    <script>
+    $(document).ready(
+        $("#delete").click(function () {
+            var dataTable = $("#servicetable").bootstrapTable('getSelections');
+            var ids = new Array();
+            for(i=0; i < dataTable.length; i++){
+                ids.push(dataTable[i].id);
+            }
+            var data = JSON.stringify({ids:ids,csrfmiddlewaretoken: '{{ csrf_token }}'});
+            $.ajax({
+                    type: "POST",
+                    url: "./api/deleteservice",
+                    data: data,
+                    contentType: "application/json; charset=utf-8",
+                    dataType: 'json',
+                    success: function(msg) {
+                     $("#servicetable").bootstrapTable('refresh');
+                     alert(msg.retVal);
+                    }
+            });
+        })
+    )
+    </script>
 {% endblock %}
 
 

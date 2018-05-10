@@ -68,21 +68,48 @@ $(document).ready(
         e.preventDefault();
     }),
     $("#addServiceModal").on("hidden.bs.modal", function () {
+        $("#AfterPostMess").addClass("hidden");
         $("#servicetable").bootstrapTable('refresh');
     }),
-    $("#delete").click(function () {
-        var data = JSON.stringify($("#servicetable").bootstrapTable('getSelections'));
-        $.ajax({
-             type: "POST",
-             url: "./api/deleteservice",
-             data: data,
-             contentType: "application/json; charset=utf-8",
-             dataType: "json",
-             success: function(msg) {
-                 $("#servicetable").bootstrapTable('refresh');
-                 alert(msg.retVal);
-             }
-        });
-    })
+    // $("#delete").click(function () {
+    //     var data = JSON.stringify($("#servicetable").bootstrapTable('getSelections'));
+    //     $.ajax({
+    //             type: "POST",
+    //             url: "./api/deleteservice",
+    //             data: {
+    //              data: data,
+    //              csrfmiddlewaretoken: '{{ csrf_token }}'
+    //             },
+    //             contentType: "application/json; charset=utf-8",
+    //             async: false,
+    //             dataType: 'json',
+    //             success: function(msg) {
+    //              $("#servicetable").bootstrapTable('refresh');
+    //              alert(msg.retVal);
+    //             }
+    //     });
+    // })
+    // $("#confirmDelete").click(function () {
+    //     var data = JSON.stringify($("#servicetable").bootstrapTable('getSelections'));
+    //     $.ajax({
+    //          type: "POST",
+    //          url: "./api/deleteservice",
+    //          data: data,
+    //          contentType: "application/json; charset=utf-8",
+    //          dataType: "json",
+    //          success: function(msg) {
+    //              $("#servicetable").bootstrapTable('refresh');
+    //              alert(msg.retVal);
+    //          }
+    //     });
+    //     $('#warningOnDelete').modal('hide')
+    // }),
+    // $("#delete").click(function () {
+    //     var data = $("#servicetable").bootstrapTable('getSelections');
+    //     if(data.length > 0){
+    //         $('#warningOnDelete').modal('show')
+    //     }
+    // })
+
 );
 
