@@ -142,30 +142,24 @@ class APIDeleteService(APIView):
             return JsonResponse({'retVal': '-1'})
 
     def post(self, request):
-        # if data is raw from ajax post
-        if request.is_ajax():
-            if request.method == 'POST':
-                print('Raw Data: {}'.format(request.body))
-                dataDeserialized = json.loads(request.body)
-                ids = []
-                for service in dataDeserialized:
-                    ids.append(service["id"])
-        # if data post is object
-        elif request.GET.get('ids'):
-            id = request.GET.get('ids')
-        else:
-            return Response({'retVal': '-1'})
-
-        successOnDelete = 0
-        for id in ids:
-            try:
-                retService = ServiceModel.objects.get(pk=id)
-            except ServiceModel.DoesNotExist:
-                pass
-            else:
-                retService.delete()
-                successOnDelete = successOnDelete + 1
-        return Response({'retVal': successOnDelete})
+        data = json.loads(request.body.decode())
+        if data['ids']:
+            successOnDelete = 0
+            for id in data['ids']:
+                try:
+                    int(id)
+                except ValueError:
+                    return Response({'retVal': '-1'})
+                else:
+                    try:
+                        retService = ServiceModel.objects.get(pk=id)
+                    except ServiceModel.DoesNotExist:
+                        pass
+                    else:
+                        retService.delete()
+                        successOnDelete = successOnDelete = 1
+            return Response({'retVal': successOnDelete})
+        return Response({'retVal': '-1'})
 
     def put(self, request):
         pass
