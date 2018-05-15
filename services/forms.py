@@ -32,3 +32,9 @@ class ServiceForm(forms.ModelForm):
                 'unique': 'Service with this network port already exists'
             },
         }
+
+
+class ServiceIDForm(forms.ModelForm):
+    class Meta:
+        model = ServiceModel
+        fields = ['id']

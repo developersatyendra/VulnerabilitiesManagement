@@ -8,9 +8,8 @@ from .serializers import ServiceSerializer
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import JsonResponse
-from .forms import ServiceForm
+from .forms import ServiceForm, ServiceIDForm
 from django.contrib.auth.models import User
-import json
 
 
 PAGE_DEFAULT = 1
@@ -36,6 +35,13 @@ class ServiceDetailView(TemplateView):
     def get(self, request, *args, **kwargs):
         pass
 
+#
+# APIGetServices get services from these params:
+#   searchText: Search content
+#   sortName: Name of column is applied sort
+#   sortOrder: sort entry by order 'asc' or 'desc'
+#   pageSize: number of entry per page
+#   pageNumber: page number of curent view
 
 class APIGetServices(APIView):
     def get(self, request):
@@ -79,14 +85,17 @@ class APIGetServices(APIView):
         querySetPaged = Paginator(querySet, int(numEntry))
         dataPaged = querySetPaged.get_page(page)
         dataSerialized = ServiceSerializer(dataPaged, many=True)
-        data = {}
+        data = dict()
         data["total"] = numObject
         data['rows'] = dataSerialized.data
         return Response(data)
 
-    def put(self, request):
-        pass
 
+#
+# APIGetServicesByID get services from id
+# return {'retVal': '-1'} if id not found
+# return service object if it's success
+#
 
 class APIGetServicesByID(APIView):
     def get(self, request):
@@ -94,16 +103,19 @@ class APIGetServicesByID(APIView):
             id = request.GET.get('id')
             try:
                 retService = ServiceModel.objects.get(pk=id)
-            except ServiceModel.DoesNotExist:
+            except (ServiceModel.DoesNotExist, ValueError):
                 return JsonResponse({'retVal': '-1'})
             dataSerialized = ServiceSerializer(retService, many=False)
             return Response(dataSerialized.data)
         else:
             return JsonResponse({'retVal': '-1'})
 
-    def put(self, request):
-        pass
 
+#
+# APIAddService add new service
+# return {'retVal': '-1'} if id not found
+# return service object if it's success
+#
 
 class APIAddService(APIView):
     def post(self, request):
@@ -124,32 +136,23 @@ class APIAddService(APIView):
             retJson = {'notification': retNotification}
             return JsonResponse(retJson)
 
-    def put(self, request):
-        pass
 
+#
+# APIDeleteService delete existing service
+# return {'retVal': '-1'} if id not found
+# return service object if it's success
+#
 
 class APIDeleteService(APIView):
-    def get(self, request):
-        if request.GET.get('id'):
-            id = request.GET.get('id')
-            try:
-                retService = ServiceModel.objects.get(pk=id)
-            except ServiceModel.DoesNotExist:
-                return JsonResponse({'retVal': '-1'})
-            retService.delete()
-            return JsonResponse({'retVal': '0'})
-        else:
-            return JsonResponse({'retVal': '-1'})
-
     def post(self, request):
-        data = json.loads(request.body.decode())
-        if data['ids']:
+        serviceForm = ServiceIDForm(request.POST)
+        if serviceForm.is_valid():
             successOnDelete = 0
-            for id in data['ids']:
+            for rawID in serviceForm.data['id'].split(','):
                 try:
-                    int(id)
+                    id = int(rawID)
                 except ValueError:
-                    return Response({'retVal': '-1'})
+                    pass
                 else:
                     try:
                         retService = ServiceModel.objects.get(pk=id)
@@ -157,33 +160,33 @@ class APIDeleteService(APIView):
                         pass
                     else:
                         retService.delete()
-                        successOnDelete = successOnDelete = 1
+                        successOnDelete = successOnDelete + 1
             return Response({'retVal': successOnDelete})
-        return Response({'retVal': '-1'})
+        else:
+            return Response({'retVal': '-1'})
 
-    def put(self, request):
-        pass
 
+#
+# APIUpdateService delete existing service
+# return {'notification': 'error_msg'} if id not found
+# return service object if it's success
+#
 
 class APIUpdateService(APIView):
-    def get(self, request):
-        if request.GET.get('id'):
-            id = request.GET.get('id')
-            try:
-                retService = ServiceModel.objects.get(pk=id)
-            except ServiceModel.DoesNotExist:
-                return JsonResponse({'retVal': '-1'})
-            if request.GET.get('name'):
-                retService.name = request.GET.get('name')
-            if request.GET.get('port'):
-                retService.port = request.GET.get('port')
-            if request.GET.get('description'):
-                retService.description = request.GET.get('description')
-            retService.save()
-            dataSerialized = ServiceSerializer(retService, many=False)
+    def post(self, request):
+        id = request.POST.get('id')
+        serviceObj = ServiceModel.objects.get(pk=id)
+        serviceForm = ServiceForm(request.POST, instance=serviceObj)
+        if serviceForm.is_valid():
+            entry = serviceForm.save()
+            dataSerialized = ServiceSerializer(entry, many=False)
             return Response(dataSerialized.data)
         else:
-            return JsonResponse({'retVal': '-1'})
-
-    def put(self, request):
-        pass
+            retNotification = ''
+            for field in serviceForm:
+                for error in field.errors:
+                    retNotification += error
+            for error in serviceForm.non_field_errors():
+                retNotification += error
+            retJson = {'notification': retNotification}
+            return JsonResponse(retJson)
