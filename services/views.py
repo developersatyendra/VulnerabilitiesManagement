@@ -3,13 +3,12 @@ from django.views.generic import TemplateView
 from dashboard.views import RenderSideBar
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import ServiceModel
-from .serializers import ServiceSerializer
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.http import JsonResponse
-from .forms import ServiceForm, ServiceIDForm
 from django.contrib.auth.models import User
+from .models import ServiceModel
+from .serializers import ServiceSerializer
+from .forms import ServiceForm, ServiceIDForm
 
 
 PAGE_DEFAULT = 1
@@ -21,11 +20,9 @@ class ServicesView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         form = ServiceForm()
-        serviceObjects = ServiceModel.objects.all()[:1000]
         sidebarHtml = RenderSideBar(request)
         context = {
             'sidebar': sidebarHtml,
-            'ServiceData': serviceObjects,
             'form': form,
         }
         return render(request, self.template, context)
@@ -43,6 +40,7 @@ class ServiceDetailView(TemplateView):
 #   pageSize: number of entry per page
 #   pageNumber: page number of curent view
 
+
 class APIGetServices(APIView):
     def get(self, request):
         numObject = ServiceModel.objects.all().count()
@@ -51,7 +49,7 @@ class APIGetServices(APIView):
         if request.GET.get('searchText'):
             search = request.GET.get('searchText')
             query = Q(name__icontains=search) | Q(port__icontains=search) | Q(description__icontains=search)
-            querySet = ServiceModel.objects.all().filter(query)
+            querySet = ServiceModel.objects.filter(query)
         else:
             querySet = ServiceModel.objects.all()
 
@@ -104,11 +102,11 @@ class APIGetServicesByID(APIView):
             try:
                 retService = ServiceModel.objects.get(pk=id)
             except (ServiceModel.DoesNotExist, ValueError):
-                return JsonResponse({'retVal': '-1'})
+                return Response({'retVal': '-1'})
             dataSerialized = ServiceSerializer(retService, many=False)
             return Response(dataSerialized.data)
         else:
-            return JsonResponse({'retVal': '-1'})
+            return Response({'retVal': '-1'})
 
 
 #
@@ -134,7 +132,7 @@ class APIAddService(APIView):
             for error in serviceForm.non_field_errors():
                 retNotification += error
             retJson = {'notification': retNotification}
-            return JsonResponse(retJson)
+            return Response(retJson)
 
 
 #
@@ -189,4 +187,4 @@ class APIUpdateService(APIView):
             for error in serviceForm.non_field_errors():
                 retNotification += error
             retJson = {'notification': retNotification}
-            return JsonResponse(retJson)
+            return Response(retJson)

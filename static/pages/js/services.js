@@ -63,14 +63,6 @@ $(document).ready(
         $('#id_description_edit').val(row.description);
         $('#editServiceModal').modal('show');
         rowIDSelected = row.id;
-        // var data = $('#editServicePostForm').serializeArray();
-        // data.push({name: "id", value: row.id});
-        // data = $.param(data)
-        // alert(data);
-        // alert(row);
-        // var data = $(this).serializeArray(); ;
-        // data.push({name: "id", value: 1});
-        // data = $.param(data);
     }),
     $("#editServicePostForm").submit(function(e){
         var data = $('#editServicePostForm').serializeArray();
@@ -141,7 +133,6 @@ $(document).ready(
         data.push({name: "csrfmiddlewaretoken", value: csrf_token});
         $.post('./api/deleteservice', $.param(data),
              function(returnedData){
-                alert(returnedData.retVal);
                 if(returnedData.retVal > 0){
                     $('#warningOnDelete').modal('hide');
                     $("#servicetable").bootstrapTable('refresh');

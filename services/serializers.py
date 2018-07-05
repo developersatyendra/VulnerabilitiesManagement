@@ -7,3 +7,10 @@ class ServiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = ServiceModel
         fields = '__all__'
+
+
+class ServiceNameSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ServiceModel
+        fields = ('id', 'name')

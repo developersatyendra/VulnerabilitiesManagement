@@ -14,3 +14,8 @@ class ServiceModel(models.Model):
     class Meta:
         unique_together = ('name', 'port',)
 
+    def __str__(self):
+        return "{} {} ".format(self.name, self.port)
+
+    def __unicode__(self):
+        return self.name
