@@ -6,7 +6,7 @@ class ServiceForm(forms.ModelForm):
 
     class Meta:
         model = ServiceModel
-        exclude = ('createBy',)
+        exclude = ('scanBy','submitter')
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Service Name'}),
             'port': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Port'}),

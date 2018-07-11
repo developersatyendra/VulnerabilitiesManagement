@@ -23,10 +23,12 @@ class VulnerabilitiesView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         form = VulnForm()
+        formEdit = VulnForm(id='edit')
         sidebarHtml = RenderSideBar(request)
         context = {
             'sidebar': sidebarHtml,
             'form': form,
+            'formEdit': formEdit,
         }
         return render(request, self.template, context)
 
@@ -203,18 +205,18 @@ class APIDeleteVuln(APIView):
 
 
 #
-# APIUpdateVuln delete existing service
+# APIUpdateVuln update vulnerability
 # return {'notification': 'error_msg'} if id not found
 # return Vuln object if it's success
 #
 
-class APIUpdateService(APIView):
+class APIUpdateVuln(APIView):
     def post(self, request):
         id = request.POST.get('id')
         vulnObj = VulnerabilityModel.objects.get(pk=id)
-        vulnForm = vulnForm(request.POST, instance=vulnObj)
+        vulnForm = VulnForm(request.POST)
         if vulnForm.is_valid():
-            entry = vulnForm.save()
+            entry = vulnForm.save(instance=vulnObj)
             dataSerialized = VulnSerializer(entry, many=False)
             return Response(dataSerialized.data)
         else:

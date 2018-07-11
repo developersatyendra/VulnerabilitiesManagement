@@ -14,7 +14,7 @@ class HostModel(models.Model):
     dateUpdate = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.ipAdr
+        return self.hostName
 
     def __unicode__(self):
         return self.hostName

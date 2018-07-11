@@ -56,22 +56,36 @@ class VulnForm(forms.Form):
         help_text='Description of Vulnerability',
     )
 
-    def save(self, commit=True):
+    def __init__(self, *args, **kwargs):
+        if 'id' in kwargs:
+            id = kwargs['id']
+            del kwargs['id']
+            super().__init__(*args, **kwargs)
+            for field in self.fields:
+                fieldID = 'id_' + field + '_' + id
+                self.fields[field].widget.attrs['id'] = fieldID
+        else:
+            super().__init__(*args, **kwargs)
+
+    def save(self, commit=True,instance=None):
         if self.is_valid():
             scanTask = ScanTaskModel.objects.get(name=self.data['scanTask'])
             hostScanned = HostModel.objects.get(pk=self.data['hostScanned'])
             service = ServiceModel.objects.get(pk=self.data['service'])
-            vulnObj = VulnerabilityModel()
-            vulnObj.levelRisk = self.data['levelRisk']
-            vulnObj.summary = self.data['summary']
-            vulnObj.description = self.data['description']
-            vulnObj.scanTask = scanTask
-            vulnObj.hostScanned = hostScanned
-            vulnObj.service = service
-            if commit==True:
-                vulnObj.save()
-                return vulnObj
-            return vulnObj
+            levelRisk = self.data['levelRisk']
+            summary = self.data['summary']
+            description = self.data['description']
+            if instance is None:
+                instance = VulnerabilityModel()
+            instance.levelRisk = levelRisk
+            instance.summary = summary
+            instance.description = description
+            instance.scanTask = scanTask
+            instance.hostScanned = hostScanned
+            instance.service = service
+            if commit == True:
+                instance.save()
+            return instance
         else:
             return -1
 

@@ -2,7 +2,7 @@ var rowIDSelected = null;
 $(document).ready(
 
     //
-    // Decleare serivces table
+    // Decleare vulnerability table
     //
     $(function () {
         $("#vulntable").bootstrapTable({
@@ -76,12 +76,18 @@ $(document).ready(
     }),
 
     //
-    // Edit service
+    // Edit vuln
     //
     $('#vulntable').on('click-row.bs.table',function (e, row, element, field) {
-        $('#id_name_edit').val(row.name);
-        $('#id_port_edit').val(row.port);
+        $('#id_levelRisk_edit').val(row.levelRisk);
+        $('#id_scanTask_edit').val(row.scanTask);
+        $('#id_summary_edit').val(row.summary);
+        $('#id_hostScanned_edit').val(row.hostScanned.id);
+        $('#id_service_edit').val(row.service.id);
         $('#id_description_edit').val(row.description);
+        var levelRisk = "#id_levelRisk_edit_" + row.levelRisk;
+        $('#id_levelRisk_edit_0').removeAttr("checked");
+        $(levelRisk).attr("checked","");
         $('#editVulnModal').modal('show');
         rowIDSelected = row.id;
     }),
@@ -89,7 +95,7 @@ $(document).ready(
         var data = $('#editVulnPostForm').serializeArray();
         data.push({name: "id", value: rowIDSelected});
         data = $.param(data);
-        $.post("./api/updateservice", data, function(data){
+        $.post("./api/updatevuln", data, function(data){
             var notification = $("#retMsgEdit");
             var closebtn = '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>';
             notification.removeClass("hidden");
@@ -97,7 +103,7 @@ $(document).ready(
                 notification.html(data.notification);
             }
             else{
-                notification.html("The service is edited.");
+                notification.html("The vulnerability is edited.");
                 notification.removeClass("alert-danger");
                 notification.addClass("alert-info");
             }
@@ -111,7 +117,7 @@ $(document).ready(
     }),
 
     //
-    // Add New Service
+    // Add New vuln
     //
     $("#addVulnPostForm").submit(function(e){
         $.post("./api/addvulns", $(this).serialize(), function(data){
@@ -122,7 +128,7 @@ $(document).ready(
                 notification.html(data.notification);
             }
             else{
-                notification.html("New service is added.");
+                notification.html("New vulnerability is added.");
                 notification.removeClass("alert-danger");
                 notification.addClass("alert-info");
             }
@@ -136,13 +142,13 @@ $(document).ready(
     }),
 
     //
-    // Confirm delete service
+    // Confirm delete vuln
     //
     $("#confirmDelete").click(function () {
         // Get csrf_token
         var csrf_token = $('meta[name="csrf-token"]').attr('content');
 
-        // Create array contains service ids
+        // Create array contains vuln ids
         var dataTable = $("#vulntable").bootstrapTable('getSelections');
             var ids = new Array();
             for(i=0; i < dataTable.length; i++){
@@ -152,7 +158,7 @@ $(document).ready(
         var data = [];
         data.push({name: "id", value: ids});
         data.push({name: "csrfmiddlewaretoken", value: csrf_token});
-        $.post('./api/deleteservice', $.param(data),
+        $.post('./api/deletevuln', $.param(data),
              function(returnedData){
                 if(returnedData.retVal > 0){
                     $('#warningOnDelete').modal('hide');
@@ -163,16 +169,16 @@ $(document).ready(
     }),
 
     //
-    // show delete service warning
+    // show delete vuln warning
     //
     $("#delete").click(function () {
         var data = $("#vulntable").bootstrapTable('getSelections');
         if(data.length > 0){
             if(data.length == 1){
-                $('#msgOnDelete').text("Are you sure to delete " + data.length + " selected service?");
+                $('#msgOnDelete').text("Are you sure to delete " + data.length + " selected vulnerability?");
             }
             else{
-                $('#msgOnDelete').text("Are you sure to delete " + data.length + " selected services?");
+                $('#msgOnDelete').text("Are you sure to delete " + data.length + " selected vulnerabilities?");
             }
             $('#warningOnDelete').modal('show')
         }

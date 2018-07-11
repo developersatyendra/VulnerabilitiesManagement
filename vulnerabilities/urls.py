@@ -7,6 +7,6 @@ urlpatterns = [
     path('<int:id>', views.VulnerabilityDetailView.as_view(), name='vulnerabilityDetail'),
     path('getvulns', views.APIGetVulns.as_view(), name='APIgetvulns'),
     path('api/addvulns', views.APIAddVuln.as_view(), name='APIaddvulns'),
-    path('api/deleteservice', views.APIDeleteVuln.as_view(),name='APIdelvulns'),
-
+    path('api/deletevuln', views.APIDeleteVuln.as_view(),name='APIdelvulns'),
+    path('api/updatevuln', views.APIUpdateVuln.as_view(),name='APIupdatevulns'),
 ]
