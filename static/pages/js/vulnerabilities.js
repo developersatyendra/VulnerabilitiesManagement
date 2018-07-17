@@ -22,7 +22,7 @@ $(document).ready(
                 },
                 {
                   title: "Scan Task",
-                  field: "scanTask",
+                  field: "scanTask.name",
                   align: "center",
                   valign: "middle",
                   sortable: true
@@ -63,7 +63,7 @@ $(document).ready(
                   sortable: true
                 }
             ],
-            url: "/vuln/getvulns",
+            url: "/vuln/api/getvulns",
             method: "get",
             idField: "id",
             queryParamsType: "",
@@ -80,7 +80,7 @@ $(document).ready(
     //
     $('#vulntable').on('click-row.bs.table',function (e, row, element, field) {
         $('#id_levelRisk_edit').val(row.levelRisk);
-        $('#id_scanTask_edit').val(row.scanTask);
+        $('#id_scanTask_edit').val(row.scanTask.id);
         $('#id_summary_edit').val(row.summary);
         $('#id_hostScanned_edit').val(row.hostScanned.id);
         $('#id_service_edit').val(row.service.id);

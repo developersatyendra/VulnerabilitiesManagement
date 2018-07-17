@@ -128,6 +128,7 @@ class APIAddService(APIView):
             retNotification = ''
             for field in serviceForm:
                 for error in field.errors:
+                    print(field)
                     retNotification += error
             for error in serviceForm.non_field_errors():
                 retNotification += error

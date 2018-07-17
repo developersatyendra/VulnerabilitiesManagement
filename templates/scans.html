@@ -6,7 +6,7 @@
 
     <!-- Bootstrap Core CSS -->
     <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css'%}" rel="stylesheet">
-
+{#    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">#}
     <!-- MetisMenu CSS -->
     <link href="{% static 'vendor/metisMenu/metisMenu.min.css'%}" rel="stylesheet">
 
@@ -76,7 +76,7 @@
                               <button id="delete" class="btn btn-danger" >
                                 <i class="fa fa-trash-o"></i> Delete
                               </button>
-                              <button id="add" class="btn btn-primary" data-toggle="modal" data-target="#addServiceModal">
+                              <button id="add" class="btn btn-primary" data-toggle="modal" data-target="#addScanModal">
                                 <i class="fa fa-plus"></i> Add New Task
                               </button>
                             </div>
@@ -90,11 +90,12 @@
             </div>
             <!-- /.row -->
 
-            <!-- Modal AddService -->
-            <div class="modal fade" id="addServiceModal">
+            <!-- Modal AddScan -->
+            <div class="modal fade" id="addScanModal">
                 <div class="modal-dialog">
                     <div class="modal-content">
-                        <form method="post" id="addServicePostForm">
+                        <form enctype="multipart/form-data" method="post" id="addScanPostForm">
+
                             {% csrf_token %}
                             <!-- Modal Header -->
                             <div class="modal-header">
@@ -104,6 +105,7 @@
 
                             <!-- Modal body -->
                             <div class="modal-body">
+
                                 <div class="row">
                                     <div class="col-lg-12">
                                         <div class="alert alert-danger alert-dismissable hidden" id="retMsgAdd">
@@ -121,13 +123,19 @@
                                 <div class="row">
                                     <div class="col-lg-12">
                                         <div class="form-group">
-                                            <label>Start Time</label>
-                                            {{ form.startTime }}
+                                            <label>Scan Project</label>
+                                            {{ form.scanProject }}
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-lg-12">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label>Start Time</label>
+                                            {{ form.startTime }}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
                                         <div class="form-group">
                                             <label>Finished Time</label>
                                             {{ form.endTime }}
@@ -142,14 +150,7 @@
                                                 {{ form.fileAttachment }}
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <div class="form-group">
-                                            <label>Scan Project</label>
-                                            {{ form.scanProject }}
-                                        </div>
+
                                     </div>
                                 </div>
                                 <div class="row">
@@ -179,20 +180,22 @@
                     </div>
                 </div>
             </div>
-            <!-- Modal EditService -->
-            <div class="modal fade" id="editServiceModal">
+            <!-- Modal EditScan -->
+            <div class="modal fade" id="editScanModal">
                 <div class="modal-dialog">
                     <div class="modal-content">
-                        <form method="post" id="editServicePostForm">
+                        <form enctype="multipart/form-data" method="post" id="editScanPostForm">
+
                             {% csrf_token %}
                             <!-- Modal Header -->
                             <div class="modal-header">
-                              <h4 class="modal-title">Edit Service</h4>
+                              <h4 class="modal-title">Edit Scanning Task</h4>
                               <button type="button" class="close" data-dismiss="modal">&times;</button>
                             </div>
 
                             <!-- Modal body -->
                             <div class="modal-body">
+
                                 <div class="row">
                                     <div class="col-lg-12">
                                         <div class="alert alert-danger alert-dismissable hidden" id="retMsgEdit">
@@ -200,24 +203,59 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-lg-9">
+                                    <div class="col-lg-12">
                                         <div class="form-group">
-                                            <label>Service Name</label>
-                                            <input type="text" name="name" class="form-control" placeholder="Service Name" maxlength="32" required id="id_name_edit" />
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <div class="form-group">
-                                            <label>Port</label>
-                                            <input type="number" name="port" class="form-control" placeholder="Port" maxlength="32" id="id_port_edit" />
+                                            <label>Scanning Task Name</label>
+                                            {{ formEdit.name}}
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-lg-12">
                                         <div class="form-group">
+                                            <label>Scan Project</label>
+                                            {{ formEdit.scanProject }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label>Start Time</label>
+                                            {{ formEdit.startTime }}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label>Finished Time</label>
+                                            {{ formEdit.endTime }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <label>File Attachment</label>
+                                            <div class="custom-file">
+                                                {{ formEdit.fileAttachment }}
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
                                             <label>Descriptions</label>
-                                            <input type="text" name="description" class="form-control" placeholder="Descriptions" maxlength="128" id="id_description_edit" />
+                                            {{ formEdit.description }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            {{ formEdit.isProcessed }}
+                                            <label>Is Processed</label>
                                         </div>
                                     </div>
                                 </div>
@@ -282,7 +320,9 @@
 
     <!-- Bootstrap Core JavaScript -->
     <script src="{% static 'vendor/bootstrap/js/bootstrap.min.js'%}"></script>
-
+{#    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>#}
+{#<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>#}
+{#    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>#}
     <!-- Metis Menu Plugin JavaScript -->
     <script src="{% static 'vendor/metisMenu/metisMenu.min.js'%}"></script>
 
@@ -299,7 +339,7 @@
     <script src="{% static 'vendor/bootstrap-table/js/bootstrap-table.min.js'%}"></script>
 
     <!-- Service JavaScript -->
-    <script src="{% static 'pages/js/services.js'%}"></script>
+    <script src="{% static 'pages/js/scans.js'%}"></script>
 
 {% endblock %}
 

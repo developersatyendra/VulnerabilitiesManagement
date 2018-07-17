@@ -132,18 +132,18 @@ class APIGetVulnsByID(APIView):
             return Response({'retVal': '-1'})
 
 #
-# APIGetServicesByID get services from id
+# APIGetVulnByID get services from id
 # return {'retVal': '-1'} if id not found
 # return service object if it's success
 #
 
-class APIGetServicesByID(APIView):
+class APIGetVulnByID(APIView):
     def get(self, request):
         if request.GET.get('id'):
             id = request.GET.get('id')
             try:
-                retService = ServiceModel.objects.get(pk=id)
-            except (ServiceModel.DoesNotExist, ValueError):
+                retService = VulnerabilityModel.objects.get(pk=id)
+            except (VulnerabilityModel.DoesNotExist, ValueError):
                 return Response({'retVal': '-1'})
             dataSerialized = VulnSerializer(retService, many=False)
             return Response(dataSerialized.data)

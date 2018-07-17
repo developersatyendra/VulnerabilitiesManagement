@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <form enctype="multipart/form-data" method="post" id="addScanPostForm" action="/scans/api/addscan">
+
+
+                            {% csrf_token %}
+                            <!-- Modal Header -->
+        {{ form }}
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+</body>
+</html>

@@ -69,7 +69,8 @@ class VulnForm(forms.Form):
 
     def save(self, commit=True,instance=None):
         if self.is_valid():
-            scanTask = ScanTaskModel.objects.get(name=self.data['scanTask'])
+            print(self.data)
+            scanTask = ScanTaskModel.objects.get(pk=self.data['scanTask'])
             hostScanned = HostModel.objects.get(pk=self.data['hostScanned'])
             service = ServiceModel.objects.get(pk=self.data['service'])
             levelRisk = self.data['levelRisk']
