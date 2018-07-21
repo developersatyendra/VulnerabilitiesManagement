@@ -1,0 +1,29 @@
+sudo apt install git mongodb libffi-dev build-essential python-django python python-dev python-pip python-pil python-sqlalchemy python-bson python-dpkt python-jinja2 python-magic python-pymongo python-gridfs python-libvirt python-bottle python-pefile python-chardet tcpdump -y
+sudo apt install autoconf libtool libjansson-dev libmagic-dev libssl-dev -y
+wget https://github.com/VirusTotal/yara/archive/v3.7.1.tar.gz
+git clone https://github.com/volatilityfoundation/volatility.git
+
+----- ssdeep-----
+sudo apt install ssdeep libfuzzy-dev
+pip install ssdeep
+pip install pydeep
+ssdeep -v
+----- TCPDump-----
+sudo setcap cap_net_raw,cap_net_admin=eip /usr/sbin/tcpdump
+getcap /usr/sbin/tcpdump
+----- Yara-----
+tar -zxvf v3.7.1.tar.gz yara-3.7.1
+cd yara-3.7.1
+./bootstrap.sh
+./configure --with-crypto --enable-cuckoo --enable-magic
+make
+sudo make install
+yara -v
+
+----- Volatility -----
+
+pip install openpyxl ujson pycrypto distorm3 pytz
+cd volatility
+python setup.py build
+sudo python setup.py install
+python vol.py -h

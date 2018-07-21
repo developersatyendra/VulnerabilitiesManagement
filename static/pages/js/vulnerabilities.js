@@ -1,6 +1,5 @@
 var rowIDSelected = null;
 $(document).ready(
-
     //
     // Decleare vulnerability table
     //
@@ -74,6 +73,7 @@ $(document).ready(
             search: true,
         })
     }),
+
 
     //
     // Edit vuln

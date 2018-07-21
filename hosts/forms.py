@@ -13,7 +13,7 @@ class HostForm(forms.ModelForm):
             'platform': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Platform'}),
             'osName': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Operating System'}),
             'osVersion': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'OS Version'}),
-            'description': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Descriptions'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Descriptions', 'rows':'5'}),
         }
         labels = {
             'ipAdr': 'IP Address',
@@ -42,6 +42,16 @@ class HostForm(forms.ModelForm):
             },
         }
 
+    def __init__(self, *args, **kwargs):
+        if 'id' in kwargs:
+            id = kwargs['id']
+            del kwargs['id']
+            super().__init__(*args, **kwargs)
+            for field in self.fields:
+                fieldID = 'id_' + field + '_' + id
+                self.fields[field].widget.attrs['id'] = fieldID
+        else:
+            super().__init__(*args, **kwargs)
 
 class HostIDForm(forms.ModelForm):
     class Meta:

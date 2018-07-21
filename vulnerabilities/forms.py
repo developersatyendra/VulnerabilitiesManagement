@@ -51,7 +51,7 @@ class VulnForm(forms.Form):
         initial=0
     )
     description = forms.CharField(
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Description'}),
+        widget=forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Description', 'rows':'5'}),
         label='Description',
         help_text='Description of Vulnerability',
     )

@@ -3,5 +3,7 @@ from . import views
 
 app_name = 'submit'
 urlpatterns = [
-    path('', views.SubmitView.as_view(), name='submit'),
+    path('', views.SubmitsView.as_view(), name='submit'),
+    path('api/getsubmits', views.APIGetSubmits.as_view(), name='APIgetsubmits'),
+    path('api/addsubmit', views.APIAddSubmit.as_view(), name='APIaddsubmit'),
 ]

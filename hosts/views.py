@@ -10,18 +10,23 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from rest_framework.response import Response
 
+PAGE_DEFAULT = 1
+NUM_ENTRY_DEFAULT = 50
+
 
 class HostsView(TemplateView):
     template = 'hosts.html'
 
     def get(self, request, *args, **kwargs):
         form = HostForm()
+        formEdit = HostForm(id='edit')
         # serviceObjects = HostModel.objects.all()[:1000]
         sidebarHtml = RenderSideBar(request)
         context = {
             'sidebar': sidebarHtml,
             # 'ServiceData': serviceObjects,
             'form': form,
+            'formEdit': formEdit,
         }
         return render(request, self.template, context)
 

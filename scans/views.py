@@ -131,8 +131,6 @@ class APIAddScan(APIView):
     parser_classes = (MultiPartParser, FormParser, FileUploadParser,)
 
     def post(self, request, format=None):
-        for upload in request.FILES:
-            print(upload)
         scanForm = ScanForm(request.POST, request.FILES)
         if scanForm.is_valid():
             scanObj = scanForm.save(commit=False)

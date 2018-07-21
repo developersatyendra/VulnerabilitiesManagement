@@ -12,7 +12,8 @@ from scans.models import ScanTaskModel
 from .models import VulnerabilityModel
 from .serializers import VulnSerializer
 from .forms import VulnForm, VulnIDForm
-
+from datetime import datetime, timedelta, time
+import dateutil.parser
 
 PAGE_DEFAULT = 1
 NUM_ENTRY_DEFAULT = 50
@@ -118,25 +119,6 @@ class APIGetVulns(APIView):
 # return vuln object if it's success
 #
 
-class APIGetVulnsByID(APIView):
-    def get(self, request):
-        if request.GET.get('id'):
-            id = request.GET.get('id')
-            try:
-                retService = VulnerabilityModel.objects.get(pk=id)
-            except (VulnerabilityModel.DoesNotExist, ValueError):
-                return Response({'retVal': '-1'})
-            dataSerialized = VulnSerializer(retService, many=False)
-            return Response(dataSerialized.data)
-        else:
-            return Response({'retVal': '-1'})
-
-#
-# APIGetVulnByID get services from id
-# return {'retVal': '-1'} if id not found
-# return service object if it's success
-#
-
 class APIGetVulnByID(APIView):
     def get(self, request):
         if request.GET.get('id'):
@@ -150,8 +132,60 @@ class APIGetVulnByID(APIView):
         else:
             return Response({'retVal': '-1'})
 
-
 #
+# APIStatVulns show number of vulns with datetime
+# Param: starttime - Start time for statistic if this param is set to null
+#        endtime - End time for statistic
+# return {'retVal': '-1'} if syntax error
+#
+
+class APIStatVulns(APIView):
+    def get(self, request):
+        print(request.GET)
+        if request.GET.get('starttime'):
+            try:
+                starttime = dateutil.parser.parse(request.GET.get('starttime'))
+            except ValueError:
+                return Response({'retVal': '-1'})
+        else:
+            return Response({'retVal': '-1'})
+
+        if request.GET.get('endtime'):
+            try:
+                endtime = dateutil.parser.parse(request.GET.get('endtime'))
+            except ValueError:
+                return Response({'retVal': '-1'})
+        else:
+            return Response({'retVal': '-1'})
+        days = []
+        low = []
+        med = []
+        high = []
+        for day in range(int((endtime - starttime).days)):
+            statDay= starttime + timedelta(day)
+            # Query Scan Task
+            queryScanModel = Q(startTime__gte = datetime.combine(statDay, time.min), startTime__lte=datetime.combine(statDay, time.max))
+            scanTaskPK = ScanTaskModel.objects.filter(queryScanModel).values_list('pk', flat=True)
+            if scanTaskPK:
+                print(scanTaskPK)
+                # Query vulns
+                queryLowVuln = Q(scanTask__in=scanTaskPK, levelRisk=1)
+                queryMedVuln = Q(scanTask__in=scanTaskPK, levelRisk=2)
+                queryHiVuln = Q(scanTask__in=scanTaskPK, levelRisk=3)
+                low.append(VulnerabilityModel.objects.filter(queryLowVuln).count())
+                med.append(VulnerabilityModel.objects.filter(queryMedVuln).count())
+                high.append(VulnerabilityModel.objects.filter(queryHiVuln).count())
+                days.append(statDay)
+        return Response(
+            {
+                'datetime': days,
+                'low': low,
+                'med': med,
+                'high': high,
+            }
+        )
+#
+
 # APIAddVuln add new Vulnerability
 # return {'retVal': '-1'} if id not found
 # return Vuln object if it's success

@@ -20,10 +20,12 @@ class ServicesView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         form = ServiceForm()
+        formEdit = ServiceForm(id='edit')
         sidebarHtml = RenderSideBar(request)
         context = {
             'sidebar': sidebarHtml,
             'form': form,
+            'formEdit': formEdit,
         }
         return render(request, self.template, context)
 

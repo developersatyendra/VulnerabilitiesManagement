@@ -1,6 +1,19 @@
 var rowIDSelected = null;
 $(document).ready(
 
+
+    $(':file').on('fileselect', function(event, numFiles, label) {
+
+          var input = $(this).parents('.input-group').find(':text'),
+              log = numFiles > 1 ? numFiles + ' files selected' : label;
+
+          if( input.length ) {
+              input.val(log);
+          } else {
+              if( log ) alert(log);
+          }
+
+      }),
     //
     // Decleare scan tasks table
     //
@@ -145,21 +158,6 @@ $(document).ready(
             contentType: false,
             processData: false
         });
-        // $.post("http://127.0.0.1:8000/scans/api/addscan", formData, function(data){
-        //     var notification = $("#retMsgAdd");
-        //     var closebtn = '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>';
-        //     notification.removeClass("hidden");
-        //     if(data.notification != null){
-        //         notification.html(data.notification);
-        //     }
-        //     else{
-        //         notification.html("New vulnerability is added.");
-        //         notification.removeClass("alert-danger");
-        //         notification.addClass("alert-info");
-        //     }
-        //     notification.append(closebtn);
-        //     $("#scanstable").bootstrapTable('refresh');
-        // });
         e.preventDefault();
     }),
     $("#addScanModal").on("hidden.bs.modal", function () {
@@ -208,5 +206,12 @@ $(document).ready(
             $('#warningOnDelete').modal('show')
         }
     })
+
 );
+$(document).on('change', ':file', function() {
+    var input = $(this),
+        numFiles = input.get(0).files ? input.get(0).files.length : 1,
+        label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+     input.trigger('fileselect', [numFiles, label]);
+  });
 

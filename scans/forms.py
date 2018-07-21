@@ -112,9 +112,9 @@ class ScanForm(forms.ModelForm):
             'isProcessed': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'startTime': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
             'endTime': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
-            'fileAttachment': forms.FileInput(),
+            'fileAttachment': forms.FileInput(attrs={'style':"display: none;"}),
             'scanProject':forms.Select(attrs={'class': 'form-control'}),
-            'description': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Descriptions'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Descriptions', 'rows':'5'}),
         }
 
     def __init__(self, *args, **kwargs):

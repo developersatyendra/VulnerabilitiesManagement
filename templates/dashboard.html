@@ -170,7 +170,7 @@
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
-                            <div id="morris-area-chart"></div>
+                            <canvas id="numVulnStat" height="200" width="500"></canvas>
                         </div>
                         <!-- /.panel-body -->
                     </div>
@@ -456,7 +456,7 @@
                             <i class="fa fa-bar-chart-o fa-fw"></i> Donut Chart Example
                         </div>
                         <div class="panel-body">
-                            <div id="morris-donut-chart"></div>
+                            <canvas id="osStat" width="250" height="250"></canvas>
                             <a href="#" class="btn btn-default btn-block">View Details</a>
                         </div>
                         <!-- /.panel-body -->
@@ -600,10 +600,15 @@
     <!-- Morris Charts JavaScript -->
     <script src="{% static 'vendor/raphael/raphael.min.js'%}"></script>
     <script src="{% static 'vendor/morrisjs/morris.min.js'%}"></script>
-    <script src="{% static 'data/morris-data.js'%}"></script>
+
 
     <!-- Custom Theme JavaScript -->
     <script src="{% static 'dist/js/sb-admin-2.js'%}"></script>
+
+    <!-- Chartjs -->
+    <script src="{% static 'vendor/chartjs/Chart.bundle.min.js'%}"></script>
+
+    <script src="{% static 'data/chartjs-data.js'%}"></script>
 {% endblock %}
 
 

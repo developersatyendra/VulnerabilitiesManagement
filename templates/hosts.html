@@ -150,7 +150,7 @@
                                     <div class="col-lg-12">
                                         <div class="form-group">
                                             <label>Descriptions</label>
-                                            <input type="text" name="description" class="form-control" placeholder="Descriptions" maxlength="128" id="id_description_add" />
+                                            {{ form.description }}
                                         </div>
                                     </div>
                                 </div>
@@ -189,13 +189,13 @@
                                     <div class="col-lg-6">
                                         <div class="form-group">
                                             <label>Hostname</label>
-                                            <input type="text" name="hostName" class="form-control" placeholder="Host Name" maxlength="128" required id="id_hostName_edit" />
+                                            {{ formEdit.hostName }}
                                         </div>
                                     </div>
                                     <div class="col-lg-6">
                                         <div class="form-group">
                                             <label>IP Address</label>
-                                            <input type="text" name="ipAdr" class="form-control" placeholder="IP Address" required id="id_ipAdr_edit" />
+                                            {{ formEdit.ipAdr }}
                                         </div>
                                     </div>
                                 </div>
@@ -203,7 +203,7 @@
                                     <div class="col-lg-12">
                                         <div class="form-group">
                                             <label>Platform</label>
-                                            <input type="text" name="platform" class="form-control" placeholder="Platform" maxlength="64" id="id_platform_edit" />
+                                            {{ formEdit.platform }}
                                         </div>
                                     </div>
                                 </div>
@@ -211,13 +211,13 @@
                                     <div class="col-lg-6">
                                         <div class="form-group">
                                             <label>OS Name</label>
-                                            <input type="text" name="osName" class="form-control" placeholder="Operating System" maxlength="128" id="id_osName_edit" />
+                                            {{ formEdit.osName }}
                                         </div>
                                     </div>
                                     <div class="col-lg-6">
                                         <div class="form-group">
                                             <label>OS Version</label>
-                                            <input type="text" name="osVersion" class="form-control" placeholder="OS Version" maxlength="128" id="id_osVersion_edit" />
+                                            {{ formEdit.osVersion }}
                                         </div>
                                     </div>
                                 </div>
@@ -225,7 +225,7 @@
                                     <div class="col-lg-12">
                                         <div class="form-group">
                                             <label>Descriptions</label>
-                                            <input type="text" name="description" class="form-control" placeholder="Descriptions" maxlength="128" id="id_description_edit" />
+                                            {{ formEdit.description }}
                                         </div>
                                     </div>
                                 </div>
