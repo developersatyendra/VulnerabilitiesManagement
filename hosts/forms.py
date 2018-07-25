@@ -6,17 +6,16 @@ class HostForm(forms.ModelForm):
 
     class Meta:
         model = HostModel
-        exclude = ('createBy',)
+        exclude = ('createBy', 'services')
         widgets = {
-            'ipAdr': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'IP Address'}),
+            'ipAddr': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'IP Address'}),
             'hostName': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Host Name'}),
-            'platform': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Platform'}),
             'osName': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Operating System'}),
             'osVersion': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'OS Version'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Descriptions', 'rows':'5'}),
         }
         labels = {
-            'ipAdr': 'IP Address',
+            'ipAddr': 'IP Address',
             'hostName': 'Host Name',
             'platform': 'Platform',
             'osName': 'Operation System',
@@ -24,7 +23,7 @@ class HostForm(forms.ModelForm):
             'description': 'Descriptions',
         }
         help_texts = {
-            'ipAdr': 'IP Address of This Host.',
+            'ipAddr': 'IP Address of This Host.',
             'hostName': 'Host Name of This Host',
             'platform': 'Platform of Operating System',
             'osName': 'Name of Operation System',
@@ -32,7 +31,7 @@ class HostForm(forms.ModelForm):
             'description': 'Descriptions',
         }
         error_messages = {
-            'ipAdr': {
+            'ipAddr': {
                 'required': 'Ip Address is required',
                 'unique': 'Host with this IP address already exists'
             },
@@ -52,6 +51,7 @@ class HostForm(forms.ModelForm):
                 self.fields[field].widget.attrs['id'] = fieldID
         else:
             super().__init__(*args, **kwargs)
+
 
 class HostIDForm(forms.ModelForm):
     class Meta:

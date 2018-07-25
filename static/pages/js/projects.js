@@ -21,38 +21,40 @@ $(document).ready(
         $("#projectstable").bootstrapTable({
             columns:[
                 {
-                  field: 'state',
-                  checkbox: true,
-                  align: 'center',
-                  valign: 'middle'
+                    field: 'state',
+                    checkbox: true,
+                    align: 'center',
+                    valign: 'middle'
                 },
                 {
-                  title: "Project Name",
-                  field: "name",
-                  align: "center",
-                  valign: "middle",
-                  sortable: true
+                    title: "Project Name",
+                    field: "name",
+                    align: "center",
+                    valign: "middle",
+                    sortable: true
                 },
                 {
-                  title: "Create Date",
-                  field: "createDate",
-                  align: "center",
-                  valign: "middle",
-                  sortable: true
+                    title: "Create Date",
+                    field: "createDate",
+                    align: "center",
+                    valign: "middle",
+                    formatter: DateTimeFormater,
+                    sortable: true
                 },
                 {
-                  title: "Update Date",
-                  field: "updateDate",
-                  align: "center",
-                  valign: "middle",
-                  sortable: true
+                    title: "Update Date",
+                    field: "updateDate",
+                    align: "center",
+                    valign: "middle",
+                    formatter: DateTimeFormater,
+                    sortable: true
                 },
                 {
-                  title: "Description",
-                  field: "description",
-                  align: "center",
-                  valign: "middle",
-                  sortable: true
+                    title: "Description",
+                    field: "description",
+                    align: "center",
+                    valign: "middle",
+                    sortable: true
                 }
             ],
             url: "/projects/api/getprojects",
@@ -66,6 +68,7 @@ $(document).ready(
             search: true,
         })
     }),
+
 
     //
     // Edit vuln
@@ -177,3 +180,8 @@ $(document).on('change', ':file', function() {
      input.trigger('fileselect', [numFiles, label]);
   });
 
+// Format Datetime for bootstrap table
+function DateTimeFormater(value, row, index) {
+    date_t = new Date(value);
+    return date_t.toLocaleString();
+}

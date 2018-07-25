@@ -14,15 +14,8 @@ $(document).ready(
                   valign: 'middle'
                 },
                 {
-                  title: "ID",
-                  field: "id",
-                  align: "center",
-                  valign: "middle",
-                  sortable: true
-                },
-                {
                   title: "IP Address",
-                  field: "ipAdr",
+                  field: "ipAddr",
                   align: "center",
                   valign: "middle",
                   sortable: true
@@ -30,13 +23,6 @@ $(document).ready(
                 {
                   title: "Hostname",
                   field: "hostName",
-                  align: "center",
-                  valign: "middle",
-                  sortable: true
-                },
-                {
-                  title: "Platform",
-                  field: "platform",
                   align: "center",
                   valign: "middle",
                   sortable: true
@@ -80,8 +66,7 @@ $(document).ready(
     //
     $('#hosttable').on('click-row.bs.table',function (e, row, element, field) {
         $('#id_hostName_edit').val(row.hostName);
-        $('#id_ipAdr_edit').val(row.ipAdr);
-        $('#id_platform_edit').val(row.platform);
+        $('#id_ipAddr_edit').val(row.ipAddr);
         $('#id_osName_edit').val(row.osName);
         $('#id_osVersion_edit').val(row.osVersion);
         $('#id_description_edit').val(row.description);

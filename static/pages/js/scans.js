@@ -21,52 +21,48 @@ $(document).ready(
         $("#scanstable").bootstrapTable({
             columns:[
                 {
-                  field: 'state',
-                  checkbox: true,
-                  align: 'center',
-                  valign: 'middle'
-                },
-                // {
-                //   title: "ID",
-                //   field: "id",
-                //   align: "center",
-                //   valign: "middle",
-                //   sortable: true
-                // },
-                {
-                  title: "Scan Task",
-                  field: "name",
-                  align: "center",
-                  valign: "middle",
-                  sortable: true
+                    field: 'state',
+                    checkbox: true,
+                    align: 'center',
+                    valign: 'middle'
                 },
                 {
-                  title: "Is Processed",
-                  field: "isProcessed",
-                  align: "center",
-                  valign: "middle",
-                  sortable: true
+                    title: "Scan Task",
+                    field: "name",
+                    align: "center",
+                    valign: "middle",
+                    sortable: true
                 },
                 {
-                  title: "Start Time",
-                  field: "startTime",
-                  align: "center",
-                  valign: "middle",
-                  sortable: true
+                    title: "Is Processed",
+                    field: "isProcessed",
+                    align: "center",
+                    valign: "middle",
+                    formatter: BooleanFormatter,
+                    sortable: true
                 },
                 {
-                  title: "Finished Time",
-                  field: "endTime",
-                  align: "center",
-                  valign: "middle",
-                  sortable: true
+                    title: "Start Time",
+                    field: "startTime",
+                    align: "center",
+                    valign: "middle",
+                    formatter: DateTimeFormater,
+                    sortable: true
                 },
                 {
-                  title: "Scan Project",
-                  field: "scanProject.name",
-                  align: "center",
-                  valign: "middle",
-                  sortable: true
+                    title: "Finished Time",
+                    field: "endTime",
+                    align: "center",
+                    valign: "middle",
+                    formatter: DateTimeFormater,
+                    sortable: true
+                },
+                {
+                    title: "Scan Project",
+                    field: "scanProject.name",
+                    align: "center",
+                    valign: "middle",
+                    sortable: true
                 },
                 {
                   title: "Description",
@@ -215,3 +211,16 @@ $(document).on('change', ':file', function() {
      input.trigger('fileselect', [numFiles, label]);
   });
 
+// Format Datetime for bootstrap table
+function DateTimeFormater(value, row, index) {
+    date_t = new Date(value);
+    return date_t.toLocaleString();
+}
+
+function BooleanFormatter(value, row, index){
+    if(value){
+        return '<b><i class="fa fa-check" aria-hidden="true"></i></b>';
+    }
+    else
+        return '<b><i class="fa fa-remove" aria-hidden="true"></i></i></b>';
+}

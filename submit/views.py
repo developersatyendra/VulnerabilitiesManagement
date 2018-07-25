@@ -10,8 +10,10 @@ from services.models import ServiceModel
 from hosts.models import HostModel
 from scans.models import ScanTaskModel
 from .models import SubmitModel
+from django.contrib.auth.models import User
 from .serializers import SubmitSerializer, SubmitNameSerializer
 from .forms import SubmitAddForm, SubmitForm
+from .submitprocessor import ProcessFoundStoneZipXML
 # from datetime import datetime, timedelta, time
 # import dateutil.parser
 from rest_framework.parsers import MultiPartParser, FormParser, FileUploadParser
@@ -182,11 +184,13 @@ class APIGetSubmits(APIView):
 class APIAddSubmit(APIView):
     parser_classes = (MultiPartParser, FormParser, FileUploadParser,)
     def post(self, request):
-        print(request.FILES)
-        print(request.POST)
         submitForm = SubmitAddForm(request.POST, request.FILES)
         if submitForm.is_valid():
-            submitObj = submitForm.save(commit=True)
+            submitObj = submitForm.save(commit=False)
+            submitObj.owner = User.objects.get(pk=1)
+            submitObj.save()
+            print(request.POST.get('scanProject'))
+            ProcessFoundStoneZipXML(submitObj, request.POST.get('scanProject'))
             dataSerialized = SubmitSerializer(submitObj, many=False)
             return Response(dataSerialized.data)
         else:
@@ -194,11 +198,12 @@ class APIAddSubmit(APIView):
             # for field in submitForm:
             #     for error in field.errors:
             #         print(field)
-            #         retNotification += error
+            #         print(error)
             # for error in submitForm.non_field_errors():
             #     retNotification += error
             # retJson = {'notification': retNotification}
             #
+            print(submitForm.errors.as_json())
             return Response(submitForm.errors.as_json())
 
 

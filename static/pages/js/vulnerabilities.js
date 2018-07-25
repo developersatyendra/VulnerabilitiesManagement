@@ -13,29 +13,8 @@ $(document).ready(
                   valign: 'middle'
                 },
                 {
-                  title: "ID",
-                  field: "id",
-                  align: "center",
-                  valign: "middle",
-                  sortable: true
-                },
-                {
-                  title: "Scan Task",
-                  field: "scanTask.name",
-                  align: "center",
-                  valign: "middle",
-                  sortable: true
-                },
-                {
-                  title: "Host Scanned",
-                  field: "hostScanned.hostName",
-                  align: "center",
-                  valign: "middle",
-                  sortable: true
-                },
-                {
-                  title: "Service",
-                  field: "service.name",
+                  title: "Vulnerability",
+                  field: "name",
                   align: "center",
                   valign: "middle",
                   sortable: true
@@ -48,8 +27,8 @@ $(document).ready(
                   sortable: true
                 },
                 {
-                  title: "Summary",
-                  field: "summary",
+                  title: "Service",
+                  field: "service.name",
                   align: "center",
                   valign: "middle",
                   sortable: true

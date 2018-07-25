@@ -8,38 +8,39 @@ $(document).ready(
         $("#servicetable").bootstrapTable({
             columns:[
                 {
-                  field: 'state',
-                  checkbox: true,
-                  align: 'center',
-                  valign: 'middle'
+                    field: 'state',
+                    checkbox: true,
+                    align: 'center',
+                    valign: 'middle'
                 },
                 {
-                  title: "ID",
-                  field: "id",
-                  align: "center",
-                  valign: "middle",
-                  sortable: true
+                    title: "Service Name",
+                    field: "name",
+                    align: "center",
+                    valign: "middle",
+                    sortable: true
                 },
                 {
-                  title: "Service Name",
-                  field: "name",
-                  align: "center",
-                  valign: "middle",
-                  sortable: true
+                    title: "Port",
+                    field: "port",
+                    align: "center",
+                    valign: "middle",
+                    sortable: true
                 },
                 {
-                  title: "Port",
-                  field: "port",
-                  align: "center",
-                  valign: "middle",
-                  sortable: true
+                    title: "Date Added",
+                    field: "dateCreated",
+                    align: "center",
+                    valign: "middle",
+                    formatter: DateTimeFormater,
+                    sortable: true
                 },
                 {
-                  title: "Description",
-                  field: "description",
-                  align: "center",
-                  valign: "middle",
-                  sortable: true
+                    title: "Description",
+                    field: "description",
+                    align: "center",
+                    valign: "middle",
+                    sortable: true
                 }
             ],
             url: "/services/api/getservices",
@@ -158,3 +159,8 @@ $(document).ready(
     })
 );
 
+// Format Datetime for bootstrap table
+function DateTimeFormater(value, row, index) {
+    date_t = new Date(value);
+    return date_t.toLocaleString();
+}

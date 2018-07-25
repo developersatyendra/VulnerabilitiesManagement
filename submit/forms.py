@@ -6,7 +6,7 @@ from projects.models import ScanProjectModel
 class SubmitForm(forms.ModelForm):
     class Meta:
         model = SubmitModel
-        fields = '__all__'
+        exclude = ('owner', 'status')
         widgets = {
             'fileSubmitted': forms.FileInput(attrs={'style':"display: none;"}),
             'scanProject':forms.Select(attrs={'class': 'form-control'}),
@@ -42,7 +42,7 @@ class SubmitAddForm(forms.ModelForm):
     )
     class Meta:
         model = SubmitModel
-        fields = '__all__'
+        exclude = ('owner', 'status')
         widgets = {
             'fileSubmitted': forms.FileInput(),#attrs={'style':"display: none;"}),
             'scanProject':forms.Select(attrs={'class': 'form-control'}),

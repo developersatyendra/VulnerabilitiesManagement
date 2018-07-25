@@ -52,9 +52,8 @@ class APIGetHosts(APIView):
         # Filter by search keyword
         if request.GET.get('searchText'):
             search = request.GET.get('searchText')
-            query = Q(ipAdr__icontains=search)\
+            query = Q(ipAddr__icontains=search)\
                     | Q(hostName__icontains=search)\
-                    | Q(platform__icontains=search) \
                     | Q(osName__icontains=search) \
                     | Q(osVersion__icontains=search) \
                     | Q(description__icontains=search)

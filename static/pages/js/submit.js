@@ -7,38 +7,47 @@ $(document).ready(
         $("#submittable").bootstrapTable({
             columns:[
                 {
-                  field: 'state',
-                  checkbox: true,
-                  align: 'center',
-                  valign: 'middle'
+                    field: 'state',
+                    checkbox: true,
+                    align: 'center',
+                    valign: 'middle'
                 },
                 {
-                  title: "File Name",
-                  field: "fileSubmitted",
-                  align: "center",
-                  valign: "middle",
-                  sortable: true
+                    title: "File Name",
+                    field: "fileSubmitted",
+                    align: "center",
+                    valign: "middle",
+                    formatter:FilenameFormatter,
+                    sortable: true
                 },
                 {
-                  title: "Date Submit",
-                  field: "dateCreated",
-                  align: "center",
-                  valign: "middle",
-                  sortable: true
+                    title: "Date Submit",
+                    field: "dateCreated",
+                    align: "center",
+                    valign: "middle",
+                    formatter: DateTimeFormater,
+                    sortable: true
                 },
                 {
-                  title: "Scan Task",
-                  field: "scanTask.name",
-                  align: "center",
-                  valign: "middle",
-                  sortable: true
+                    title: "Scan Task",
+                    field: "scanTask.name",
+                    align: "center",
+                    valign: "middle",
+                    sortable: true
                 },
                 {
-                  title: "Description",
-                  field: "description",
-                  align: "center",
-                  valign: "middle",
-                  sortable: true
+                    title: "Status",
+                    field: "status",
+                    align: "center",
+                    valign: "middle",
+                    sortable: true
+                },
+                {
+                    title: "Description",
+                    field: "description",
+                    align: "center",
+                    valign: "middle",
+                    sortable: true
                 }
             ],
             url: "/submit/api/getsubmits",
@@ -179,4 +188,16 @@ $(document).ready(
         }
     })
 );
+
+// Format Datetime for bootstrap table
+function DateTimeFormater(value, row, index) {
+    date_t = new Date(value);
+    return date_t.toLocaleString();
+}
+
+// Get File name from path for bootstrap table
+function FilenameFormatter(value, row, index){
+    return value.replace(/^.*[\\\/]/, '');
+
+}
 
