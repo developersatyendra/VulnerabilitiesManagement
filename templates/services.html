@@ -68,17 +68,31 @@
                <div class="col-lg-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            Services Data Table
+                            <i class="fa fa-table fa-fw" aria-hidden="true"></i> Services Data Table
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body" >
                             <div id="toolbar">
-                              <button id="delete" class="btn btn-danger" >
-                                <i class="fa fa-trash-o"></i> Delete
-                              </button>
-                              <button id="add" class="btn btn-primary" data-toggle="modal" data-target="#addServiceModal">
-                                <i class="fa fa-plus"></i> Add New Service
-                              </button>
+                                <div class="dropdown">
+                                <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                                    <i class="fa fa-gear fa-fw"></i>Action
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a id="add" href="#" data-toggle="modal" data-target="#addServiceModal"><i class="fa fa-plus fa-fw"></i> Add Service</a></li>
+                                    <li><a id="edit" href="#"><i class="fa fa-pencil fa-fw"></i> Edit Service</a></li>
+                                    <li><a id="delete" href="#"><i class="fa fa-trash-o fa-fw"></i> Delete Services</a></li>
+                                </ul>
+                                </div>
+{#                                <button id="add" class="btn btn-primary" data-toggle="modal" data-target="#addServiceModal">#}
+{#                                    <i class="fa fa-plus"></i> Add#}
+{#                                </button>#}
+{#                                <button id="edit" class="btn btn-info" data-toggle="modal">#}
+{#                                    <i class="fa fa-pencil"></i> Edit#}
+{#                                </button>#}
+{#                                <button id="delete" class="btn btn-danger" >#}
+{#                                    <i class="fa fa-trash-o"></i> Delete#}
+{#                                </button>#}
                             </div>
                             <table id="servicetable" data-toolbar="#toolbar"></table>
                             <!-- /.table-responsive -->
@@ -113,13 +127,13 @@
                                 <div class="row">
                                     <div class="col-lg-9">
                                         <div class="form-group">
-                                            <label>Service Name</label>
+                                            <label>Service Name *</label>
                                             {{ form.name }}
                                         </div>
                                     </div>
                                     <div class="col-lg-3">
                                         <div class="form-group">
-                                            <label>Port</label>
+                                            <label>Port *</label>
                                             {{ form.port }}
                                         </div>
                                     </div>
@@ -166,13 +180,13 @@
                                 <div class="row">
                                     <div class="col-lg-9">
                                         <div class="form-group">
-                                            <label>Service Name</label>
+                                            <label>Service Name *</label>
                                             {{ formEdit.name }}
                                         </div>
                                     </div>
                                     <div class="col-lg-3">
                                         <div class="form-group">
-                                            <label>Port</label>
+                                            <label>Port *</label>
                                             {{ formEdit.port }}
                                         </div>
                                     </div>
@@ -217,14 +231,11 @@
                 </div>
             </div>
             <!-- Modal information -->
-            <div class="modal" id="warningOnDelete" tabindex="-1" role="dialog">
+            <div class="modal" id="infoModal" tabindex="-1" role="dialog">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title">Information</h4>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                            <h4 class="modal-title">About</h4>
                         </div>
                         <div class="modal-body"  id="msgInfo">
                             <p>Message information</p>

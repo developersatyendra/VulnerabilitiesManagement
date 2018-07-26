@@ -12,6 +12,3 @@ class SubmitModel(models.Model):
     status = models.CharField(verbose_name='Description of Vulnerability', max_length=1024, default="Processing")
     dateCreated = models.DateTimeField(auto_now_add=True)
     dateUpdated = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.fileSubmitted

@@ -1,3 +1,4 @@
+from os import remove
 from django.shortcuts import render
 from django.views.generic import TemplateView
 from dashboard.views import RenderSideBar
@@ -7,12 +8,11 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from django.contrib.auth.models import User
 from services.models import ServiceModel
-from hosts.models import HostModel
 from scans.models import ScanTaskModel
 from .models import SubmitModel
 from django.contrib.auth.models import User
 from .serializers import SubmitSerializer, SubmitNameSerializer
-from .forms import SubmitAddForm, SubmitForm
+from .forms import SubmitAddForm, SubmitForm, SubmitIDForm
 from .submitprocessor import ProcessFoundStoneZipXML
 # from datetime import datetime, timedelta, time
 # import dateutil.parser
@@ -63,6 +63,7 @@ class APIGetSubmits(APIView):
             queryVulnModel = Q(description__icontains=search)\
                              | Q(fileSubmitted__icontains=search)\
                              | Q(dateCreated__icontains=search) \
+                             | Q(status__icontains=search) \
                              | Q(scanTask__in=scanTaskPK)
             querySet = SubmitModel.objects.filter(queryVulnModel)
         else:
@@ -183,57 +184,53 @@ class APIGetSubmits(APIView):
 
 class APIAddSubmit(APIView):
     parser_classes = (MultiPartParser, FormParser, FileUploadParser,)
+
     def post(self, request):
         submitForm = SubmitAddForm(request.POST, request.FILES)
         if submitForm.is_valid():
             submitObj = submitForm.save(commit=False)
             submitObj.owner = User.objects.get(pk=1)
             submitObj.save()
-            print(request.POST.get('scanProject'))
             ProcessFoundStoneZipXML(submitObj, request.POST.get('scanProject'))
             dataSerialized = SubmitSerializer(submitObj, many=False)
             return Response(dataSerialized.data)
         else:
-            # retNotification = ''
-            # for field in submitForm:
-            #     for error in field.errors:
-            #         print(field)
-            #         print(error)
-            # for error in submitForm.non_field_errors():
-            #     retNotification += error
-            # retJson = {'notification': retNotification}
-            #
-            print(submitForm.errors.as_json())
             return Response(submitForm.errors.as_json())
 
 
 #
-# APIDeleteVuln delete existing vulnerability
+# APIDeleteSubmit delete existing submit
 # return {'retVal': '-1'} if id not found
 # return {'retVal': 'Num of Success on Deleting'} if it's success
 #
 
-# class APIDeleteVuln(APIView):
-#     def post(self, request):
-#         vulnForm = VulnIDForm(request.POST)
-#         if vulnForm.is_valid():
-#             successOnDelete = 0
-#             for rawID in vulnForm.data['id'].split(','):
-#                 try:
-#                     id = int(rawID)
-#                 except ValueError:
-#                     pass
-#                 else:
-#                     try:
-#                         retVuln = VulnerabilityModel.objects.get(pk=id)
-#                     except ServiceModel.DoesNotExist:
-#                         pass
-#                     else:
-#                         retVuln.delete()
-#                         successOnDelete = successOnDelete + 1
-#             return Response({'retVal': successOnDelete})
-#         else:
-#             return Response({'retVal': '-1'})
+class APIDeleteSubmit(APIView):
+
+    def post(self, request):
+        print('aaa')
+        submitForm = SubmitIDForm(request.POST)
+        if submitForm.is_valid():
+            successOnDelete = 0
+            for rawID in submitForm.data['id'].split(','):
+                try:
+                    id = int(rawID)
+                except ValueError:
+                    pass
+                else:
+                    try:
+                        retVuln = SubmitModel.objects.get(pk=id)
+                    except ServiceModel.DoesNotExist:
+                        pass
+                    else:
+                        try:
+                            remove(retVuln.fileSubmitted.path)
+                        except OSError:
+                            pass
+                        retVuln.delete()
+                        successOnDelete = successOnDelete + 1
+            return Response({'retVal': successOnDelete})
+        else:
+            return Response({'retVal': '-1'})
 
 
 #

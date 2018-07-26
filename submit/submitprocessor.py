@@ -1,5 +1,5 @@
 import tempfile
-from zipfile import ZipFile
+import zipfile
 from os import path
 import shutil
 import xml.etree.ElementTree as XMLTree
@@ -16,33 +16,52 @@ hostData = "1\\XML\\en\\Host_Data.xml"
 riskData = "1\\XML\\en\\Risk_Data.xml"
 
 
-def ProcessFoundStoneZipXML(submibObj, projectID):
-    print(projectID)
+def ProcessFoundStoneZipXML(submitObj, projectID):
     # extract zipped file
-    zipFile = ZipFile(submibObj.fileSubmitted.path, 'r')
+    try:
+        zipFile = zipfile.ZipFile(submitObj.fileSubmitted.path, 'r')
+    except OSError:
+        submitObj.status = 'Error - Zip file not found'
+        submitObj.save()
+        return -1
     tempdir = tempfile.mkdtemp()
-    zipFile.extractall(tempdir)
+    try:
+        zipFile.extractall(tempdir)
+    except zipfile.BadZipFile:
+        submitObj.status = 'Error - Extract error'
+        submitObj.save()
+        return -1
     zipFile.close()
-    print(path.join(tempdir, hostData))
-    print(path.join(tempdir, riskData))
-    retVal = ProcessFoundStoneXML(path.join(tempdir, hostData), path.join(tempdir, riskData), submibObj, projectID, 1)
+    retVal = ProcessFoundStoneXML(path.join(tempdir, hostData), path.join(tempdir, riskData), submitObj, projectID, 1)
     shutil.rmtree(tempdir)
     return retVal
 
 
 def ProcessFoundStoneXML(hostdata, riskdata, submitObj, projectID, userID):
     # Parse XML HostaData file
-    xmltreeHostData = XMLTree.parse(hostdata)
+    try:
+        xmltreeHostData = XMLTree.parse(hostdata)
+        xmltreeRiskData = XMLTree.parse(riskdata)
+    except OSError:
+        submitObj.status = 'Error - XML files not found'
+        submitObj.save()
+        return -1
+    except XMLTree.ParseError:
+        submitObj.status = 'Error - XML parsed error'
+        submitObj.save()
+        return -1
     rootHostData = xmltreeHostData.getroot()
-    xmltreeRiskData = XMLTree.parse(riskdata)
     rootRiskData = xmltreeRiskData.getroot()[2]
 
     # Check If ScanTask is exis on Database
     scanTaskQuery = Q(name=rootHostData[1].attrib['ScanName'])
+    print(rootHostData[1].attrib['ScanName'])
     scanTaskQueried = ScanTaskModel.objects.filter(scanTaskQuery)
+    print(scanTaskQueried.count())
     if scanTaskQueried:
         submitObj.status = "Duplicated"
         submitObj.scanTask = scanTaskQueried[0]
+        submitObj.save()
         return -1
     scantaskObj = ScanTaskModel()
     scantaskObj.name = rootHostData[1].attrib['ScanName']

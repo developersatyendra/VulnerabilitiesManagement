@@ -100,6 +100,8 @@ $(document).ready(
             notification.removeClass("hidden");
             if(data.notification != null){
                 notification.html(data.notification);
+                notification.removeClass("alert-info");
+                notification.addClass("alert-danger");
             }
             else{
                 notification.html("New service is added.");
@@ -155,6 +157,20 @@ $(document).ready(
                 $('#msgOnDelete').text("Are you sure to delete " + data.length + " selected services?");
             }
             $('#warningOnDelete').modal('show')
+        }
+    }),
+    $("#edit").click(function () {
+        var data = $("#servicetable").bootstrapTable('getSelections');
+        if(data.length > 1){
+            $('#msgInfo').text("Please choose only one row for editing.");
+            $('#infoModal').modal('show');
+        }
+        else if (data.length == 1) {
+            $('#id_name_edit').val(data[0].name);
+            $('#id_port_edit').val(data[0].port);
+            $('#id_description_edit').val(data[0].description);
+            $('#editServiceModal').modal('show');
+            rowIDSelected = dataTable[data[0]].id;
         }
     })
 );
