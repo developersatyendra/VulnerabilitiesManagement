@@ -18,6 +18,7 @@ $(document).ready(
                     field: "name",
                     align: "center",
                     valign: "middle",
+                    formatter: HrefFormater,
                     sortable: true
                 },
                 {
@@ -58,13 +59,9 @@ $(document).ready(
     //
     // Edit service
     //
-    $('#servicetable').on('click-row.bs.table',function (e, row, element, field) {
-        $('#id_name_edit').val(row.name);
-        $('#id_port_edit').val(row.port);
-        $('#id_description_edit').val(row.description);
-        $('#editServiceModal').modal('show');
-        rowIDSelected = row.id;
-    }),
+    // $('#servicetable').on('click-row.bs.table',function (e, row, element, field) {
+    //     window.location.replace("./"+ row.id);
+    // }),
     $("#editServicePostForm").submit(function(e){
         var data = $('#editServicePostForm').serializeArray();
         data.push({name: "id", value: rowIDSelected});
@@ -159,6 +156,9 @@ $(document).ready(
             $('#warningOnDelete').modal('show')
         }
     }),
+    //
+    // Fill in edit form when edit btn is clicked
+    //
     $("#edit").click(function () {
         var data = $("#servicetable").bootstrapTable('getSelections');
         if(data.length > 1){
@@ -172,6 +172,26 @@ $(document).ready(
             $('#editServiceModal').modal('show');
             rowIDSelected = dataTable[data[0]].id;
         }
+    }),
+    //
+    // Check how many row is selected to enable or disable edit and delete button
+    //
+    $("#servicetable").change(function () {
+        var data = $("#servicetable").bootstrapTable('getSelections');
+        var editBtn = $("#edit");
+        var delBtn = $("#delete");
+        if(data.length!=1){
+            editBtn.addClass("disabled");
+        }
+        else{
+            editBtn.removeClass("disabled");
+        }
+        if(data.length==0 ){
+            delBtn.addClass("disabled");
+        }
+        else{
+            delBtn.removeClass("disabled");
+        }
     })
 );
 
@@ -179,4 +199,9 @@ $(document).ready(
 function DateTimeFormater(value, row, index) {
     date_t = new Date(value);
     return date_t.toLocaleString();
+}
+
+// Format Href for bootstrap table
+function HrefFormater(value, row, index) {
+    return '<a id="delete" href="' + row.id + '"> ' + row.name +'</a>';
 }

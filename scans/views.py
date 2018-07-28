@@ -77,6 +77,7 @@ class APIGetScans(APIView):
             sortString = sortString + request.GET.get('sortName')
         else:
             sortString = sortString + 'id'
+        sortString = sortString.replace('.', '__')
         querySet = querySet.order_by(sortString)
 
         # Get Page Number

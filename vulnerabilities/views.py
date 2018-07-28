@@ -7,7 +7,6 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from django.contrib.auth.models import User
 from services.models import ServiceModel
-from hosts.models import HostModel
 from scans.models import ScanTaskModel
 from .models import VulnerabilityModel
 from .serializers import VulnSerializer
@@ -54,26 +53,10 @@ class APIGetVulns(APIView):
         # Filter by search keyword
         if request.GET.get('searchText'):
             search = request.GET.get('searchText')
-
-            # Query on Service Model
-            queryServiceModel = Q(name__icontains=search)
-            servicePK = ServiceModel.objects.filter(queryServiceModel).values_list('pk', flat=True)
-
-            # Query on HostModel
-            queryHostModel = Q(hostName__icontains=search)
-            hostPK = HostModel.objects.filter(queryHostModel).values_list('pk', flat=True)
-
-            # Query on ScanModel
-            queryScanModel = Q(name__icontains=search)
-            scanTaskPK = ScanTaskModel.objects.filter(queryScanModel).values_list('pk', flat=True)
-
             # Filter On Vuln
             queryVulnModel = Q(description__icontains=search)\
-                             | Q(summary__icontains=search)\
                              | Q(levelRisk__icontains=search) \
-                             | Q(service__in=servicePK) \
-                             | Q(hostScanned__in=hostPK) \
-                             | Q(scanTask__in=scanTaskPK)
+                             | Q(service__name__icontains=search)
             querySet = VulnerabilityModel.objects.filter(queryVulnModel)
         else:
             querySet = VulnerabilityModel.objects.all()
@@ -89,6 +72,7 @@ class APIGetVulns(APIView):
             sortString = sortString + request.GET.get('sortName')
         else:
             sortString = sortString + 'id'
+        sortString = sortString.replace('.', '__')
         querySet = querySet.order_by(sortString)
         # Get Page Number
         if request.GET.get('pageNumber'):

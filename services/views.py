@@ -31,8 +31,19 @@ class ServicesView(TemplateView):
 
 
 class ServiceDetailView(TemplateView):
+    template = 'service_detailed.html'
+
     def get(self, request, *args, **kwargs):
-        pass
+        print(kwargs['id'])
+        form = ServiceForm()
+        formEdit = ServiceForm(id='edit')
+        sidebarHtml = RenderSideBar(request)
+        context = {
+            'sidebar': sidebarHtml,
+            'form': form,
+            'formEdit': formEdit,
+        }
+        return render(request, self.template, context)
 
 #
 # APIGetServices get services from these params:

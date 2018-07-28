@@ -18,7 +18,7 @@ body {
   #page-wrapper {
     position: inherit;
     margin: 0 0 0 250px;
-    padding: 0 30px;
+    padding: 30px 30px;
     border-left: 1px solid #e7e7e7;
   }
 }
@@ -30,6 +30,10 @@ body {
 }
 .navbar-top-links li:last-child {
   margin-right: 15px;
+}
+.navbar-static-top {
+  width: 100%;
+  position: fixed;
 }
 .navbar-top-links li a {
   padding: 15px;
