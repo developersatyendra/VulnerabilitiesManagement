@@ -58,10 +58,7 @@ $(document).ready(
 
     //
     // Edit service
-    //
-    // $('#servicetable').on('click-row.bs.table',function (e, row, element, field) {
-    //     window.location.replace("./"+ row.id);
-    // }),
+    //,
     $("#editServicePostForm").submit(function(e){
         var data = $('#editServicePostForm').serializeArray();
         data.push({name: "id", value: rowIDSelected});
@@ -70,8 +67,8 @@ $(document).ready(
             var notification = $("#retMsgEdit");
             var closebtn = '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>';
             notification.removeClass("hidden");
-            if(data.notification != null){
-                notification.html(data.notification);
+            if(data.status != 0){
+                notification.html("Error: "+data.message + '. '+data.detail.__all__[0]);
             }
             else{
                 notification.html("The service is edited.");
@@ -95,8 +92,8 @@ $(document).ready(
             var notification = $("#retMsgAdd");
             var closebtn = '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>';
             notification.removeClass("hidden");
-            if(data.notification != null){
-                notification.html(data.notification);
+            if(data.status != 0){
+                notification.html("Error: "+data.message + '. '+data.detail.__all__[0]);
                 notification.removeClass("alert-info");
                 notification.addClass("alert-danger");
             }
@@ -133,7 +130,7 @@ $(document).ready(
         data.push({name: "csrfmiddlewaretoken", value: csrf_token});
         $.post('./api/deleteservice', $.param(data),
              function(returnedData){
-                if(returnedData.retVal > 0){
+                if(returnedData.status == 0){
                     $('#warningOnDelete').modal('hide');
                     $("#servicetable").bootstrapTable('refresh');
                 }
@@ -170,7 +167,7 @@ $(document).ready(
             $('#id_port_edit').val(data[0].port);
             $('#id_description_edit').val(data[0].description);
             $('#editServiceModal').modal('show');
-            rowIDSelected = dataTable[data[0]].id;
+            rowIDSelected = data[0].id;
         }
     }),
     //
@@ -203,5 +200,5 @@ function DateTimeFormater(value, row, index) {
 
 // Format Href for bootstrap table
 function HrefFormater(value, row, index) {
-    return '<a id="delete" href="' + row.id + '"> ' + row.name +'</a>';
+    return '<a href="' + row.id + '"> ' + row.name +'</a>';
 }

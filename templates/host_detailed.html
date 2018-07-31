@@ -2,7 +2,7 @@
 
 {% block css %}
     {% load staticfiles %}
-    <title>Scans management - Services</title>
+    <title>Scans management - Hosts</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css'%}" rel="stylesheet">
@@ -17,7 +17,7 @@
     <link href="{% static 'vendor/morrisjs/morris.css'%}" rel="stylesheet">
 
     <!-- DataTables CSS -->
-{#    <link href="{% static 'vendor/datatables-plugins/dataTables.css' %}" rel="stylesheet">#}
+    <link href="{% static 'vendor/datatables-plugins/dataTables.css' %}" rel="stylesheet">
 
     <!-- DataTables Responsive CSS -->
     <link href=" {% static 'vendor/datatables-responsive/dataTables.responsive.css'%}" rel="stylesheet">
@@ -59,7 +59,7 @@
     <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">Services</h1>
+                    <h1 class="page-header">Hosts</h1>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
@@ -68,14 +68,14 @@
                 <div class="col-lg-12">
                     <ul class="breadcrumb">
                         <li><a href="/">Home</a></li>
-                        <li><a href="/services">Services</a></li>
-                        <li class="active" id="brService"></li>
+                        <li><a href="/hosts">Hosts</a></li>
+                        <li class="active" id="brHost"></li>
                     </ul>
                 </div>
                <div class="col-lg-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <i class="fa fa-info-circle fa-info fa-fw" aria-hidden="true"></i> Service Information
+                            <i class="fa fa-info-circle fa-info fa-fw" aria-hidden="true"></i> Host Information
                             <div class="pull-right">
                                 <div class="dropdown">
                                     <button class="btn btn-default dropdown-toggle btn-xs" type="button" data-toggle="dropdown">
@@ -83,15 +83,15 @@
                                         <span class="caret"></span>
                                     </button>
                                     <ul class="dropdown-menu pull-right">
-                                        <li id="edit"><a href="#" ><i class="fa fa-pencil fa-fw"></i> Edit Service</a></li>
-                                        <li id="delete"><a href="#" ><i class="fa fa-trash-o fa-fw"></i> Delete Service</a></li>
+                                        <li id="edit"><a href="#" ><i class="fa fa-pencil fa-fw"></i> Edit Host</a></li>
+                                        <li id="delete"><a href="#" ><i class="fa fa-trash-o fa-fw"></i> Delete Host</a></li>
                                     </ul>
                                 </div>
                             </div>
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body" >
-                            <form method="post" id="editServicePostForm">
+                            <form method="post" id="editHostPostForm">
                                 {% csrf_token %}
                                 <input type="hidden" name="id" id="id_id">
                                 <div class="row">
@@ -100,19 +100,19 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-lg-4">
+                                    <div class="col-lg-6">
                                         <div class="form-group">
                                             <label>Create By</label>
                                             <div class="well well-sm" id="id_createBy">a</div>
                                         </div>
                                     </div>
-                                    <div class="col-lg-4">
+                                    <div class="col-lg-3">
                                         <div class="form-group">
                                             <label>Date Create</label>
                                             <div class="well well-sm" id="id_dateCreated">a</div>
                                         </div>
                                     </div>
-                                    <div class="col-lg-4">
+                                    <div class="col-lg-3">
                                         <div class="form-group">
                                             <label>Date Update</label>
                                             <div class="well well-sm" id="id_dateUpdate">a</div>
@@ -120,16 +120,30 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-lg-8">
+                                    <div class="col-lg-6">
                                         <div class="form-group">
-                                            <label>Service Name *</label>
-                                            {{ form.name }}
+                                            <label>Hostname *</label>
+                                            {{ form.hostName }}
                                         </div>
                                     </div>
-                                    <div class="col-lg-4">
+                                    <div class="col-lg-6">
                                         <div class="form-group">
-                                            <label>Port *</label>
-                                            {{ form.port }}
+                                            <label>IP Address *</label>
+                                            {{ form.ipAddr }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label>OS Name *</label>
+                                            {{ form.osName }}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label>OS Version *</label>
+                                            {{ form.osVersion }}
                                         </div>
                                     </div>
                                 </div>
@@ -141,7 +155,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row hidden" id="serviceInfoBtn">
+                                <div class="row hidden" id="hostInfoBtn">
                                     <div class="col-lg-12">
                                         <div class="text-center">
                                             <button type="button" class="btn btn-default" id="cancelUpdateBtn">Cancel</button>
@@ -157,25 +171,9 @@
                 </div>
             </div>
             <!-- /.row -->
-            <!-- Modal information -->
-            <div class="modal" id="infoModal" tabindex="-1" role="dialog">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                            <h4 class="modal-title" id="titleInfo">About</h4>
-                        </div>
-                        <div class="modal-body"  id="msgInfo">
-                            <p>Message information</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Modal Warning on Deleting Services -->
-            <div class="modal" id="warningOnDeleteModal" tabindex="-1" role="dialog">
+
+            <!-- Modal Warning on Deleting Hosts -->
+            <div class="modal" id="warningOnDelete" tabindex="-1" role="dialog">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -190,6 +188,25 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                             <button type="button" id="confirmDelete" class="btn btn-danger">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal information -->
+            <div class="modal" id="warningOnDelete" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Information</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body"  id="msgInfo">
+                            <p>Message information</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         </div>
                     </div>
                 </div>
@@ -210,10 +227,10 @@
     <script src="{% static 'vendor/metisMenu/metisMenu.min.js'%}"></script>
 
     <!-- DataTables JavaScript -->
-{#    <script src="{% static 'vendor/datatables/js/jquery.dataTables.min.js' %}"></script>#}
-{#    <script src="{% static  'vendor/datatables/js/dataTables.bootstrap.min.js'%}"></script>#}
-{#    <script src="{% static 'vendor/datatables-responsive/dataTables.responsive.js' %}"></script>#}
-{#    <script src="{% static 'vendor/datatables-plugins/DataTables-checkboxes/js/dataTables.checkboxes.js' %}"></script>#}
+    <script src="{% static 'vendor/datatables/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static  'vendor/datatables/js/dataTables.bootstrap.min.js'%}"></script>
+    <script src="{% static 'vendor/datatables-responsive/dataTables.responsive.js' %}"></script>
+    <script src="{% static 'vendor/datatables-plugins/DataTables-checkboxes/js/dataTables.checkboxes.js' %}"></script>
 
     <!-- Custom Theme JavaScript -->
     <script src="{% static 'dist/js/sb-admin-2.js'%}"></script>
@@ -221,8 +238,8 @@
     <!-- Bootstrap-table JavaScript -->
     <script src="{% static 'vendor/bootstrap-table/js/bootstrap-table.min.js'%}"></script>
 
-    <!-- Service JavaScript -->
-    <script src="{% static 'pages/js/service_detailed.js'%}"></script>
+    <!-- Host JavaScript -->
+    <script src="{% static 'pages/js/host_detailed.js'%}"></script>
 
 {% endblock %}
 

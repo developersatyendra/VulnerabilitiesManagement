@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView
 from dashboard.views import RenderSideBar
+from django.utils.datastructures import MultiValueDictKeyError
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.core.paginator import Paginator
@@ -8,7 +9,7 @@ from django.db.models import Q
 from django.contrib.auth.models import User
 from .models import ServiceModel
 from .serializers import ServiceSerializer
-from .forms import ServiceForm, ServiceIDForm
+from .forms import ServiceForm, ServiceIDForm, ServiceFormDetailed
 
 
 PAGE_DEFAULT = 1
@@ -34,14 +35,11 @@ class ServiceDetailView(TemplateView):
     template = 'service_detailed.html'
 
     def get(self, request, *args, **kwargs):
-        print(kwargs['id'])
         form = ServiceForm()
-        formEdit = ServiceForm(id='edit')
         sidebarHtml = RenderSideBar(request)
         context = {
             'sidebar': sidebarHtml,
             'form': form,
-            'formEdit': formEdit,
         }
         return render(request, self.template, context)
 
@@ -115,11 +113,13 @@ class APIGetServicesByID(APIView):
             try:
                 retService = ServiceModel.objects.get(pk=id)
             except (ServiceModel.DoesNotExist, ValueError):
-                return Response({'retVal': '-1'})
+                return Response({'status': '-1', 'message': 'Value error',
+                             'detail': {"id": [{"message": "ID is not integer", "code": "value error"}]}})
             dataSerialized = ServiceSerializer(retService, many=False)
             return Response(dataSerialized.data)
         else:
-            return Response({'retVal': '-1'})
+            return Response({'status': '-1', 'message': 'fields are required',
+                             'detail': {"id": [{"message": "ID is required", "code": "required"}]}})
 
 
 #
@@ -136,17 +136,9 @@ class APIAddService(APIView):
             entry.createBy = User.objects.get(pk=1)
             entry.save()
             dataSerialized = ServiceSerializer(entry, many=False)
-            return Response(dataSerialized.data)
+            return Response({'status': '0', 'object': dataSerialized.data})
         else:
-            retNotification = ''
-            for field in serviceForm:
-                for error in field.errors:
-                    print(field)
-                    retNotification += error
-            for error in serviceForm.non_field_errors():
-                retNotification += error
-            retJson = {'notification': retNotification}
-            return Response(retJson)
+            return Response({'status': '-1', 'message': 'Form is invalid', 'detail': serviceForm.errors})
 
 
 #
@@ -160,6 +152,10 @@ class APIDeleteService(APIView):
         serviceForm = ServiceIDForm(request.POST)
         if serviceForm.is_valid():
             successOnDelete = 0
+            try:
+                ids = serviceForm.data['id'].split(',')
+            except MultiValueDictKeyError:
+                return Response({'status': '-1',  'message': 'Fields are required', 'detail': {"id": [{"message": "ID is required", "code": "required"}]}})
             for rawID in serviceForm.data['id'].split(','):
                 try:
                     id = int(rawID)
@@ -173,9 +169,9 @@ class APIDeleteService(APIView):
                     else:
                         retService.delete()
                         successOnDelete = successOnDelete + 1
-            return Response({'retVal': successOnDelete})
+            return Response({'status': '0', 'message': '{} service(s) is successfully deleted'.format(successOnDelete)})
         else:
-            return Response({'retVal': '-1'})
+            return Response({'status': '-1', 'message': 'Form is invalid', 'detail': {}})
 
 
 #
@@ -186,19 +182,20 @@ class APIDeleteService(APIView):
 
 class APIUpdateService(APIView):
     def post(self, request):
-        id = request.POST.get('id')
-        serviceObj = ServiceModel.objects.get(pk=id)
-        serviceForm = ServiceForm(request.POST, instance=serviceObj)
+        if request.POST.get('id'):
+            try:
+                id = int(request.POST.get('id'))
+            except ValueError:
+                return Response({'status': '-1', 'message': 'Value error',
+                                 'detail': {"id": [{"message": "ID is not integer", "code": "value error"}]}})
+            serviceObj = ServiceModel.objects.get(pk=id)
+            serviceForm = ServiceForm(request.POST, instance=serviceObj)
+        else:
+            return Response({'status': '-1', 'message': 'Fields are required',
+                             'detail': {"id": [{"message": "ID is required", "code": "required"}]}})
         if serviceForm.is_valid():
             entry = serviceForm.save()
             dataSerialized = ServiceSerializer(entry, many=False)
-            return Response(dataSerialized.data)
+            return Response({'status': '0', 'object': dataSerialized.data})
         else:
-            retNotification = ''
-            for field in serviceForm:
-                for error in field.errors:
-                    retNotification += error
-            for error in serviceForm.non_field_errors():
-                retNotification += error
-            retJson = {'notification': retNotification}
-            return Response(retJson)
+            return Response({'status': '-1', 'message': 'Form is invalid', 'detail': serviceForm.errors})

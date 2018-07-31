@@ -3,6 +3,7 @@ from .models import ServiceModel
 
 
 class ServiceSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source='createBy.username')
 
     class Meta:
         model = ServiceModel

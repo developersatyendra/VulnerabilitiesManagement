@@ -65,20 +65,37 @@
             </div>
             <!-- /.row -->
             <div class="row">
+                <div class="col-lg-12">
+                    <ul class="breadcrumb">
+                        <li><a href="/">Home</a></li>
+                        <li class="active">Hosts</li>
+                    </ul>
+                </div>
                <div class="col-lg-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            Host Data Table
+                            <i class="fa fa-table fa-fw" aria-hidden="true"></i> Host Data Table
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body" >
                             <div id="toolbar">
-                              <button id="delete" class="btn btn-danger" >
-                                <i class="fa fa-trash-o"></i> Delete
-                              </button>
-                              <button id="add" class="btn btn-primary" data-toggle="modal" data-target="#addHostModal">
-                                <i class="fa fa-plus"></i> Add New Host
-                              </button>
+                                <div class="dropdown">
+                                    <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                                        <i class="fa fa-gear fa-fw"></i>Actions
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li id="add"><a href="#" data-toggle="modal" data-target="#addHostModal"><i class="fa fa-plus fa-fw"></i> Add Service</a></li>
+                                        <li id="edit" class="disabled"><a href="#" ><i class="fa fa-pencil fa-fw"></i> Edit Service</a></li>
+                                        <li id="delete" class="disabled"><a href="#" ><i class="fa fa-trash-o fa-fw"></i> Delete Services</a></li>
+                                    </ul>
+                                </div>
+{#                              <button id="delete" class="btn btn-danger" >#}
+{#                                <i class="fa fa-trash-o"></i> Delete#}
+{#                              </button>#}
+{#                              <button id="add" class="btn btn-primary" data-toggle="modal" data-target="#addHostModal">#}
+{#                                <i class="fa fa-plus"></i> Add New Host#}
+{#                              </button>#}
                             </div>
                             <table id="hosttable" data-toolbar="#toolbar"></table>
                             <!-- /.table-responsive -->

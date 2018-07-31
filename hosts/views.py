@@ -32,8 +32,16 @@ class HostsView(TemplateView):
 
 
 class HostDetailView(TemplateView):
+    template = 'host_detailed.html'
+
     def get(self, request, *args, **kwargs):
-        pass
+        form = HostForm()
+        sidebarHtml = RenderSideBar(request)
+        context = {
+            'sidebar': sidebarHtml,
+            'form': form,
+        }
+        return render(request, self.template, context)
 
 
 #

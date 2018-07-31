@@ -3,7 +3,7 @@ from .models import HostModel
 
 
 class HostSerializer(serializers.ModelSerializer):
-
+    username = serializers.CharField(source='createBy.username')
     class Meta:
         model = HostModel
         fields = '__all__'

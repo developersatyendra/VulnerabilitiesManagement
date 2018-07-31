@@ -8,45 +8,39 @@ $(document).ready(
         $("#hosttable").bootstrapTable({
             columns:[
                 {
-                  field: 'state',
-                  checkbox: true,
-                  align: 'center',
-                  valign: 'middle'
+                    field: 'state',
+                    checkbox: true,
+                    align: 'center',
+                    valign: 'middle'
                 },
                 {
-                  title: "IP Address",
-                  field: "ipAddr",
-                  align: "center",
-                  valign: "middle",
-                  sortable: true
+                    title: "Hostname",
+                    field: "hostName",
+                    align: "center",
+                    formatter: HrefFormater,
+                    valign: "middle",
+                    sortable: true
                 },
                 {
-                  title: "Hostname",
-                  field: "hostName",
-                  align: "center",
-                  valign: "middle",
-                  sortable: true
+                    title: "IP Address",
+                    field: "ipAddr",
+                    align: "center",
+                    valign: "middle",
+                    sortable: true
                 },
                 {
-                  title: "OS Name",
-                  field: "osName",
-                  align: "center",
-                  valign: "middle",
-                  sortable: true
+                    title: "OS Name",
+                    field: "osName",
+                    align: "center",
+                    valign: "middle",
+                    sortable: true
                 },
                 {
-                  title: "Version",
-                  field: "osVersion",
-                  align: "center",
-                  valign: "middle",
-                  sortable: true
-                },
-                {
-                  title: "Description",
-                  field: "description",
-                  align: "center",
-                  valign: "middle",
-                  sortable: true
+                    title: "Description",
+                    field: "description",
+                    align: "center",
+                    valign: "middle",
+                    sortable: true
                 }
             ],
             url: "/hosts/api/gethosts",
@@ -64,23 +58,6 @@ $(document).ready(
     //
     // Edit host
     //
-    $('#hosttable').on('click-row.bs.table',function (e, row, element, field) {
-        $('#id_hostName_edit').val(row.hostName);
-        $('#id_ipAddr_edit').val(row.ipAddr);
-        $('#id_osName_edit').val(row.osName);
-        $('#id_osVersion_edit').val(row.osVersion);
-        $('#id_description_edit').val(row.description);
-        $('#editHostModal').modal('show');
-        rowIDSelected = row.id;
-        // var data = $('#editServicePostForm').serializeArray();
-        // data.push({name: "id", value: row.id});
-        // data = $.param(data)
-        // alert(data);
-        // alert(row);
-        // var data = $(this).serializeArray(); ;
-        // data.push({name: "id", value: 1});
-        // data = $.param(data);
-    }),
     $("#editHostPostForm").submit(function(e){
         var data = $('#editHostPostForm').serializeArray();
         data.push({name: "id", value: rowIDSelected});
@@ -172,6 +149,46 @@ $(document).ready(
             }
             $('#warningOnDelete').modal('show')
         }
+    }),
+
+        //
+    // Fill in edit form when edit btn is clicked
+    //
+    $("#edit").click(function () {
+        var data = $("#hosttable").bootstrapTable('getSelections');
+        if (data.length == 1) {
+            $('#id_hostName_edit').val(data[0].hostName);
+            $('#id_ipAddr_edit').val(data[0].ipAddr);
+            $('#id_osName_edit').val(data[0].osName);
+            $('#id_osVersion_edit').val(data[0].osVersion);
+            $('#id_description_edit').val(data[0].description);
+            $('#editHostModal').modal('show');
+            rowIDSelected = data[0].id;
+        }
+    }),
+    //
+    // Check how many row is selected to enable or disable edit and delete button
+    //
+    $("#hosttable").change(function () {
+        var data = $("#hosttable").bootstrapTable('getSelections');
+        var editBtn = $("#edit");
+        var delBtn = $("#delete");
+        if(data.length!=1){
+            editBtn.addClass("disabled");
+        }
+        else{
+            editBtn.removeClass("disabled");
+        }
+        if(data.length==0 ){
+            delBtn.addClass("disabled");
+        }
+        else{
+            delBtn.removeClass("disabled");
+        }
     })
 );
 
+// Format Href for bootstrap table
+function HrefFormater(value, row, index) {
+    return '<a href="./' + row.id + '"> ' + row.hostName +'</a>';
+}
