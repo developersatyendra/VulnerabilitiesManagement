@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView
 from dashboard.views import RenderSideBar
+from django.utils.datastructures import MultiValueDictKeyError
 from .models import HostModel
 from .forms import HostForm, HostIDForm
 from .serializers import HostSerializer
@@ -20,11 +21,9 @@ class HostsView(TemplateView):
     def get(self, request, *args, **kwargs):
         form = HostForm()
         formEdit = HostForm(id='edit')
-        # serviceObjects = HostModel.objects.all()[:1000]
         sidebarHtml = RenderSideBar(request)
         context = {
             'sidebar': sidebarHtml,
-            # 'ServiceData': serviceObjects,
             'form': form,
             'formEdit': formEdit,
         }
@@ -108,7 +107,7 @@ class APIGetHosts(APIView):
 #
 # APIGetHostsByID get hosts from ids
 # return {'retVal': '-1'} if id not found
-# return service object if it's success
+# return Host object if it's success
 #
 
 class APIGetHostsByID(APIView):
@@ -116,19 +115,21 @@ class APIGetHostsByID(APIView):
         if request.GET.get('id'):
             id = request.GET.get('id')
             try:
-                retService = HostModel.objects.get(pk=id)
+                retHost = HostModel.objects.get(pk=id)
             except (HostModel.DoesNotExist, ValueError):
-                return Response({'retVal': '-1'})
-            dataSerialized = HostSerializer(retService, many=False)
+                return Response({'status': '-1', 'message': 'Value error',
+                                 'detail': {"id": [{"message": "ID is not integer", "code": "value error"}]}})
+            dataSerialized = HostSerializer(retHost, many=False)
             return Response(dataSerialized.data)
         else:
-            return Response({'retVal': '-1'})
+            return Response({'status': '-1', 'message': 'fields are required',
+                             'detail': {"id": [{"message": "ID is required", "code": "required"}]}})
 
 
 #
 # APIAddHost add new Host
 # return {'retVal': '-1'} if id not found
-# return service object if it's success
+# return Host object if it's success
 #
 
 class APIAddHost(APIView):
@@ -139,16 +140,10 @@ class APIAddHost(APIView):
             entry.createBy = User.objects.get(pk=1)
             entry.save()
             dataSerialized = HostSerializer(entry, many=False)
-            return Response(dataSerialized.data)
+            return Response({'status': '0', 'object': dataSerialized.data})
         else:
-            retNotification = ''
-            for field in hostForm:
-                for error in field.errors:
-                    retNotification += error
-            for error in hostForm.non_field_errors():
-                retNotification += error
-            retJson = {'notification': retNotification}
-            return Response(retJson)
+            return Response({'status': '-1', 'message': 'Form is invalid', 'detail': hostForm.errors})
+
 
 
 #
@@ -162,7 +157,12 @@ class APIDeleteHost(APIView):
         hostForm = HostIDForm(request.POST)
         if hostForm.is_valid():
             successOnDelete = 0
-            for rawID in hostForm.data['id'].split(','):
+            try:
+                ids = hostForm.data['id'].split(',')
+            except MultiValueDictKeyError:
+                return Response({'status': '-1', 'message': 'Fields are required',
+                                 'detail': {"id": [{"message": "ID is required", "code": "required"}]}})
+            for rawID in ids:
                 try:
                     id = int(rawID)
                 except ValueError:
@@ -175,32 +175,34 @@ class APIDeleteHost(APIView):
                     else:
                         retService.delete()
                         successOnDelete = successOnDelete + 1
-            return Response({'retVal': successOnDelete})
+                        return Response(
+                            {'status': '0', 'message': '{} host(s) is successfully deleted'.format(successOnDelete)})
         else:
-            return Response({'retVal': '-1'})
+            return Response({'status': '-1', 'message': 'Form is invalid', 'detail': {hostForm.errors}})
 
 
 #
-# APIUpdateService delete existing service
+# APIUpdateService delete existing host
 # return {'notification': 'error_msg'} if id not found
-# return service object if it's success
+# return host object if it's success
 #
 
 class APIUpdateHost(APIView):
     def post(self, request):
-        id = request.POST.get('id')
-        hostObj = HostModel.objects.get(pk=id)
-        hostForm = HostForm(request.POST, instance=hostObj)
+        if request.POST.get('id'):
+            try:
+                id = request.POST.get('id')
+            except ValueError:
+                return Response({'status': '-1', 'message': 'Value error',
+                                 'detail': {"id": [{"message": "ID is not integer", "code": "value error"}]}})
+            hostObj = HostModel.objects.get(pk=id)
+            hostForm = HostForm(request.POST, instance=hostObj)
+        else:
+            return Response({'status': '-1', 'message': 'Fields are required',
+                             'detail': {"id": [{"message": "ID is required", "code": "required"}]}})
         if hostForm.is_valid():
             entry = hostForm.save()
             dataSerialized = HostSerializer(entry, many=False)
-            return Response(dataSerialized.data)
+            return Response({'status': '0', 'object': dataSerialized.data})
         else:
-            retNotification = ''
-            for field in hostForm:
-                for error in field.errors:
-                    retNotification += error
-            for error in hostForm.non_field_errors():
-                retNotification += error
-            retJson = {'notification': retNotification}
-            return Response(retJson)
+            return Response({'status': '-1', 'message': 'Form is invalid', 'detail': hostForm.errors})

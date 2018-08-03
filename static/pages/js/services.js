@@ -69,6 +69,8 @@ $(document).ready(
             notification.removeClass("hidden");
             if(data.status != 0){
                 notification.html("Error: "+data.message + '. '+data.detail.__all__[0]);
+                notification.removeClass("alert-info");
+                notification.addClass("alert-danger");
             }
             else{
                 notification.html("The service is edited.");

@@ -31,6 +31,7 @@ $(document).ready(
                     field: "name",
                     align: "center",
                     valign: "middle",
+                    formatter: HrefFormater,
                     sortable: true
                 },
                 {
@@ -83,24 +84,9 @@ $(document).ready(
             search: true,
         })
     }),
-
     //
-    // Edit vuln
+    // Edit scanning task
     //
-    $('#scanstable').on('click-row.bs.table',function (e, row, element, field) {
-        $('#id_name_edit').val(row.name);
-        if(row.isProcessed)
-            $('#id_isProcessed_edit').attr("checked","");
-        else
-            $('#id_isProcessed_edit').removeAttr("checked");
-        $('#id_description_edit').val(row.description);
-        $('#id_startTime_edit').val(row.startTime.substring(0,row.startTime.length -1));
-        $('#id_endTime_edit').val(row.endTime.substring(0,row.endTime.length -1));
-        // $('#id_fileAttachment_edit').val(row.fileAttachment);
-        $('#id_scanProject_edit').val(row.scanProject.id);
-        $('#editScanModal').modal('show');
-        rowIDSelected = row.id;
-    }),
     $("#editScanPostForm").submit(function(e){
         var data = $('#editScanPostForm').serializeArray();
         data.push({name: "id", value: rowIDSelected});
@@ -109,8 +95,10 @@ $(document).ready(
             var notification = $("#retMsgEdit");
             var closebtn = '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>';
             notification.removeClass("hidden");
-            if(data.notification != null){
-                notification.html(data.notification);
+            if(data.status != 0){
+                notification.html("Error: "+data.message + '. '+data.detail.name[0]);
+                notification.removeClass("alert-info");
+                notification.addClass("alert-danger");
             }
             else{
                 notification.html("The vulnerability is edited.");
@@ -139,8 +127,10 @@ $(document).ready(
                 var notification = $("#retMsgAdd");
                 var closebtn = '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>';
                 notification.removeClass("hidden");
-                if(data.notification != null){
-                    notification.html(data.notification);
+                if(data.status != 0){
+                    notification.html("Error: "+data.message + '. '+data.detail.name[0]);
+                    notification.removeClass("alert-info");
+                    notification.addClass("alert-danger");
                 }
                 else{
                     notification.html("New vulnerability is added.");
@@ -179,7 +169,7 @@ $(document).ready(
         data.push({name: "csrfmiddlewaretoken", value: csrf_token});
         $.post('./api/deletescan', $.param(data),
              function(returnedData){
-                if(returnedData.retVal > 0){
+                if(returnedData.status == 0){
                     $('#warningOnDelete').modal('hide');
                     $("#scanstable").bootstrapTable('refresh');
                 }
@@ -201,8 +191,48 @@ $(document).ready(
             }
             $('#warningOnDelete').modal('show')
         }
-    })
+    }),
+    //
+    // Fill in edit form when edit btn is clicked
+    //
+    $("#edit").click(function () {
+        var data = $("#scanstable").bootstrapTable('getSelections');
+        if(data.length > 1){
+            $('#msgInfo').text("Please choose only one row for editing.");
+            $('#infoModal').modal('show');
+        }
+        else if (data.length == 1) {
+            $('#id_name_edit').val(data[0].name);
+            $('#id_isProcessed_edit').val(data[0].isProcessed);
+            var startTime = data[0].startTime;
+            var endTime = data[0].endTime;
+            $('#id_startTime_edit').val(startTime.substring(0,startTime.length-1));
+            $('#id_endTime_edit').val(endTime.substring(0,endTime.length-1));
+            $('#id_fileAttachment_edit').val(data[0].fileAttachment);
+            $('#id_scanProject_edit').val(data[0].scanProject.id);
+            $('#id_description_edit').val(data[0].description);
+            $('#editScanModal').modal('show');
+            rowIDSelected = data[0].id;
+        }
+    }),
 
+    $("#scanstable").change(function () {
+        var data = $("#scanstable").bootstrapTable('getSelections');
+        var editBtn = $("#edit");
+        var delBtn = $("#delete");
+        if(data.length!=1){
+            editBtn.addClass("disabled");
+        }
+        else{
+            editBtn.removeClass("disabled");
+        }
+        if(data.length==0 ){
+            delBtn.addClass("disabled");
+        }
+        else{
+            delBtn.removeClass("disabled");
+        }
+    })
 );
 $(document).on('change', ':file', function() {
     var input = $(this),
@@ -210,6 +240,11 @@ $(document).on('change', ':file', function() {
         label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
      input.trigger('fileselect', [numFiles, label]);
   });
+
+// Format href for bootstrap table
+function HrefFormater(value, row, index) {
+    return '<a href="' + row.id + '"> ' + row.name +'</a>';
+}
 
 // Format Datetime for bootstrap table
 function DateTimeFormater(value, row, index) {

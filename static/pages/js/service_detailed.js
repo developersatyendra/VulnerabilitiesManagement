@@ -74,9 +74,9 @@ function FillInfo(serviceinfo) {
             $('#brService').text(data.name);
             //  Fill in form
             $('#id_id').val(data.id);
-            $('#id_createBy').text(data.username);
-            $("#id_dateCreated").text(DateTimeFormater(data.dateCreated));
-            $("#id_dateUpdate").text(DateTimeFormater(data.dateUpdate));
+            $('#id_createBy').val(data.username);
+            $("#id_dateCreated").val(DateTimeFormater(data.dateCreated));
+            $("#id_dateUpdate").val(DateTimeFormater(data.dateUpdate));
             $("#id_name").val(data.name);
             $("#id_port").val(data.port);
             $("#id_description").val(data.description);
@@ -85,9 +85,9 @@ function FillInfo(serviceinfo) {
         $('#brService').text(serviceinfo.name);
         //  Fill in form
         $('#id_id').val(serviceinfo.id);
-        $('#id_createBy').text(serviceinfo.username);
-        $("#id_dateCreated").text(DateTimeFormater(serviceinfo.dateCreated));
-        $("#id_dateUpdate").text(DateTimeFormater(serviceinfo.dateUpdate));
+        $('#id_createBy').val(serviceinfo.username);
+        $("#id_dateCreated").val(DateTimeFormater(serviceinfo.dateCreated));
+        $("#id_dateUpdate").val(DateTimeFormater(serviceinfo.dateUpdate));
         $("#id_name").val(serviceinfo.name);
         $("#id_port").val(serviceinfo.port);
         $("#id_description").val(serviceinfo.description);
@@ -114,9 +114,4 @@ function SetReadonly(Enable) {
 function DateTimeFormater(value, row, index) {
     date_t = new Date(value);
     return date_t.toLocaleString();
-}
-
-// Format Href for bootstrap table
-function HrefFormater(value, row, index) {
-    return '<a id="delete" href="' + row.id + '"> ' + row.name +'</a>';
 }

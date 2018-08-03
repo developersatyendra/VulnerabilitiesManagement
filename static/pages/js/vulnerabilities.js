@@ -7,38 +7,46 @@ $(document).ready(
         $("#vulntable").bootstrapTable({
             columns:[
                 {
-                  field: 'state',
-                  checkbox: true,
-                  align: 'center',
-                  valign: 'middle'
+                    field: 'state',
+                    checkbox: true,
+                    align: 'center',
+                    valign: 'middle'
                 },
                 {
-                  title: "Vulnerability",
-                  field: "name",
-                  align: "center",
-                  valign: "middle",
-                  sortable: true
+                    title: "Vulnerability",
+                    field: "name",
+                    align: "center",
+                    valign: "middle",
+                    formatter: HrefFormater,
+                    sortable: true
                 },
                 {
-                  title: "Level Risk",
-                  field: "levelRisk",
-                  align: "center",
-                  valign: "middle",
-                  sortable: true
+                    title: "Level Risk",
+                    field: "levelRisk",
+                    align: "center",
+                    valign: "middle",
+                    sortable: true
                 },
                 {
-                  title: "Service",
-                  field: "service.name",
-                  align: "center",
-                  valign: "middle",
-                  sortable: true
+                    title: "CVE",
+                    field: "cve",
+                    align: "center",
+                    valign: "middle",
+                    sortable: true
                 },
                 {
-                  title: "Description",
-                  field: "description",
-                  align: "center",
-                  valign: "middle",
-                  sortable: true
+                    title: "Service",
+                    field: "service.name",
+                    align: "center",
+                    valign: "middle",
+                    sortable: true
+                },
+                {
+                    title: "Description",
+                    field: "description",
+                    align: "center",
+                    valign: "middle",
+                    sortable: true
                 }
             ],
             url: "/vuln/api/getvulns",
@@ -57,19 +65,6 @@ $(document).ready(
     //
     // Edit vuln
     //
-    $('#vulntable').on('click-row.bs.table',function (e, row, element, field) {
-        $('#id_levelRisk_edit').val(row.levelRisk);
-        $('#id_scanTask_edit').val(row.scanTask.id);
-        $('#id_summary_edit').val(row.summary);
-        $('#id_hostScanned_edit').val(row.hostScanned.id);
-        $('#id_service_edit').val(row.service.id);
-        $('#id_description_edit').val(row.description);
-        var levelRisk = "#id_levelRisk_edit_" + row.levelRisk;
-        $('#id_levelRisk_edit_0').removeAttr("checked");
-        $(levelRisk).attr("checked","");
-        $('#editVulnModal').modal('show');
-        rowIDSelected = row.id;
-    }),
     $("#editVulnPostForm").submit(function(e){
         var data = $('#editVulnPostForm').serializeArray();
         data.push({name: "id", value: rowIDSelected});
@@ -78,8 +73,10 @@ $(document).ready(
             var notification = $("#retMsgEdit");
             var closebtn = '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>';
             notification.removeClass("hidden");
-            if(data.notification != null){
-                notification.html(data.notification);
+            if(data.status != 0){
+                notification.html("Error: "+data.message + '. '+data.detail.name[0]);
+                notification.removeClass("alert-info");
+                notification.addClass("alert-danger");
             }
             else{
                 notification.html("The vulnerability is edited.");
@@ -99,12 +96,14 @@ $(document).ready(
     // Add New vuln
     //
     $("#addVulnPostForm").submit(function(e){
-        $.post("./api/addvulns", $(this).serialize(), function(data){
+        $.post("./api/addvuln", $(this).serialize(), function(data){
             var notification = $("#retMsgAdd");
             var closebtn = '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>';
             notification.removeClass("hidden");
-            if(data.notification != null){
-                notification.html(data.notification);
+            if(data.status != 0){
+                notification.html("Error: "+data.message + '. '+data.detail.name[0]);
+                notification.removeClass("alert-info");
+                notification.addClass("alert-danger");
             }
             else{
                 notification.html("New vulnerability is added.");
@@ -116,7 +115,7 @@ $(document).ready(
         });
         e.preventDefault();
     }),
-    $("#addServiceModal").on("hidden.bs.modal", function () {
+    $("#addVulnModal").on("hidden.bs.modal", function () {
         $("#retMsgAdd").addClass("hidden");
     }),
 
@@ -139,7 +138,7 @@ $(document).ready(
         data.push({name: "csrfmiddlewaretoken", value: csrf_token});
         $.post('./api/deletevuln', $.param(data),
              function(returnedData){
-                if(returnedData.retVal > 0){
+                if(returnedData.status == 0){
                     $('#warningOnDelete').modal('hide');
                     $("#vulntable").bootstrapTable('refresh');
                 }
@@ -161,6 +160,49 @@ $(document).ready(
             }
             $('#warningOnDelete').modal('show')
         }
+    }),
+    //
+    // Fill in edit form when edit btn is clicked
+    //
+    $("#edit").click(function () {
+        var data = $("#vulntable").bootstrapTable('getSelections');
+        if(data.length > 1){
+            $('#msgInfo').text("Please choose only one row for editing.");
+            $('#infoModal').modal('show');
+        }
+        else if (data.length == 1) {
+            $('#id_name_edit').val(data[0].name);
+            $('#id_levelRisk_edit').val(data[0].levelRisk);
+            $('#id_cve_edit').val(data[0].cve);
+            $('#id_service_edit').val(data[0].service.id);
+            $('#id_observation_edit').val(data[0].observation);
+            $('#id_recommendation_edit').val(data[0].recommendation);
+            $('#id_description_edit').val(data[0].description);
+            $('#editVulnModal').modal('show');
+            rowIDSelected = data[0].id;
+        }
+    }),
+
+    $("#vulntable").change(function () {
+        var data = $("#vulntable").bootstrapTable('getSelections');
+        var editBtn = $("#edit");
+        var delBtn = $("#delete");
+        if(data.length!=1){
+            editBtn.addClass("disabled");
+        }
+        else{
+            editBtn.removeClass("disabled");
+        }
+        if(data.length==0 ){
+            delBtn.addClass("disabled");
+        }
+        else{
+            delBtn.removeClass("disabled");
+        }
     })
 );
 
+// Format Href for bootstrap table
+function HrefFormater(value, row, index) {
+    return '<a href="' + row.id + '"> ' + row.name +'</a>';
+}

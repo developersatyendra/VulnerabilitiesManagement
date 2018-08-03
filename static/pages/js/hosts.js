@@ -66,8 +66,10 @@ $(document).ready(
             var notification = $("#retMsgEdit");
             var closebtn = '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>';
             notification.removeClass("hidden");
-            if(data.notification != null){
-                notification.html(data.notification);
+            if(data.status != 0){
+                notification.html("Error: "+data.message + '. '+data.detail.ipAddr[0]);
+                notification.removeClass("alert-info");
+                notification.addClass("alert-danger");
             }
             else{
                 notification.html("The host is edited.");
@@ -79,7 +81,7 @@ $(document).ready(
         });
         e.preventDefault();
     }),
-    $("#editServiceModal").on("hidden.bs.modal", function () {
+    $("#editHostModal").on("hidden.bs.modal", function () {
         $("#retMsgEdit").addClass("hidden");
     }),
 
@@ -91,8 +93,10 @@ $(document).ready(
             var notification = $("#retMsgAdd");
             var closebtn = '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>';
             notification.removeClass("hidden");
-            if(data.notification != null){
-                notification.html(data.notification);
+            if(data.status != 0){
+                notification.html("Error: "+data.message + '. '+data.detail.ipAddr[0]);
+                notification.removeClass("alert-info");
+                notification.addClass("alert-danger");
             }
             else{
                 notification.html("New Host is added.");
@@ -127,7 +131,7 @@ $(document).ready(
         data.push({name: "csrfmiddlewaretoken", value: csrf_token});
         $.post('./api/deletehost', $.param(data),
              function(returnedData){
-                if(returnedData.retVal > 0){
+                if(returnedData.status == 0){
                     $('#warningOnDelete').modal('hide');
                     $("#hosttable").bootstrapTable('refresh');
                 }

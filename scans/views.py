@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView
 from dashboard.views import RenderSideBar
+from django.utils.datastructures import MultiValueDictKeyError
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.core.paginator import Paginator
@@ -33,8 +34,16 @@ class ScansView(TemplateView):
 
 
 class ScansDetailView(TemplateView):
+    template = 'scan_detailed.html'
+
     def get(self, request, *args, **kwargs):
-        pass
+        form = ScanForm()
+        sidebarHtml = RenderSideBar(request)
+        context = {
+            'sidebar': sidebarHtml,
+            'form': form,
+        }
+        return render(request, self.template, context)
 
 #
 #   APIGetScans get services from these params:
@@ -58,8 +67,6 @@ class APIGetScans(APIView):
 
             # Query on ScanTask
             query = Q(name__icontains=search) |\
-                    Q(startTime__icontains=search) | \
-                    Q(endTime__icontains=search) | \
                     Q(scanProject__in=projectPK) | \
                     Q(description__icontains=search)
             querySet = ScanTaskModel.objects.filter(query)
@@ -115,12 +122,17 @@ class APIGetScanByID(APIView):
             id = request.GET.get('id')
             try:
                 retService = ScanTaskModel.objects.get(pk=id)
-            except (ScanTaskModel.DoesNotExist, ValueError):
-                return Response({'retVal': '-1'})
+            except ValueError:
+                return Response({'status': '-1', 'message': 'Value error',
+                                 'detail': {"id": [{"message": "ID is not integer", "code": "value error"}]}})
+            except ScanTaskModel.DoesNotExist:
+                return Response({'status': '-1', 'message': 'Vuln ID does not exist',
+                                 'detail': {}})
             dataSerialized = ScanSerializer(retService, many=False)
             return Response(dataSerialized.data)
         else:
-            return Response({'retVal': '-1'})
+            return Response({'status': '-1', 'message': 'fields are required',
+                             'detail': {"id": [{"message": "ID is required", "code": "required"}]}})
 #
 # APIAddScan add new Vulnerability
 # return {'retVal': '-1'} if id not found
@@ -140,17 +152,9 @@ class APIAddScan(APIView):
             # scanObj.fileAttachment = request.FILES['fileAttachment']
             scanObj.save()
             dataSerialized = ScanSerializer(scanObj, many=False)
-            return Response(dataSerialized.data)
+            return Response({'status': '0', 'object': dataSerialized.data})
         else:
-            retNotification = ''
-            for field in scanForm:
-                for error in field.errors:
-                    retNotification += error
-                    print(field)
-            for error in scanForm.non_field_errors():
-                retNotification += error
-            retJson = {'notification': retNotification}
-            return Response(retJson)
+            return Response({'status': '-1', 'message': 'Form is invalid', 'detail': scanForm.errors})
 
 
 #
@@ -164,7 +168,12 @@ class APIDeleteScan(APIView):
         scanForm = ScanIDForm(request.POST)
         if scanForm.is_valid():
             successOnDelete = 0
-            for rawID in scanForm.data['id'].split(','):
+            try:
+                ids = scanForm.data['id'].split(',')
+            except MultiValueDictKeyError:
+                return Response({'status': '-1', 'message': 'Fields are required',
+                                 'detail': {"id": [{"message": "ID is required", "code": "required"}]}})
+            for rawID in ids:
                 try:
                     id = int(rawID)
                 except ValueError:
@@ -177,9 +186,10 @@ class APIDeleteScan(APIView):
                     else:
                         retVuln.delete()
                         successOnDelete = successOnDelete + 1
-            return Response({'retVal': successOnDelete})
+            return Response(
+                {'status': '0', 'message': '{} Scanning Task(s) is successfully deleted'.format(successOnDelete)})
         else:
-            return Response({'retVal': '-1'})
+            return Response({'status': '-1', 'message': 'Form is invalid', 'detail': {scanForm.errors}})
 
 
 #
@@ -190,19 +200,20 @@ class APIDeleteScan(APIView):
 
 class APIUpdateScan(APIView):
     def post(self, request):
-        id = request.POST.get('id')
-        scanObj = ScanTaskModel.objects.get(pk=id)
-        scanForm = ScanForm(request.POST, instance=scanObj)
+        if request.POST.get('id'):
+            try:
+                id = int(request.POST.get('id'))
+            except ValueError:
+                return Response({'status': '-1', 'message': 'Value error',
+                                 'detail': {"id": [{"message": "ID is not integer", "code": "value error"}]}})
+            scanObj = ScanTaskModel.objects.get(pk=id)
+            scanForm = ScanForm(request.POST, instance=scanObj)
+        else:
+            return Response({'status': '-1', 'message': 'Fields are required',
+                             'detail': {"id": [{"message": "ID is required", "code": "required"}]}})
         if scanForm.is_valid():
             entry = scanForm.save()
             dataSerialized = ScanSerializer(entry, many=False)
-            return Response(dataSerialized.data)
+            return Response({'status': '0', 'object': dataSerialized.data})
         else:
-            retNotification = ''
-            for field in scanForm:
-                for error in field.errors:
-                    retNotification += error
-            for error in scanForm.non_field_errors():
-                retNotification += error
-            retJson = {'notification': retNotification}
-            return Response(retJson)
+            return Response({'status': '-1', 'message': 'Form is invalid', 'detail': scanForm.errors})

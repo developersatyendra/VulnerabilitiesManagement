@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView
 from dashboard.views import RenderSideBar
+from django.utils.datastructures import MultiValueDictKeyError
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.core.paginator import Paginator
@@ -34,8 +35,16 @@ class VulnerabilitiesView(TemplateView):
 
 
 class VulnerabilityDetailView(TemplateView):
+    template = 'vuln_detailed.html'
+
     def get(self, request, *args, **kwargs):
-        pass
+        form = VulnForm()
+        sidebarHtml = RenderSideBar(request)
+        context = {
+            'sidebar': sidebarHtml,
+            'form': form,
+        }
+        return render(request, self.template, context)
 
 
 #
@@ -54,7 +63,11 @@ class APIGetVulns(APIView):
         if request.GET.get('searchText'):
             search = request.GET.get('searchText')
             # Filter On Vuln
-            queryVulnModel = Q(description__icontains=search)\
+            queryVulnModel = Q(description__icontains=search) \
+                             | Q(name__icontains=search) \
+                             | Q(observation__icontains=search) \
+                             | Q(recommendation__icontains=search) \
+                             | Q(cve__icontains=search) \
                              | Q(levelRisk__icontains=search) \
                              | Q(service__name__icontains=search)
             querySet = VulnerabilityModel.objects.filter(queryVulnModel)
@@ -109,66 +122,18 @@ class APIGetVulnByID(APIView):
             id = request.GET.get('id')
             try:
                 retService = VulnerabilityModel.objects.get(pk=id)
-            except (VulnerabilityModel.DoesNotExist, ValueError):
-                return Response({'retVal': '-1'})
+            except ValueError:
+                return Response({'status': '-1', 'message': 'Value error',
+                                 'detail': {"id": [{"message": "ID is not integer", "code": "value error"}]}})
+            except VulnerabilityModel.DoesNotExist:
+                return Response({'status': '-1', 'message': 'Vuln ID does not exist',
+                                 'detail': {}})
             dataSerialized = VulnSerializer(retService, many=False)
             return Response(dataSerialized.data)
         else:
-            return Response({'retVal': '-1'})
+            return Response({'status': '-1', 'message': 'fields are required',
+                             'detail': {"id": [{"message": "ID is required", "code": "required"}]}})
 
-#
-# APIStatVulns show number of vulns with datetime
-# Param: starttime - Start time for statistic if this param is set to null
-#        endtime - End time for statistic
-# return {'retVal': '-1'} if syntax error
-#
-
-class APIStatVulns(APIView):
-    def get(self, request):
-        print(request.GET)
-        if request.GET.get('starttime'):
-            try:
-                starttime = dateutil.parser.parse(request.GET.get('starttime'))
-            except ValueError:
-                return Response({'retVal': '-1'})
-        else:
-            return Response({'retVal': '-1'})
-
-        if request.GET.get('endtime'):
-            try:
-                endtime = dateutil.parser.parse(request.GET.get('endtime'))
-            except ValueError:
-                return Response({'retVal': '-1'})
-        else:
-            return Response({'retVal': '-1'})
-        days = []
-        low = []
-        med = []
-        high = []
-        for day in range(int((endtime - starttime).days)):
-            statDay= starttime + timedelta(day)
-            # Query Scan Task
-            queryScanModel = Q(startTime__gte = datetime.combine(statDay, time.min), startTime__lte=datetime.combine(statDay, time.max))
-            scanTaskPK = ScanTaskModel.objects.filter(queryScanModel).values_list('pk', flat=True)
-            if scanTaskPK:
-                print(scanTaskPK)
-                # Query vulns
-                queryLowVuln = Q(scanTask__in=scanTaskPK, levelRisk=1)
-                queryMedVuln = Q(scanTask__in=scanTaskPK, levelRisk=2)
-                queryHiVuln = Q(scanTask__in=scanTaskPK, levelRisk=3)
-                low.append(VulnerabilityModel.objects.filter(queryLowVuln).count())
-                med.append(VulnerabilityModel.objects.filter(queryMedVuln).count())
-                high.append(VulnerabilityModel.objects.filter(queryHiVuln).count())
-                days.append(statDay)
-        return Response(
-            {
-                'datetime': days,
-                'low': low,
-                'med': med,
-                'high': high,
-            }
-        )
-#
 
 # APIAddVuln add new Vulnerability
 # return {'retVal': '-1'} if id not found
@@ -181,16 +146,9 @@ class APIAddVuln(APIView):
         if vulnForm.is_valid():
             vulnObj = vulnForm.save(commit=True)
             dataSerialized = VulnSerializer(vulnObj, many=False)
-            return Response(dataSerialized.data)
+            return Response({'status': '0', 'object': dataSerialized.data})
         else:
-            retNotification = ''
-            for field in vulnForm:
-                for error in field.errors:
-                    retNotification += error
-            for error in vulnForm.non_field_errors():
-                retNotification += error
-            retJson = {'notification': retNotification}
-            return Response(retJson)
+            return Response({'status': '-1', 'message': 'Form is invalid', 'detail': vulnForm.errors})
 
 
 #
@@ -204,7 +162,11 @@ class APIDeleteVuln(APIView):
         vulnForm = VulnIDForm(request.POST)
         if vulnForm.is_valid():
             successOnDelete = 0
-            for rawID in vulnForm.data['id'].split(','):
+            try:
+                ids = vulnForm.data['id'].split(',')
+            except MultiValueDictKeyError:
+                return Response({'status': '-1',  'message': 'Fields are required', 'detail': {"id": [{"message": "ID is required", "code": "required"}]}})
+            for rawID in ids:
                 try:
                     id = int(rawID)
                 except ValueError:
@@ -217,9 +179,10 @@ class APIDeleteVuln(APIView):
                     else:
                         retVuln.delete()
                         successOnDelete = successOnDelete + 1
-            return Response({'retVal': successOnDelete})
+                return Response(
+                            {'status': '0', 'message': '{} vulnerability(ies) is successfully deleted'.format(successOnDelete)})
         else:
-            return Response({'retVal': '-1'})
+            return Response({'status': '-1', 'message': 'Form is invalid', 'detail': {vulnForm.errors}})
 
 
 #
@@ -230,19 +193,20 @@ class APIDeleteVuln(APIView):
 
 class APIUpdateVuln(APIView):
     def post(self, request):
-        id = request.POST.get('id')
-        vulnObj = VulnerabilityModel.objects.get(pk=id)
-        vulnForm = VulnForm(request.POST)
-        if vulnForm.is_valid():
-            entry = vulnForm.save(instance=vulnObj)
-            dataSerialized = VulnSerializer(entry, many=False)
-            return Response(dataSerialized.data)
+        if request.POST.get('id'):
+            try:
+                id = int(request.POST.get('id'))
+            except ValueError:
+                return Response({'status': '-1', 'message': 'Value error',
+                                 'detail': {"id": [{"message": "ID is not integer", "code": "value error"}]}})
+            vulnObj = VulnerabilityModel.objects.get(pk=id)
+            vulnForm = VulnForm(request.POST, instance=vulnObj)
         else:
-            retNotification = ''
-            for field in vulnForm:
-                for error in field.errors:
-                    retNotification += error
-            for error in vulnForm.non_field_errors():
-                retNotification += error
-            retJson = {'notification': retNotification}
-            return Response(retJson)
+            return Response({'status': '-1', 'message': 'Fields are required',
+                             'detail': {"id": [{"message": "ID is required", "code": "required"}]}})
+        if vulnForm.is_valid():
+            entry = vulnForm.save()
+            dataSerialized = VulnSerializer(entry, many=False)
+            return Response({'status': '0', 'object': dataSerialized.data})
+        else:
+            return Response({'status': '-1', 'message': 'Form is invalid', 'detail': vulnForm.errors})

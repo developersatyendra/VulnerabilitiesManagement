@@ -16,23 +16,11 @@
     <!-- Morris Charts CSS -->
     <link href="{% static 'vendor/morrisjs/morris.css'%}" rel="stylesheet">
 
-    <!-- DataTables CSS -->
-    <link href="{% static 'vendor/datatables-plugins/dataTables.css' %}" rel="stylesheet">
-
-    <!-- DataTables Responsive CSS -->
-    <link href=" {% static 'vendor/datatables-responsive/dataTables.responsive.css'%}" rel="stylesheet">
-
-    <!--Datatable-checkboxes-->
-    <link href="{% static  'vendor/datatables-plugins/DataTables-checkboxes/css/dataTables.checkboxes.css'%}" rel="stylesheet">
-
     <!-- Custom Fonts -->
     <link href="{% static 'vendor/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
 
     <!--Bootstrap-table-->
     <link href="{% static 'vendor/bootstrap-table/css/bootstrap-table.min.css' %}" rel="stylesheet" type="text/css">
-
-    <!--kartik-v-bootstrap-fileinput-->
-    <link href="{% static 'vendor/kartik-v-bootstrap-fileinput/css/fileinput.min.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 
 {% block sidebar %}
@@ -68,20 +56,32 @@
             </div>
             <!-- /.row -->
             <div class="row">
+                <div class="col-lg-12">
+                    <ul class="breadcrumb">
+                        <li><a href="/">Home</a></li>
+                        <li class="active">Vulnerabilities</li>
+                    </ul>
+                </div>
                <div class="col-lg-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
+                            <i class="fa fa-table fa-fw" aria-hidden="true"></i>
                             Vulnerability Data Table
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body" >
                             <div id="toolbar">
-                              <button id="delete" class="btn btn-danger" >
-                                <i class="fa fa-trash-o"></i> Delete
-                              </button>
-                              <button id="add" class="btn btn-primary" data-toggle="modal" data-target="#addVulnModal">
-                                <i class="fa fa-plus"></i> Add New Vulnerability
-                              </button>
+                                <div class="dropdown">
+                                    <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                                        <i class="fa fa-gear fa-fw"></i>Actions
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li id="add"><a href="#" data-toggle="modal" data-target="#addVulnModal"><i class="fa fa-plus fa-fw"></i> Add Vulnerability</a></li>
+                                        <li id="edit" class="disabled"><a href="#" ><i class="fa fa-pencil fa-fw"></i> Edit Vulnerability</a></li>
+                                        <li id="delete" class="disabled"><a href="#" ><i class="fa fa-trash-o fa-fw"></i> Delete Vulnerabilities</a></li>
+                                    </ul>
+                                </div>
                             </div>
                             <table id="vulntable" data-toolbar="#toolbar"></table>
                             <!-- /.table-responsive -->
@@ -118,40 +118,46 @@
                                         <div class = row>
                                             <div class="col-lg-12">
                                                 <div class="form-group">
-                                                    <label>Scan Task</label>
-                                                    {{ form.scanTask }}
+                                                    <label>Vulnerability *</label>
+                                                    {{ form.name }}
                                                 </div>
                                             </div>
                                         </div>
                                         <div class = row>
                                             <div class="col-lg-12">
                                                 <div class="form-group">
-                                                    <label>Host Scanned</label>
-                                                    {{ form.hostScanned }}
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class = row>
-                                            <div class="col-lg-12">
-                                                <div class="form-group">
-                                                    <label>Service</label>
-                                                    {{ form.service }}
+                                                    <label>CVE</label>
+                                                    {{ form.cve }}
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-lg-6">
                                         <div class="form-group">
-                                            <label>Level Risk</label>
+                                            <label>Level Risk *</label>
                                             {{ form.levelRisk }}
                                         </div>
                                     </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label>Service *</label>
+                                            {{ form.service }}
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="row">
+                                <div class = row>
                                     <div class="col-lg-12">
                                         <div class="form-group">
-                                            <label>Summary</label>
-                                            {{ form.summary }}
+                                            <label>Observation</label>
+                                            {{ form.observation }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class = row>
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <label>Recommendation</label>
+                                            {{ form.recommendation }}
                                         </div>
                                     </div>
                                 </div>
@@ -186,7 +192,6 @@
                               <button type="button" class="close" data-dismiss="modal">&times;</button>
                             </div>
 
-                            <!-- Modal body -->
                             <div class="modal-body">
                                 <div class="row">
                                     <div class="col-lg-12">
@@ -199,40 +204,46 @@
                                         <div class = row>
                                             <div class="col-lg-12">
                                                 <div class="form-group">
-                                                    <label>Scan Task</label>
-                                                    {{ formEdit.scanTask }}
+                                                    <label>Vulnerability *</label>
+                                                    {{ formEdit.name }}
                                                 </div>
                                             </div>
                                         </div>
                                         <div class = row>
                                             <div class="col-lg-12">
                                                 <div class="form-group">
-                                                    <label>Host Scanned</label>
-                                                    {{ formEdit.hostScanned }}
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class = row>
-                                            <div class="col-lg-12">
-                                                <div class="form-group">
-                                                    <label>Service</label>
-                                                    {{ formEdit.service }}
+                                                    <label>CVE</label>
+                                                    {{ formEdit.cve }}
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-lg-6">
                                         <div class="form-group">
-                                            <label>Level Risk</label>
+                                            <label>Level Risk *</label>
                                             {{ formEdit.levelRisk }}
                                         </div>
                                     </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label>Service *</label>
+                                            {{ formEdit.service }}
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="row">
+                                <div class = row>
                                     <div class="col-lg-12">
                                         <div class="form-group">
-                                            <label>Summary</label>
-                                            {{ formEdit.summary }}
+                                            <label>Observation</label>
+                                            {{ formEdit.observation }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class = row>
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <label>Recommendation</label>
+                                            {{ formEdit.recommendation }}
                                         </div>
                                     </div>
                                 </div>
@@ -255,7 +266,7 @@
                     </div>
                 </div>
             </div>
-            <!-- Modal Warning on Deleting Services -->
+            <!-- Modal Warning on Deleting Hosts -->
             <div class="modal" id="warningOnDelete" tabindex="-1" role="dialog">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -309,12 +320,6 @@
     <!-- Metis Menu Plugin JavaScript -->
     <script src="{% static 'vendor/metisMenu/metisMenu.min.js'%}"></script>
 
-    <!-- DataTables JavaScript -->
-    <script src="{% static 'vendor/datatables/js/jquery.dataTables.min.js' %}"></script>
-    <script src="{% static  'vendor/datatables/js/dataTables.bootstrap.min.js'%}"></script>
-    <script src="{% static 'vendor/datatables-responsive/dataTables.responsive.js' %}"></script>
-    <script src="{% static 'vendor/datatables-plugins/DataTables-checkboxes/js/dataTables.checkboxes.js' %}"></script>
-    <script src="{% static 'vendor/kartik-v-bootstrap-fileinput/js/fileinput.min.js' %}"></script>
     <!-- Custom Theme JavaScript -->
     <script src="{% static 'dist/js/sb-admin-2.js'%}"></script>
 

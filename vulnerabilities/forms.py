@@ -11,12 +11,12 @@ LEVEL_RISK = (
 
 
 class VulnForm(forms.ModelForm):
-    levelRisk = forms.ChoiceField(
-            choices=LEVEL_RISK,
-            widget=forms.RadioSelect,
-            label='Level Risk',
-            initial=0,
-    )
+    # levelRisk = forms.ChoiceField(
+    #         choices=LEVEL_RISK,
+    #         widget=forms.RadioSelect,
+    #         label='Level Risk',
+    #         initial=0,
+    # )
 
     class Meta:
         model = VulnerabilityModel
@@ -26,8 +26,9 @@ class VulnForm(forms.ModelForm):
             'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Descriptions', 'rows': '5'}),
             'observation': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Observation', 'rows': '5'}),
             'recommendation': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Recommendation', 'rows': '5'}),
-            'cve': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Descriptions'}),
+            'cve': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'CVE'}),
             'service': forms.Select(attrs={'class': 'form-control'}),
+            'levelRisk': forms.NumberInput(attrs={'step': "0.1", 'class': 'form-control', 'placeholder': 'Level Risk'}),
         }
 
     def __init__(self, *args, **kwargs):

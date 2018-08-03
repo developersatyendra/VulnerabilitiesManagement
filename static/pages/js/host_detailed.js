@@ -25,21 +25,21 @@ $(document).ready(
         var data = [];
         data.push({name: "id", value: ids});
         data.push({name: "csrfmiddlewaretoken", value: csrf_token});
-        $.post('../api/deleteservice', $.param(data),
+        $.post('/hosts/api/deletehost', $.param(data),
              function(data){
                 if(data.status == 0){
                     $('#warningOnDeleteModal').modal('hide');
                     $("#titleInfo").text("About");
-                    $("#msgInfo").text("The service is deleted.");
+                    $("#msgInfo").text("The host is deleted.");
                     $("#infoModal").modal("show");
                     $("#infoModal").on('hidden.bs.modal', function (e) {
-                          $( location ).attr("href", '/services');
+                          $( location ).attr("href", '/hosts');
                     });
                 }
                 else{
                     $('#warningOnDeleteModal').modal('hide');
                     $("#titleInfo").text("Error");
-                    $("#msgInfo").text("Error: "+data.message+'. '+ data.detail.__all__[0]);
+                    $("#msgInfo").text("Error: "+data.message+'. '+ data.detail.ipAddr[0]);
                     $("#infoModal").modal("show");
                 }
         }, 'json');
@@ -49,16 +49,15 @@ $(document).ready(
             FillInfo();
             SetReadonly(true);
         }),
-    $("#editServicePostForm").submit(function(e){
-        $.post("../api/updateservice", $(this).serialize(), function(data){
-            var notification = $("#retMsgEdit");
+    $("#editHostPostForm").submit(function(e){
+        $.post("/hosts/api/updatehost", $(this).serialize(), function(data){
             if(data.status != 0){
                 $("#titleInfo").text("Error");
-                $("#msgInfo").text("Error: "+data.message+'. '+ data.detail.__all__[0]);
+                $("#msgInfo").text("Error: "+data.message+'. '+ data.detail.ipAddr[0]);
             }
             else{
                 $("#titleInfo").text("About");
-                $("#msgInfo").text("The service is updated.");
+                $("#msgInfo").text("The host is updated.");
 
             }
             $("#infoModal").modal("show");
@@ -73,9 +72,9 @@ function FillInfo(hostinfo) {
         $.get( geturl, function( data ) {
             $('#brHost').text(data.hostName);
             //  Fill in form
-            $('#id_createBy').text(data.username);
-            $("#id_dateCreated").text(DateTimeFormater(data.dateCreated));
-            $("#id_dateUpdate").text(DateTimeFormater(data.dateUpdate));
+            $('#id_createBy').val(data.username);
+            $("#id_dateCreated").val(DateTimeFormater(data.dateCreated));
+            $("#id_dateUpdate").val(DateTimeFormater(data.dateUpdate));
             $('#id_id').val(data.id);
             $("#id_hostName").val(data.hostName);
             $("#id_ipAddr").val(data.ipAddr);
@@ -86,9 +85,9 @@ function FillInfo(hostinfo) {
     else {
         $('#brHost').text(hostinfo.hostName);
         //  Fill in form
-        $('#id_createBy').text(hostinfo.username);
-        $("#id_dateCreated").text(DateTimeFormater(hostinfo.dateCreated));
-        $("#id_dateUpdate").text(DateTimeFormater(hostinfo.dateUpdate));
+        $('#id_createBy').val(hostinfo.username);
+        $("#id_dateCreated").val(DateTimeFormater(hostinfo.dateCreated));
+        $("#id_dateUpdate").val(DateTimeFormater(hostinfo.dateUpdate));
         $('#id_id').val(hostinfo.id);
         $("#id_hostName").val(hostinfo.hostName);
         $("#id_ipAddr").val(hostinfo.ipAddr);
@@ -122,9 +121,4 @@ function SetReadonly(Enable) {
 function DateTimeFormater(value, row, index) {
     date_t = new Date(value);
     return date_t.toLocaleString();
-}
-
-// Format Href for bootstrap table
-function HrefFormater(value, row, index) {
-    return '<a id="delete" href="' + row.id + '"> ' + row.name +'</a>';
 }

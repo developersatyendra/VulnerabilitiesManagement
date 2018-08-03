@@ -4,16 +4,18 @@ from .models import ScanTaskModel
 
 class ScanForm(forms.ModelForm):
     startTime = forms.DateTimeField(
-        input_formats=["%Y-%m-%dT%H:%M", "%Y-%m-%dT%H:%M:%S"],
+        input_formats=["%Y-%m-%dT%H:%M:%S", "%Y-%m-%dT%H:%M:%S"],
         widget=forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
         label="Start Time",
         help_text="Start time of this task",
+        required=False,
     )
     endTime = forms.DateTimeField(
-        input_formats=["%Y-%m-%dT%H:%M", "%Y-%m-%dT%H:%M:%S"],
+        input_formats=["%Y-%m-%dT%H:%M:%S", "%Y-%m-%dT%H:%M:%S"],
         widget=forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
         label="Finished Time",
         help_text="Finished time of this task",
+        required=False,
     )
 
     class Meta:

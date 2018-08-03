@@ -156,7 +156,7 @@ class APIDeleteService(APIView):
                 ids = serviceForm.data['id'].split(',')
             except MultiValueDictKeyError:
                 return Response({'status': '-1',  'message': 'Fields are required', 'detail': {"id": [{"message": "ID is required", "code": "required"}]}})
-            for rawID in serviceForm.data['id'].split(','):
+            for rawID in ids:
                 try:
                     id = int(rawID)
                 except ValueError:
@@ -171,7 +171,7 @@ class APIDeleteService(APIView):
                         successOnDelete = successOnDelete + 1
             return Response({'status': '0', 'message': '{} service(s) is successfully deleted'.format(successOnDelete)})
         else:
-            return Response({'status': '-1', 'message': 'Form is invalid', 'detail': {}})
+            return Response({'status': '-1', 'message': 'Form is invalid', 'detail': {serviceForm.errors}})
 
 
 #
