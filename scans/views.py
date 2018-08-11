@@ -8,11 +8,11 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from django.contrib.auth.models import User
 from .models import ScanTaskModel
-from .serializers import ScanSerializer
-from .forms import ScanForm, ScanIDForm
+from .serializers import ScanSerializer, ScanAttachmentSerializer
+from .forms import ScanForm, ScanIDForm, ScanAttachmentForm, ScanAddForm
 from projects.models import ScanProjectModel
 from rest_framework.parsers import MultiPartParser, FormParser, FileUploadParser
-
+from os import remove as RemoveFile
 
 PAGE_DEFAULT = 1
 NUM_ENTRY_DEFAULT = 50
@@ -22,8 +22,8 @@ class ScansView(TemplateView):
     template = 'scans.html'
 
     def get(self, request, *args, **kwargs):
-        form = ScanForm()
-        formEdit = ScanForm(id='edit')
+        form = ScanAddForm()
+        formEdit = ScanAddForm(id='edit')
         sidebarHtml = RenderSideBar(request)
         context = {
             'sidebar': sidebarHtml,
@@ -45,7 +45,8 @@ class ScansDetailView(TemplateView):
         }
         return render(request, self.template, context)
 
-#
+
+######################################################
 #   APIGetScans get services from these params:
 #   searchText: Search content
 #   sortName: Name of column is applied sort
@@ -110,11 +111,11 @@ class APIGetScans(APIView):
         return Response(data)
 
 
-# #
-# # APIGetScanByID get services from id
-# # return {'retVal': '-1'} if id not found
-# # return service object if it's success
-# #
+######################################################
+# APIGetScanByID get services from id
+# return {'retVal': '-1'} if id not found
+# return service object if it's success
+#
 
 class APIGetScanByID(APIView):
     def get(self, request):
@@ -133,20 +134,20 @@ class APIGetScanByID(APIView):
         else:
             return Response({'status': '-1', 'message': 'fields are required',
                              'detail': {"id": [{"message": "ID is required", "code": "required"}]}})
-#
+
+
+######################################################
 # APIAddScan add new Vulnerability
 # return {'retVal': '-1'} if id not found
 # return Vuln object if it's success
 #
 
-
 class APIAddScan(APIView):
-    parser_classes = (MultiPartParser, FormParser, FileUploadParser,)
 
     def post(self, request, format=None):
-        scanForm = ScanForm(request.POST, request.FILES)
-        if scanForm.is_valid():
-            scanObj = scanForm.save(commit=False)
+        scanAddForm = ScanAddForm(request.POST)
+        if scanAddForm.is_valid():
+            scanObj = scanAddForm.save(commit=False)
             scanObj.scanBy = User.objects.get(pk=1)
             scanObj.submitter = User.objects.get(pk=1)
             # scanObj.fileAttachment = request.FILES['fileAttachment']
@@ -154,10 +155,10 @@ class APIAddScan(APIView):
             dataSerialized = ScanSerializer(scanObj, many=False)
             return Response({'status': '0', 'object': dataSerialized.data})
         else:
-            return Response({'status': '-1', 'message': 'Form is invalid', 'detail': scanForm.errors})
+            return Response({'status': '-1', 'message': 'Form is invalid', 'detail': scanAddForm.errors})
 
 
-#
+######################################################
 # APIDeleteScan delete existing Scan Tasks
 # return {'retVal': '-1'} if id not found
 # return {'retVal': 'Num of Success on Deleting'} if it's success
@@ -192,7 +193,7 @@ class APIDeleteScan(APIView):
             return Response({'status': '-1', 'message': 'Form is invalid', 'detail': {scanForm.errors}})
 
 
-#
+######################################################
 # APIUpdateScan update Scan Tasks
 # return {'notification': 'error_msg'} if id not found
 # return Scan object if it's success
@@ -207,7 +208,63 @@ class APIUpdateScan(APIView):
                 return Response({'status': '-1', 'message': 'Value error',
                                  'detail': {"id": [{"message": "ID is not integer", "code": "value error"}]}})
             scanObj = ScanTaskModel.objects.get(pk=id)
-            scanForm = ScanForm(request.POST, instance=scanObj)
+            scanAddForm = ScanAddForm(request.POST, instance=scanObj)
+        else:
+            return Response({'status': '-1', 'message': 'Fields are required',
+                             'detail': {"id": [{"message": "ID is required", "code": "required"}]}})
+        if scanAddForm.is_valid():
+            entry = scanAddForm.save()
+            dataSerialized = ScanSerializer(entry, many=False)
+            return Response({'status': '0', 'object': dataSerialized.data})
+        else:
+            return Response({'status': '-1', 'message': 'Form is invalid', 'detail': scanAddForm.errors})
+
+
+######################################################
+# Get attachment of Scan Task
+# return {'notification': 'error_msg'} if id not found
+# return Scan object if it's success
+#
+class APIGetScanAttachment(APIView):
+    def get(self, request):
+        if request.GET.get('id'):
+            id = request.GET.get('id')
+            try:
+                retService = ScanTaskModel.objects.get(pk=id)
+            except ValueError:
+                return Response({'status': '-1', 'message': 'Value error',
+                                 'detail': {"id": [{"message": "ID is not integer", "code": "value error"}]}})
+            except ScanTaskModel.DoesNotExist:
+                return Response({'status': '-1', 'message': 'Vuln ID does not exist',
+                                 'detail': {}})
+            dataSerialized = ScanAttachmentSerializer(retService, many=False)
+            return Response(dataSerialized.data)
+        else:
+            return Response({'status': '-1', 'message': 'fields are required',
+                             'detail': {"id": [{"message": "ID is required", "code": "required"}]}})
+
+
+######################################################
+# Add attachment update Scan Tasks
+# return {'notification': 'error_msg'} if id not found
+# return Scan object if it's success
+#
+class APIAddAttachment(APIView):
+    parser_classes = (MultiPartParser, FormParser, FileUploadParser,)
+
+    def post(self, request):
+        if request.POST.get('id'):
+            try:
+                id = int(request.POST.get('id'))
+            except ValueError:
+                return Response({'status': '-1', 'message': 'Value error',
+                                 'detail': {"id": [{"message": "ID is not integer", "code": "value error"}]}})
+            try:
+                scanObj = ScanTaskModel.objects.get(pk=id)
+            except ScanTaskModel.DoesNotExist:
+                return Response({'status': '-1', 'message': 'Vuln ID does not exist',
+                                 'detail': {}})
+            scanForm = ScanAttachmentForm(request.POST, request.FILES, instance=scanObj)
         else:
             return Response({'status': '-1', 'message': 'Fields are required',
                              'detail': {"id": [{"message": "ID is required", "code": "required"}]}})
@@ -217,3 +274,36 @@ class APIUpdateScan(APIView):
             return Response({'status': '0', 'object': dataSerialized.data})
         else:
             return Response({'status': '-1', 'message': 'Form is invalid', 'detail': scanForm.errors})
+
+
+######################################################
+# Delete attachment update Scan Tasks
+# return {'notification': 'error_msg'} if id not found
+# return Scan object if it's success
+#
+
+class APIDeleteAttachment(APIView):
+
+    def post(self, request):
+        if request.POST.get('id'):
+            try:
+                id = int(request.POST.get('id'))
+            except ValueError:
+                return Response({'status': '-1', 'message': 'Value error',
+                                 'detail': {"id": [{"message": "ID is not integer", "code": "value error"}]}})
+            try:
+                scanObj = ScanTaskModel.objects.get(pk=id)
+            except ScanTaskModel.DoesNotExist:
+                return Response({'status': '-1', 'message': 'Vuln ID does not exist',
+                                 'detail': {}})
+            if scanObj.fileAttachment:
+                RemoveFile(scanObj.fileAttachment.path)
+                scanObj.fileAttachment = None
+                scanObj.save()
+                dataSerialized = ScanSerializer(scanObj, many=False)
+                return Response({'status': '0', 'message': 'Attachment is deleted successfully', 'object': dataSerialized.data})
+            return Response({'status': '-1', 'message': 'Scan Task does not have attachment'})
+        else:
+            return Response({'status': '-1', 'message': 'Fields are required',
+                             'detail': {"id": [{"message": "ID is required", "code": "required"}]}})
+

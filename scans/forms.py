@@ -4,18 +4,18 @@ from .models import ScanTaskModel
 
 class ScanForm(forms.ModelForm):
     startTime = forms.DateTimeField(
-        input_formats=["%Y-%m-%dT%H:%M:%S", "%Y-%m-%dT%H:%M:%S"],
-        widget=forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
+        input_formats=["%Y-%m-%dT%H:%M:%S.%fZ",],
+        widget=forms.TextInput(attrs={'class': 'form-control', 'type':'hidden',}),
         label="Start Time",
         help_text="Start time of this task",
-        required=False,
+        required=True,
     )
     endTime = forms.DateTimeField(
-        input_formats=["%Y-%m-%dT%H:%M:%S", "%Y-%m-%dT%H:%M:%S"],
-        widget=forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
+        input_formats=["%Y-%m-%dT%H:%M:%S.%fZ",],
+        widget=forms.TextInput(attrs={'class': 'form-control', 'type':'hidden',}),
         label="Finished Time",
         help_text="Finished time of this task",
-        required=False,
+        required=True,
     )
 
     class Meta:
@@ -24,11 +24,9 @@ class ScanForm(forms.ModelForm):
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Name'}),
             'isProcessed': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-            'startTime': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
-            'endTime': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
-            'fileAttachment': forms.FileInput(attrs={'style':"display: none;"}),
             'scanProject':forms.Select(attrs={'class': 'form-control'}),
-            'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Descriptions', 'rows':'5'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Descriptions', 'rows': '5'}),
+            'fileAttachment': forms.FileInput(attrs={'style': "display: none;"}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -41,6 +39,53 @@ class ScanForm(forms.ModelForm):
                 self.fields[field].widget.attrs['id'] = fieldID
         else:
             super().__init__(*args, **kwargs)
+
+
+class ScanAddForm(forms.ModelForm):
+    startTime = forms.DateTimeField(
+        input_formats=["%Y-%m-%dT%H:%M:%S.%fZ",],
+        widget=forms.TextInput(attrs={'class': 'form-control', 'type':'hidden',}),
+        label="Start Time",
+        help_text="Start time of this task",
+        required=True,
+    )
+    endTime = forms.DateTimeField(
+        input_formats=["%Y-%m-%dT%H:%M:%S.%fZ",],
+        widget=forms.TextInput(attrs={'class': 'form-control', 'type':'hidden',}),
+        label="Finished Time",
+        help_text="Finished time of this task",
+        required=True,
+    )
+
+    class Meta:
+        model = ScanTaskModel
+        exclude = ('scanBy', 'submitter', 'fileAttachment')
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Name'}),
+            'isProcessed': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'scanProject':forms.Select(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Descriptions', 'rows': '5'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        if 'id' in kwargs:
+            id = kwargs['id']
+            del kwargs['id']
+            super().__init__(*args, **kwargs)
+            for field in self.fields:
+                fieldID = 'id_' + field + '_' + id
+                self.fields[field].widget.attrs['id'] = fieldID
+        else:
+            super().__init__(*args, **kwargs)
+
+
+class ScanAttachmentForm(forms.ModelForm):
+    class Meta:
+        model = ScanTaskModel
+        fields = ['id', 'fileAttachment']
+        widgets = {
+            'fileAttachment': forms.FileInput(attrs={'style': "display: none;"}),
+        }
 
 
 class ScanIDForm(forms.ModelForm):

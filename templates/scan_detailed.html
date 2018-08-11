@@ -2,7 +2,7 @@
 
 {% block css %}
     {% load staticfiles %}
-    <title>Scans management - Hosts</title>
+    <title>Scans management - Scans</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css'%}" rel="stylesheet">
@@ -30,6 +30,9 @@
 
     <!--Bootstrap-table-->
     <link href="{% static 'vendor/bootstrap-table/css/bootstrap-table.min.css' %}" rel="stylesheet" type="text/css">
+
+    <!--Bootstrap-datepicker -->
+    <link href="{% static 'vendor/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 
 {% block sidebar %}
@@ -59,7 +62,7 @@
     <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">Vulnerabilities</h1>
+                    <h1 class="page-header">Scans</h1>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
@@ -68,14 +71,14 @@
                 <div class="col-lg-12">
                     <ul class="breadcrumb">
                         <li><a href="/">Home</a></li>
-                        <li><a href="/vuln">Vulnerabilities</a></li>
-                        <li class="active" id="brVuln"></li>
+                        <li><a href="/scans">Scan Tasks</a></li>
+                        <li class="active" id="brScan"></li>
                     </ul>
                 </div>
-               <div class="col-lg-12">
+                <div class="col-lg-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <i class="fa fa-info-circle fa-info fa-fw" aria-hidden="true"></i> Vulnerability Information
+                            <i class="fa fa-info-circle fa-info fa-fw" aria-hidden="true"></i> Scan Task Information
                             <div class="pull-right">
                                 <div class="dropdown">
                                     <button class="btn btn-default dropdown-toggle btn-xs" type="button" data-toggle="dropdown">
@@ -91,50 +94,66 @@
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body" >
-                            <form method="post" id="editVulnPostForm">
+                            <form method="post" id="editScanPostForm">
                                 {% csrf_token %}
                                 <input type="hidden" name="id" id="id_id">
                                 <div class="row">
                                     <div class="col-lg-6">
                                         <div class="form-group">
-                                            <label>Vulnerability *</label>
+                                            <label>Create By</label>
+                                            <input type="text" class="form-control" placeholder="Create By"  id="id_submitter" readonly="readonly">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="form-group">
+                                            <label>Date Create</label>
+                                            <input type="text" class="form-control" placeholder="Date Created"  id="id_dateCreated" readonly="readonly">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="form-group">
+                                            <label>Date Update</label>
+                                            <input type="text" class="form-control" placeholder="Date Update"  id="id_dateUpdate" readonly="readonly">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label>Scan Task *</label>
                                             {{ form.name }}
                                         </div>
                                     </div>
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-3">
                                         <div class="form-group">
-                                            <label>Level Risk *</label>
-                                            {{ form.levelRisk }}
+                                            <label>Start Time *</label>
+                                            <div class='input-group date' id='dpStartTime'>
+                                                <input type="text" class="form-control" required="">
+                                                <span class="input-group-addon">
+                                                    <span class="glyphicon glyphicon-calendar"></span>
+                                                </span>
+                                            </div>
+                                            {{ form.startTime }}
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-3">
                                         <div class="form-group">
-                                            <label>Service *</label>
-                                            {{ form.service }}
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="form-group">
-                                            <label>CVE</label>
-                                            {{ form.cve }}
+                                            <label>Finished Time *</label>
+                                            <div class='input-group date' id='dpEndTime'>
+                                                <input type="text" class="form-control" required="">
+                                                <span class="input-group-addon">
+                                                    <span class="glyphicon glyphicon-calendar"></span>
+                                                </span>
+                                            </div>
+                                            {{ form.endTime }}
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-lg-12">
                                         <div class="form-group">
-                                            <label>Observation</label>
-                                            {{ form.observation }}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <div class="form-group">
-                                            <label>Recommendation</label>
-                                            {{ form.recommendation }}
+                                            <label>Project *</label>
+                                            {{ form.scanProject }}
                                         </div>
                                     </div>
                                 </div>
@@ -145,12 +164,71 @@
                                             {{ form.description }}
                                         </div>
                                     </div>
+                                    <div class="col-lg-4">
+                                        <div class="form-group">
+                                            <label>Processed</label>
+                                            {{ form.isProcessed }}
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="row hidden" id="hostInfoBtn">
+                                <div class="row hidden" id="scanInfoBtn">
                                     <div class="col-lg-12">
                                         <div class="text-center">
                                             <button type="button" class="btn btn-default" id="cancelUpdateBtn">Cancel</button>
                                             <button type="submit" class="btn btn-primary">Save Changes</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-paperclip fa-fw" aria-hidden="true"></i> Scan Task Attachment
+                            <div class="pull-right">
+                                <div class="dropdown">
+                                    <button class="btn btn-default dropdown-toggle btn-xs" type="button" data-toggle="dropdown">
+                                        <i class="fa fa-gear fa-fw"></i>Actions
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu pull-right">
+                                        <li id="editAtt"><a href="#" ><i class="fa fa-pencil fa-fw"></i> Edit Attachment</a></li>
+                                        <li id="deleteAtt"><a href="#" ><i class="fa fa-trash-o fa-fw"></i> Delete Attachment</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body" >
+                            <form method="post" id="editAttachmentForm">
+                                {% csrf_token %}
+                                <input type="hidden" name="id" id="id_id">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <label>File Attachment</label>
+                                             <div class="input-group">
+                                                <span class="input-group-btn">
+                                                    <button type="button" class="btn btn-default" id="btnBrowseAtt"><i class="fa fa-folder-open"></i></button>
+                                                </span>
+                                                <input type="text" class="form-control" id="fileAtt" readonly>
+                                                {{ form.fileAttachment }}
+                                                <span class="input-group-btn">
+                                                    <button type="button" class="btn btn-primary" id="btnDownloadAtt"><i class="fa fa-download"></i></button>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row hidden" id="scanAttBtn">
+                                    <div class="col-lg-12">
+                                        <div class="text-center">
+                                            <button type="button" class="btn btn-default" id="cancelAttBtn">Cancel</button>
+                                            <button type="submit" class="btn btn-primary">Upload Attachment</button>
                                         </div>
                                     </div>
                                 </div>
@@ -212,6 +290,9 @@
     <!-- Bootstrap Core JavaScript -->
     <script src="{% static 'vendor/bootstrap/js/bootstrap.min.js'%}"></script>
 
+    <!-- Moment -->
+    <script src="{% static 'vendor/moment/moment.js'%}"></script>
+
     <!-- Metis Menu Plugin JavaScript -->
     <script src="{% static 'vendor/metisMenu/metisMenu.min.js'%}"></script>
 
@@ -227,8 +308,11 @@
     <!-- Bootstrap-table JavaScript -->
     <script src="{% static 'vendor/bootstrap-table/js/bootstrap-table.min.js'%}"></script>
 
+    <!-- Bootstrap-datetimepicker JavaScript -->
+    <script src="{% static 'vendor/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js'%}"></script>
+
     <!-- Host JavaScript -->
-    <script src="{% static 'pages/js/vuln_detailed.js'%}"></script>
+    <script src="{% static 'pages/js/scan_detailed.js'%}"></script>
 
 {% endblock %}
 

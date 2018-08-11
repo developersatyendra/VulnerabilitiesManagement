@@ -85,6 +85,44 @@ $(document).ready(
         })
     }),
     //
+    // Initial datetime picker
+    //
+    $('#dpStartTime').datetimepicker({
+        format: 'MM/DD/YYYY hh:mm:ss A',
+        sideBySide: true
+        }),
+    $('#dpEndTime').datetimepicker({
+        format: 'MM/DD/YYYY hh:mm:ss A',
+        sideBySide: true
+        }),
+    $('#dpEditStartTime').datetimepicker({
+        format: 'MM/DD/YYYY hh:mm:ss A',
+        sideBySide: true
+        }),
+    $('#dpEditEndTime').datetimepicker({
+        format: 'MM/DD/YYYY hh:mm:ss A',
+        sideBySide: true
+        }),
+    //
+    // Fill data from datetimepicker to form
+    //
+    $("#dpEditStartTime").on('dp.change', function(e){
+        var date = e.date.toISOString();
+        $('#id_startTime_edit').val(date);
+    }),
+    $("#dpEditEndTime").on('dp.change', function(e){
+        var date = e.date.toISOString();
+        $('#id_endTime_edit').val(date);
+    }),
+    $("#dpStartTime").on('dp.change', function(e){
+        var date = e.date.toISOString();
+        $('#id_startTime').val(date);
+    }),
+    $("#dpEndTime").on('dp.change', function(e){
+        var date = e.date.toISOString();
+        $('#id_endTime').val(date);
+    }),
+    //
     // Edit scanning task
     //
     $("#editScanPostForm").submit(function(e){
@@ -96,7 +134,17 @@ $(document).ready(
             var closebtn = '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>';
             notification.removeClass("hidden");
             if(data.status != 0){
-                notification.html("Error: "+data.message + '. '+data.detail.name[0]);
+                var errStr = "Error: "+data.message;
+                if(typeof data.detail.name !='undefined'){
+                    errStr = errStr + ". Name: " + data.detail.name[0];
+                }
+                if(typeof data.detail.startTime !='undefined'){
+                    errStr = errStr + ". Start Time: " + data.detail.startTime[0];
+                }
+                if(typeof data.detail.endTime !='undefined'){
+                    errStr = errStr + ". Finished Time: " + data.detail.endTime[0];
+                }
+                notification.html(errStr);
                 notification.removeClass("alert-info");
                 notification.addClass("alert-danger");
             }
@@ -110,7 +158,7 @@ $(document).ready(
         });
         e.preventDefault();
     }),
-    $("#editScanPostForm").on("hidden.bs.modal", function () {
+    $("#editScanModal").on("hidden.bs.modal", function () {
         $("#retMsgEdit").addClass("hidden");
     }),
 
@@ -128,7 +176,17 @@ $(document).ready(
                 var closebtn = '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>';
                 notification.removeClass("hidden");
                 if(data.status != 0){
-                    notification.html("Error: "+data.message + '. '+data.detail.name[0]);
+                    var errStr = "Error: "+data.message;
+                    if(typeof data.detail.name !='undefined'){
+                    errStr = errStr + ". Name: " + data.detail.name[0];
+                    }
+                    if(typeof data.detail.startTime !='undefined'){
+                        errStr = errStr + ". Start Time: " + data.detail.startTime[0];
+                    }
+                    if(typeof data.detail.endTime !='undefined'){
+                        errStr = errStr + ". Finished Time: " + data.detail.endTime[0];
+                    }
+                    notification.html(errStr);
                     notification.removeClass("alert-info");
                     notification.addClass("alert-danger");
                 }
@@ -184,10 +242,10 @@ $(document).ready(
         var data = $("#scanstable").bootstrapTable('getSelections');
         if(data.length > 0){
             if(data.length == 1){
-                $('#msgOnDelete').text("Are you sure to delete " + data.length + " selected vulnerability?");
+                $('#msgOnDelete').text("Are you sure to delete " + data.length + " selected scan task?");
             }
             else{
-                $('#msgOnDelete').text("Are you sure to delete " + data.length + " selected vulnerabilities?");
+                $('#msgOnDelete').text("Are you sure to delete " + data.length + " selected scan tasks?");
             }
             $('#warningOnDelete').modal('show')
         }
@@ -206,12 +264,13 @@ $(document).ready(
             $('#id_isProcessed_edit').val(data[0].isProcessed);
             var startTime = data[0].startTime;
             var endTime = data[0].endTime;
-            $('#id_startTime_edit').val(startTime.substring(0,startTime.length-1));
-            $('#id_endTime_edit').val(endTime.substring(0,endTime.length-1));
+
             $('#id_fileAttachment_edit').val(data[0].fileAttachment);
             $('#id_scanProject_edit').val(data[0].scanProject.id);
             $('#id_description_edit').val(data[0].description);
             $('#editScanModal').modal('show');
+            $("#dpEditStartTime").data("DateTimePicker").date(new Date(data[0].startTime));
+            $("#dpEditEndTime").data("DateTimePicker").date(new Date(data[0].endTime));
             rowIDSelected = data[0].id;
         }
     }),

@@ -95,19 +95,19 @@
                                 {% csrf_token %}
                                 <input type="hidden" name="id" id="id_id">
                                 <div class="row">
-                                    <div class="col-lg-4">
+                                    <div class="col-lg-6">
                                         <div class="form-group">
                                             <label>Create By</label>
                                             <input type="text" class="form-control" placeholder="Create By"  id="id_createBy" readonly="readonly">
                                         </div>
                                     </div>
-                                    <div class="col-lg-4">
+                                    <div class="col-lg-3">
                                         <div class="form-group">
                                             <label>Date Create</label>
                                             <input type="text" class="form-control" placeholder="Date Created"  id="id_dateCreated" readonly="readonly">
                                         </div>
                                     </div>
-                                    <div class="col-lg-4">
+                                    <div class="col-lg-3">
                                         <div class="form-group">
                                             <label>Date Update</label>
                                             <input type="text" class="form-control" placeholder="Date Update"  id="id_dateUpdate" readonly="readonly">
@@ -115,13 +115,13 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-lg-8">
+                                    <div class="col-lg-6">
                                         <div class="form-group">
                                             <label>Service Name *</label>
                                             {{ form.name }}
                                         </div>
                                     </div>
-                                    <div class="col-lg-4">
+                                    <div class="col-lg-6">
                                         <div class="form-group">
                                             <label>Port *</label>
                                             {{ form.port }}

@@ -2,33 +2,69 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7e1e5878-3e63-44a6-b2e6-eb13b43afe37" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/static/pages/js/vuln_detailed.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/scan_detailed.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/vuln_detailed.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hosts/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/hosts/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/projects/serializers.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scans/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/scans/forms.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scans/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/scans/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scans/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/scans/serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scans/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/scans/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scans/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/scans/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/pages/js/host_detailed.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/pages/js/host_detailed.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/pages/js/hosts.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/pages/js/hosts.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/static/pages/js/scans.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/pages/js/scans.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/pages/js/service_detailed.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/pages/js/service_detailed.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/pages/js/services.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/pages/js/services.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/pages/js/vulnerabilities.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/pages/js/vulnerabilities.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/host_detailed.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/host_detailed.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/hosts.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/hosts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/css/bootstrap-datetimepicker.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/css/bootstrap-datetimepicker.min.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/bootstrap-datetimepicker.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/bootstrap-datetimepicker.min.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/locales/bootstrap-datetimepicker.ar.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/locales/bootstrap-datetimepicker.az.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/locales/bootstrap-datetimepicker.bg.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/locales/bootstrap-datetimepicker.bn.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/locales/bootstrap-datetimepicker.ca.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/locales/bootstrap-datetimepicker.cs.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/locales/bootstrap-datetimepicker.da.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/locales/bootstrap-datetimepicker.de.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/locales/bootstrap-datetimepicker.ee.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/locales/bootstrap-datetimepicker.el.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/locales/bootstrap-datetimepicker.es.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/locales/bootstrap-datetimepicker.fi.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/locales/bootstrap-datetimepicker.fr.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/locales/bootstrap-datetimepicker.he.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/locales/bootstrap-datetimepicker.hr.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/locales/bootstrap-datetimepicker.hu.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/locales/bootstrap-datetimepicker.hy.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/locales/bootstrap-datetimepicker.id.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/locales/bootstrap-datetimepicker.is.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/locales/bootstrap-datetimepicker.it.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/locales/bootstrap-datetimepicker.ja.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/locales/bootstrap-datetimepicker.ka.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/locales/bootstrap-datetimepicker.ko.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/locales/bootstrap-datetimepicker.lt.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/locales/bootstrap-datetimepicker.lv.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/locales/bootstrap-datetimepicker.ms.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/locales/bootstrap-datetimepicker.nb.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/locales/bootstrap-datetimepicker.nl.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/locales/bootstrap-datetimepicker.no.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/locales/bootstrap-datetimepicker.pl.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/locales/bootstrap-datetimepicker.pt-BR.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/locales/bootstrap-datetimepicker.pt.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/locales/bootstrap-datetimepicker.ro.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/locales/bootstrap-datetimepicker.rs-latin.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/locales/bootstrap-datetimepicker.rs.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/locales/bootstrap-datetimepicker.ru.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/locales/bootstrap-datetimepicker.sk.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/locales/bootstrap-datetimepicker.sl.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/locales/bootstrap-datetimepicker.sv.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/locales/bootstrap-datetimepicker.sw.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/locales/bootstrap-datetimepicker.th.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/locales/bootstrap-datetimepicker.tr.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/locales/bootstrap-datetimepicker.ua.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/locales/bootstrap-datetimepicker.uk.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/vendor/bootstrap-datatimepicker/js/locales/bootstrap-datetimepicker.zh-TW.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/dashboard.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/scan_detailed.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/scan_detailed.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/scans.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/scans.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/service_detailed.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/service_detailed.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/vulns.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/vulns.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/vuln_detailed.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/vuln_detailed.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vulnerabilities/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/vulnerabilities/forms.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vulnerabilities/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/vulnerabilities/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vulnerabilities/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/vulnerabilities/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vulnerabilities/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/vulnerabilities/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vulnerabilities/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/vulnerabilities/views.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -41,88 +77,117 @@
     <option name="myCustomStartScript" value="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)" />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.6658768">
-      <split-first>
-        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/scans/views.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="-1394">
-                  <caret line="43" column="25" selection-start-line="43" selection-start-column="25" selection-end-line="43" selection-end-column="25" />
-                  <folding>
-                    <element signature="e#0#35#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="models.py" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/scans/models.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="289">
-                  <caret line="17" column="15" selection-start-line="17" selection-start-column="4" selection-end-line="17" selection-end-column="15" />
-                  <folding>
-                    <element signature="e#0#28#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="scans.js" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/static/pages/js/scans.js">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="2499">
-                  <caret line="219" column="68" selection-start-line="219" selection-start-column="68" selection-end-line="219" selection-end-column="68" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="forms.py" pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/scans/forms.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="221">
-                  <caret line="14" column="34" selection-start-line="14" selection-start-column="21" selection-end-line="14" selection-end-column="34" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="scans.html" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/templates/scans.html">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="561">
-                  <caret line="263" column="76" selection-start-line="263" selection-start-column="76" selection-end-line="263" selection-end-column="76" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-        </leaf>
-      </split-first>
-      <split-second>
-        <leaf>
-          <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/vulnerabilities/views.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="-901">
-                  <caret line="40" column="8" selection-start-line="40" selection-start-column="8" selection-end-line="46" selection-end-column="54" />
-                  <folding>
-                    <element signature="e#0#35#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="vulnerabilities.js" pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/static/pages/js/vulnerabilities.js">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="1989">
-                  <caret line="117" column="51" selection-start-line="117" selection-start-column="51" selection-end-line="117" selection-end-column="51" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-        </leaf>
-      </split-second>
-    </splitter>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/scans/views.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="221">
+              <caret line="227" column="26" selection-start-line="227" selection-start-column="6" selection-end-line="227" selection-end-column="26" />
+              <folding>
+                <element signature="e#0#35#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="serializers.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/scans/serializers.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="34">
+              <caret line="4" lean-forward="true" selection-start-line="4" selection-end-line="4" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="urls.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/scans/urls.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="255">
+              <caret line="15" column="1" lean-forward="true" selection-start-line="15" selection-start-column="1" selection-end-line="15" selection-end-column="1" />
+              <folding>
+                <element signature="e#0#28#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="models.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/scans/models.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="340">
+              <caret line="20" column="18" selection-start-line="20" selection-start-column="4" selection-end-line="20" selection-end-column="18" />
+              <folding>
+                <element signature="e#0#28#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="scan_detailed.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/templates/scan_detailed.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="392">
+              <caret line="230" column="107" selection-start-line="230" selection-start-column="107" selection-end-line="230" selection-end-column="107" />
+              <folding>
+                <element signature="e#2826#3117#0#HTML" />
+                <element signature="e#3133#11223#0#HTML" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="forms.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/scans/forms.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="272">
+              <caret line="17" column="22" lean-forward="true" selection-start-line="17" selection-start-column="22" selection-end-line="17" selection-end-column="22" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="scan_detailed.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/static/pages/js/scan_detailed.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="531">
+              <caret line="171" lean-forward="true" selection-start-line="171" selection-end-line="171" />
+              <folding>
+                <element signature="e#1169#2355#0" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="serializers.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/hosts/serializers.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="238">
+              <caret line="15" column="35" selection-start-line="15" selection-start-column="35" selection-end-line="15" selection-end-column="35" />
+              <folding>
+                <element signature="e#0#38#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="scans.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/templates/scans.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="276">
+              <caret line="223" column="73" lean-forward="true" selection-start-line="223" selection-start-column="73" selection-end-line="223" selection-end-column="73" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="scans.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/static/pages/js/scans.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="411">
+              <caret line="255" column="34" lean-forward="true" selection-start-line="255" selection-start-column="34" selection-end-line="255" selection-end-column="34" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -135,10 +200,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>char</find>
-      <find>bar</find>
-      <find>Do</find>
-      <find>toolbar</find>
       <find>ipA</find>
       <find>ScanInfoModel</find>
       <find>ipAdr</find>
@@ -148,7 +209,6 @@
       <find>id_createBy</find>
       <find>show</find>
       <find>rowIDSelected</find>
-      <find>data</find>
       <find>alert</find>
       <find>as_</find>
       <find>Service Information</find>
@@ -163,8 +223,13 @@
       <find>modal</find>
       <find>Modal</find>
       <find>addServiceModal</find>
-      <find>.attr(&quot;readonly&quot;,&quot;readonly&quot;);</find>
       <find>form</find>
+      <find>change</find>
+      <find>data</find>
+      <find>.attr(&quot;readonly&quot;,&quot;readonly&quot;);</find>
+      <find>hostInfoBtn</find>
+      <find>panel panel-red</find>
+      <find>cancel</find>
     </findStrings>
     <replaceStrings>
       <replace>querySet</replace>
@@ -181,6 +246,7 @@
       <replace>projectstable</replace>
       <replace>ipAddr</replace>
       <replace>.removeAttr(&quot;readonly&quot;);</replace>
+      <replace>scaninfo</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -189,10 +255,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/projects/views.py" />
-        <option value="$PROJECT_DIR$/templates/base.html" />
-        <option value="$PROJECT_DIR$/templates/dashboard.html" />
-        <option value="$PROJECT_DIR$/static/data/chartjs-data.js" />
         <option value="$PROJECT_DIR$/submit/serializers.py" />
         <option value="$PROJECT_DIR$/hosts/forms.py" />
         <option value="$PROJECT_DIR$/submit/forms.py" />
@@ -214,8 +276,6 @@
         <option value="$PROJECT_DIR$/services/serializers.py" />
         <option value="$PROJECT_DIR$/services/forms.py" />
         <option value="$PROJECT_DIR$/templates/services.html" />
-        <option value="$PROJECT_DIR$/hosts/serializers.py" />
-        <option value="$PROJECT_DIR$/templates/service_detailed.html" />
         <option value="$PROJECT_DIR$/static/pages/js/services.js" />
         <option value="$PROJECT_DIR$/templates/host_detailed.html" />
         <option value="$PROJECT_DIR$/vulnerabilities/serializers.py" />
@@ -224,22 +284,28 @@
         <option value="$PROJECT_DIR$/vulnerabilities/urls.py" />
         <option value="$PROJECT_DIR$/templates/hosts.html" />
         <option value="$PROJECT_DIR$/vulnerabilities/models.py" />
-        <option value="$PROJECT_DIR$/vulnerabilities/forms.py" />
         <option value="$PROJECT_DIR$/static/pages/js/hosts.js" />
         <option value="$PROJECT_DIR$/vulnerabilities/views.py" />
-        <option value="$PROJECT_DIR$/templates/vuln_detailed.html" />
         <option value="$PROJECT_DIR$/static/pages/js/vuln_detailed.js" />
         <option value="$PROJECT_DIR$/static/pages/js/host_detailed.js" />
         <option value="$PROJECT_DIR$/static/pages/js/service_detailed.js" />
-        <option value="$PROJECT_DIR$/scans/serializers.py" />
         <option value="$PROJECT_DIR$/projects/serializers.py" />
-        <option value="$PROJECT_DIR$/scans/models.py" />
         <option value="$PROJECT_DIR$/templates/vulns.html" />
-        <option value="$PROJECT_DIR$/scans/views.py" />
         <option value="$PROJECT_DIR$/static/pages/js/vulnerabilities.js" />
+        <option value="$PROJECT_DIR$/templates/vuln_detailed.html" />
+        <option value="$PROJECT_DIR$/scans/models.py" />
+        <option value="$PROJECT_DIR$/vulnerabilities/forms.py" />
+        <option value="$PROJECT_DIR$/hosts/serializers.py" />
+        <option value="$PROJECT_DIR$/templates/service_detailed.html" />
+        <option value="$PROJECT_DIR$/scans/forms.py" />
+        <option value="$PROJECT_DIR$/templates/dashboard.html" />
         <option value="$PROJECT_DIR$/templates/scans.html" />
         <option value="$PROJECT_DIR$/static/pages/js/scans.js" />
-        <option value="$PROJECT_DIR$/scans/forms.py" />
+        <option value="$PROJECT_DIR$/templates/scan_detailed.html" />
+        <option value="$PROJECT_DIR$/scans/views.py" />
+        <option value="$PROJECT_DIR$/static/pages/js/scan_detailed.js" />
+        <option value="$PROJECT_DIR$/scans/serializers.py" />
+        <option value="$PROJECT_DIR$/scans/urls.py" />
       </list>
     </option>
   </component>
@@ -267,6 +333,11 @@
             <path>
               <item name="VulnerablititesManagement" type="b2602c69:ProjectViewProjectNode" />
               <item name="VulnerablititesManagement" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="VulnerablititesManagement" type="b2602c69:ProjectViewProjectNode" />
+              <item name="VulnerablititesManagement" type="462c0819:PsiDirectoryNode" />
+              <item name="hosts" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="VulnerablititesManagement" type="b2602c69:ProjectViewProjectNode" />
@@ -368,7 +439,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
-    <property name="SearchEverywhereHistoryKey" value="termi&#9;ACTION&#9;ActivateTerminalToolWindow&#10;ter&#9;ACTION&#9;ActivateTerminalToolWindow&#10;terminal&#9;null&#9;null&#10;termin&#9;ACTION&#9;ActivateTerminalToolWindow&#10;termina&#9;ACTION&#9;ActivateTerminalToolWindow&#10;term&#9;ACTION&#9;ActivateTerminalToolWindow&#10;te&#9;ACTION&#9;ActivateTerminalToolWindow" />
+    <property name="SearchEverywhereHistoryKey" value="ter&#9;ACTION&#9;ActivateTerminalToolWindow&#10;terminal&#9;ACTION&#9;ActivateTerminalToolWindow&#10;termi&#9;ACTION&#9;ActivateTerminalToolWindow&#10;termin&#9;ACTION&#9;ActivateTerminalToolWindow&#10;termina&#9;ACTION&#9;ActivateTerminalToolWindow&#10;term&#9;ACTION&#9;ActivateTerminalToolWindow&#10;te&#9;ACTION&#9;ActivateTerminalToolWindow" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -376,8 +447,8 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\tuank\PycharmProjects\VulnerablititesManagement\templates" />
       <recent name="C:\Users\tuank\PycharmProjects\VulnerablititesManagement\static\pages\js" />
+      <recent name="C:\Users\tuank\PycharmProjects\VulnerablititesManagement\templates" />
       <recent name="C:\Users\tuank\PycharmProjects\VulnerablititesManagement\submit" />
       <recent name="C:\Users\tuank\PycharmProjects\VulnerablititesManagement\projects" />
       <recent name="C:\Users\tuank\PycharmProjects\VulnerablititesManagement\hosts" />
@@ -434,7 +505,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1616" height="886" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
@@ -442,8 +512,8 @@
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Python Console" order="7" />
       <window_info anchor="bottom" id="Run" order="2" />
-      <window_info anchor="bottom" x="246" y="93" width="1156" height="555" id="Terminal" order="7" type="WINDOWED" visible="true" weight="0.4035309" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.20875" />
+      <window_info active="true" anchor="bottom" x="178" y="231" width="1156" height="555" id="Terminal" order="7" type="WINDOWED" visible="true" weight="0.4035309" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.20875" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="right" id="Database" order="3" />
       <window_info anchor="right" id="SciView" order="3" />
@@ -514,37 +584,16 @@
           <line>67</line>
           <option name="timeStamp" value="7" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/static/pages/js/scan_detailed.js</url>
+          <line>52</line>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
       </breakpoints>
-      <option name="time" value="9" />
+      <option name="time" value="10" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/templates/dashboard.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="458" column="70" selection-start-line="458" selection-start-column="70" selection-end-line="458" selection-end-column="70" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/reports.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-663" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/submit/serializers.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="16" column="30" selection-start-line="16" selection-start-column="30" selection-end-line="16" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="149">
-          <caret line="399" selection-start-line="399" selection-end-line="399" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/hosts/forms.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
@@ -670,61 +719,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/templates/host_detailed.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2618">
-          <caret line="188" column="18" selection-start-line="188" selection-start-column="18" selection-end-line="188" selection-end-column="18" />
-          <folding>
-            <element signature="e#9794#10648#0#HTML" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hosts/serializers.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="15" column="17" lean-forward="true" selection-start-line="15" selection-start-column="17" selection-end-line="15" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hosts/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="8" column="12" selection-start-line="8" selection-start-column="4" selection-end-line="8" selection-end-column="12" />
-          <folding>
-            <element signature="e#0#28#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/services/forms.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="561">
-          <caret line="34" column="81" selection-start-line="34" selection-start-column="81" selection-end-line="34" selection-end-column="81" />
-          <folding>
-            <element signature="e#0#24#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/vulnerabilities/serializers.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="102">
           <caret line="6" column="63" selection-start-line="6" selection-start-column="63" selection-end-line="6" selection-end-column="63" />
-          <folding>
-            <element signature="e#0#38#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/service_detailed.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="186">
-          <caret line="190" column="18" lean-forward="true" selection-start-line="172" selection-start-column="12" selection-end-line="190" selection-end-column="18" />
-          <folding>
-            <element signature="e#8061#8915#0#HTML" />
-            <element signature="e#8984#10046#0#HTML" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -735,20 +733,6 @@
           <folding>
             <element signature="e#0#35#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/pages/js/services.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="163" column="44" selection-start-line="163" selection-start-column="44" selection-end-line="163" selection-end-column="44" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/vuln_detailed.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="93" column="68" selection-start-line="93" selection-start-column="52" selection-end-line="93" selection-end-column="68" />
         </state>
       </provider>
     </entry>
@@ -763,30 +747,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="524">
           <caret line="191" column="6" lean-forward="true" selection-start-line="191" selection-start-column="6" selection-end-line="191" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/hosts.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="239">
-          <caret line="192" column="111" selection-start-line="192" selection-start-column="101" selection-end-line="192" selection-end-column="111" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hosts/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-204">
-          <caret line="33" column="4" selection-start-line="33" selection-start-column="4" selection-end-line="33" selection-end-column="35" />
-          <folding>
-            <element signature="e#0#35#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/pages/js/service_detailed.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1989">
-          <caret line="117" selection-start-line="117" selection-end-line="117" />
         </state>
       </provider>
     </entry>
@@ -811,30 +771,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/templates/vulns.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="309">
-          <caret line="67" column="80" lean-forward="true" selection-start-line="67" selection-start-column="80" selection-end-line="67" selection-end-column="80" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/projects/serializers.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
           <caret line="15" column="31" lean-forward="true" selection-start-line="15" selection-start-column="31" selection-end-line="15" selection-end-column="31" />
-          <folding>
-            <element signature="e#0#38#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scans/serializers.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="24" lean-forward="true" selection-start-line="24" selection-end-line="24" />
-          <folding>
-            <element signature="e#0#38#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -848,21 +788,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/vulnerabilities/forms.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="30" column="61" selection-start-line="30" selection-start-column="61" selection-end-line="30" selection-end-column="61" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/scan_detailed.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-408" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/vulnerabilities/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-901">
+        <state relative-caret-position="425">
           <caret line="40" column="8" selection-start-line="40" selection-start-column="8" selection-end-line="46" selection-end-column="54" />
           <folding>
             <element signature="e#0#35#0" expanded="true" />
@@ -870,51 +798,196 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/static/pages/js/vulnerabilities.js">
+    <entry file="jar://$APPLICATION_HOME_DIR$/lib/pycharm.jar!/resources/html5-schema/html5/phrase.rnc">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1989">
-          <caret line="117" column="51" selection-start-line="117" selection-start-column="51" selection-end-line="117" selection-end-column="51" />
+        <state relative-caret-position="256">
+          <caret line="347" column="16" selection-start-line="347" selection-start-column="16" selection-end-line="347" selection-end-column="16" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scans/views.py">
+    <entry file="file://$PROJECT_DIR$/templates/vuln_detailed.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1394">
-          <caret line="43" column="25" selection-start-line="43" selection-start-column="25" selection-end-line="43" selection-end-column="25" />
+        <state relative-caret-position="68">
+          <caret line="4" column="4" selection-start-line="4" selection-start-column="4" selection-end-line="4" selection-end-column="53" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/vulns.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1139">
+          <caret line="67" column="80" lean-forward="true" selection-start-line="67" selection-start-column="80" selection-end-line="67" selection-end-column="80" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/host_detailed.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3196">
+          <caret line="188" column="18" selection-start-line="188" selection-start-column="18" selection-end-line="188" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/hosts.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3264">
+          <caret line="192" column="111" selection-start-line="192" selection-start-column="101" selection-end-line="192" selection-end-column="111" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/services/forms.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="561">
+          <caret line="34" column="81" selection-start-line="34" selection-start-column="81" selection-end-line="34" selection-end-column="81" />
+          <folding>
+            <element signature="e#0#24#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/static/pages/js/vulnerabilities.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="252">
+          <caret line="90" column="21" selection-start-line="90" selection-start-column="8" selection-end-line="90" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/vulnerabilities/forms.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="340">
+          <caret line="21" column="44" lean-forward="true" selection-start-line="21" selection-start-column="44" selection-end-line="21" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/static/pages/js/services.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1680">
+          <caret line="163" column="44" selection-start-line="163" selection-start-column="44" selection-end-line="163" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/static/pages/js/service_detailed.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="201">
+          <caret line="76" column="12" selection-start-line="76" selection-start-column="12" selection-end-line="78" selection-end-column="71" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hosts/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="8" column="12" selection-start-line="8" selection-start-column="4" selection-end-line="8" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hosts/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1547">
+          <caret line="102" selection-start-line="102" selection-end-line="102" />
           <folding>
             <element signature="e#0#35#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/hosts/serializers.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="15" column="35" selection-start-line="15" selection-start-column="35" selection-end-line="15" selection-end-column="35" />
+          <folding>
+            <element signature="e#0#38#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scans/forms.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="17" column="22" lean-forward="true" selection-start-line="17" selection-start-column="22" selection-end-line="17" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/dashboard.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1088">
+          <caret line="64" column="52" selection-start-line="64" selection-start-column="52" selection-end-line="64" selection-end-column="52" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/service_detailed.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1496">
+          <caret line="139" column="56" selection-start-line="139" selection-start-column="56" selection-end-line="139" selection-end-column="56" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/static/pages/js/scans.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="411">
+          <caret line="255" column="34" lean-forward="true" selection-start-line="255" selection-start-column="34" selection-end-line="255" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/scans.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="276">
+          <caret line="223" column="73" lean-forward="true" selection-start-line="223" selection-start-column="73" selection-end-line="223" selection-end-column="73" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/scan_detailed.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="392">
+          <caret line="230" column="107" selection-start-line="230" selection-start-column="107" selection-end-line="230" selection-end-column="107" />
+          <folding>
+            <element signature="e#2826#3117#0#HTML" />
+            <element signature="e#3133#11223#0#HTML" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/scans/models.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="17" column="15" selection-start-line="17" selection-start-column="4" selection-end-line="17" selection-end-column="15" />
+        <state relative-caret-position="340">
+          <caret line="20" column="18" selection-start-line="20" selection-start-column="4" selection-end-line="20" selection-end-column="18" />
           <folding>
             <element signature="e#0#28#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/templates/scans.html">
+    <entry file="file://$PROJECT_DIR$/scans/serializers.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="561">
-          <caret line="263" column="76" selection-start-line="263" selection-start-column="76" selection-end-line="263" selection-end-column="76" />
+        <state relative-caret-position="34">
+          <caret line="4" lean-forward="true" selection-start-line="4" selection-end-line="4" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/static/pages/js/scans.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2499">
-          <caret line="219" column="68" selection-start-line="219" selection-start-column="68" selection-end-line="219" selection-end-column="68" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scans/forms.py">
+    <entry file="file://$PROJECT_DIR$/scans/views.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="221">
-          <caret line="14" column="34" selection-start-line="14" selection-start-column="21" selection-end-line="14" selection-end-column="34" />
+          <caret line="227" column="26" selection-start-line="227" selection-start-column="6" selection-end-line="227" selection-end-column="26" />
+          <folding>
+            <element signature="e#0#35#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scans/urls.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="15" column="1" lean-forward="true" selection-start-line="15" selection-start-column="1" selection-end-line="15" selection-end-column="1" />
+          <folding>
+            <element signature="e#0#28#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/static/pages/js/scan_detailed.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="531">
+          <caret line="171" lean-forward="true" selection-start-line="171" selection-end-line="171" />
+          <folding>
+            <element signature="e#1169#2355#0" />
+          </folding>
         </state>
       </provider>
     </entry>

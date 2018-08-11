@@ -4,18 +4,25 @@ from projects.serializers import ProjectNameSerializer
 
 
 class ScanSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source='submitter.username')
     scanProject = ProjectNameSerializer(read_only=True, many=False)
-    fileAttachment = serializers.FileField(max_length=None, use_url=True)
+    # fileAttachment = serializers.FileField(max_length=None, use_url=True)
 
     class Meta:
         model = ScanTaskModel
-        fields = '__all__'
+        exclude = ('fileAttachment',)
 
 
 class ScanNameSerializer(serializers.ModelSerializer):
     class Meta:
         model = ScanTaskModel
         fields = ['id', 'name']
+
+
+class ScanAttachmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ScanTaskModel
+        fields = ['id', 'fileAttachment']
 
 
 class ScanInfoSerializer(serializers.ModelSerializer):
