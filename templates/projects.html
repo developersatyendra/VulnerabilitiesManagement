@@ -59,26 +59,38 @@
     <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">Scanning Projects</h1>
+                    <h1 class="page-header">Projects</h1>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
             <!-- /.row -->
             <div class="row">
+                <div class="col-lg-12">
+                    <ul class="breadcrumb">
+                        <li><a href="/">Home</a></li>
+                        <li class="active">Projects</li>
+                    </ul>
+                </div>
                <div class="col-lg-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
+                            <i class="fa fa-table fa-fw" aria-hidden="true"></i>
                             Project Data Table
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body" >
                             <div id="toolbar">
-                              <button id="delete" class="btn btn-danger" >
-                                <i class="fa fa-trash-o"></i> Delete
-                              </button>
-                              <button id="add" class="btn btn-primary" data-toggle="modal" data-target="#addProjectModal">
-                                <i class="fa fa-plus"></i> Add New Project
-                              </button>
+                                <div class="dropdown">
+                                    <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                                        <i class="fa fa-gear fa-fw"></i>Actions
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li id="add"><a href="#" data-toggle="modal" data-target="#addProjectModal"><i class="fa fa-plus fa-fw"></i> Add Project</a></li>
+                                        <li id="edit" class="disabled"><a href="#" ><i class="fa fa-pencil fa-fw"></i> Edit Project</a></li>
+                                        <li id="delete" class="disabled"><a href="#" ><i class="fa fa-trash-o fa-fw"></i> Delete Project</a></li>
+                                    </ul>
+                                </div>
                             </div>
                             <table id="projectstable" data-toolbar="#toolbar"></table>
                             <!-- /.table-responsive -->
@@ -106,7 +118,7 @@
                             <div class="modal-body">
                                 <div class="row">
                                     <div class="col-lg-12">
-                                        <div class="alert alert-danger alert-dismissable hidden" id="retMsgAdd">
+                                        <div class="alert alert-dismissible alert-danger alert-message hidden" id="retMsgAdd">
                                         </div>
                                     </div>
                                 </div>

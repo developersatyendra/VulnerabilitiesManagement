@@ -47,7 +47,7 @@ class ScansDetailView(TemplateView):
 
 
 ######################################################
-#   APIGetScans get services from these params:
+#   APIGetScans get scan from these params:
 #   searchText: Search content
 #   sortName: Name of column is applied sort
 #   sortOrder: sort entry by order 'asc' or 'desc'
@@ -112,8 +112,8 @@ class APIGetScans(APIView):
 
 
 ######################################################
-# APIGetScanByID get services from id
-# return {'retVal': '-1'} if id not found
+# APIGetScanByID get scan from id
+# return {'status': '-1'} if something wrong
 # return service object if it's success
 #
 
@@ -137,8 +137,8 @@ class APIGetScanByID(APIView):
 
 
 ######################################################
-# APIAddScan add new Vulnerability
-# return {'retVal': '-1'} if id not found
+# APIAddScan add new Scantask
+# return {'status': '-1'} if something wrong
 # return Vuln object if it's success
 #
 
@@ -261,6 +261,11 @@ class APIAddAttachment(APIView):
                                  'detail': {"id": [{"message": "ID is not integer", "code": "value error"}]}})
             try:
                 scanObj = ScanTaskModel.objects.get(pk=id)
+                if(scanObj.fileAttachment):
+                    try:
+                        RemoveFile(scanObj.fileAttachment.path)
+                    except FileNotFoundError:
+                        pass
             except ScanTaskModel.DoesNotExist:
                 return Response({'status': '-1', 'message': 'Vuln ID does not exist',
                                  'detail': {}})

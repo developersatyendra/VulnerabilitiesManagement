@@ -6,7 +6,6 @@ from projects.serializers import ProjectNameSerializer
 class ScanSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source='submitter.username')
     scanProject = ProjectNameSerializer(read_only=True, many=False)
-    # fileAttachment = serializers.FileField(max_length=None, use_url=True)
 
     class Meta:
         model = ScanTaskModel

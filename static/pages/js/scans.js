@@ -1,19 +1,5 @@
 var rowIDSelected = null;
 $(document).ready(
-
-
-    $(':file').on('fileselect', function(event, numFiles, label) {
-
-          var input = $(this).parents('.input-group').find(':text'),
-              log = numFiles > 1 ? numFiles + ' files selected' : label;
-
-          if( input.length ) {
-              input.val(log);
-          } else {
-              if( log ) alert(log);
-          }
-
-      }),
     //
     // Decleare scan tasks table
     //
@@ -47,7 +33,7 @@ $(document).ready(
                     field: "startTime",
                     align: "center",
                     valign: "middle",
-                    formatter: DateTimeFormater,
+                    formatter: FormattedDate,
                     sortable: true
                 },
                 {
@@ -55,7 +41,7 @@ $(document).ready(
                     field: "endTime",
                     align: "center",
                     valign: "middle",
-                    formatter: DateTimeFormater,
+                    formatter: FormattedDate,
                     sortable: true
                 },
                 {
@@ -149,7 +135,7 @@ $(document).ready(
                 notification.addClass("alert-danger");
             }
             else{
-                notification.html("The vulnerability is edited.");
+                notification.html("The vulnerability is updated.");
                 notification.removeClass("alert-danger");
                 notification.addClass("alert-info");
             }
@@ -275,6 +261,9 @@ $(document).ready(
         }
     }),
 
+    //
+    // Detect changes on Select row to enable or disable Delete/ Edit button
+    //
     $("#scanstable").change(function () {
         var data = $("#scanstable").bootstrapTable('getSelections');
         var editBtn = $("#edit");
@@ -293,12 +282,6 @@ $(document).ready(
         }
     })
 );
-$(document).on('change', ':file', function() {
-    var input = $(this),
-        numFiles = input.get(0).files ? input.get(0).files.length : 1,
-        label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-     input.trigger('fileselect', [numFiles, label]);
-  });
 
 // Format href for bootstrap table
 function HrefFormater(value, row, index) {
@@ -306,11 +289,40 @@ function HrefFormater(value, row, index) {
 }
 
 // Format Datetime for bootstrap table
-function DateTimeFormater(value, row, index) {
-    date_t = new Date(value);
-    return date_t.toLocaleString();
-}
+function FormattedDate(input) {
+    date = new Date(input);
+    // Get year
+    var year = date.getFullYear();
 
+    // Get month
+    var month = (1 + date.getMonth()).toString();
+    month = month.length > 1 ? month : '0' + month;
+
+    // Get day
+    var day = date.getDate().toString();
+    day = day.length > 1 ? day : '0' + day;
+
+    // Get hours
+    var hours = date.getHours();
+
+    // AM PM
+    var ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours.toString();
+    hours = hours.length > 1 ? hours: '0' + hours;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+
+    // Get minutes
+    var minutes = date.getMinutes().toString();
+    minutes = minutes < 10 ? '0'+minutes : minutes;
+    minutes = minutes.length > 1 ? minutes: '0' + minutes;
+
+    // Get seconds
+    var seconds = date.getSeconds().toString();
+    seconds = seconds.length > 1 ? seconds: '0' + seconds;
+
+    return month + '/' + day + '/' + year + ' ' + hours + ':' + minutes +':'+seconds+ ' ' + ampm;
+}
 function BooleanFormatter(value, row, index){
     if(value){
         return '<b><i class="fa fa-check" aria-hidden="true"></i></b>';

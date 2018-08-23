@@ -4,6 +4,7 @@ from . import views
 app_name = 'projects'
 urlpatterns = [
     path('', views.ProjectsView.as_view(), name='projects'),
+    path('<int:id>/', views.ProjectsDetailView.as_view(), name='projectDetail'),
     # path('<int:id>', views.ProjectDetailView.as_view(), name='projectDetail'),
     path('api/getprojects', views.APIGetProjects.as_view(), name='getprojects'),
     path('api/getprojectbyid', views.APIGetProjectByID.as_view(), name='APIgethostbyid'),

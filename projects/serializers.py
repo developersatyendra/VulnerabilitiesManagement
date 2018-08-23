@@ -3,7 +3,7 @@ from .models import ScanProjectModel
 
 
 class ProjectSerializer(serializers.ModelSerializer):
-
+    username = serializers.CharField(source='createBy.username')
     class Meta:
         model = ScanProjectModel
         fields = "__all__"

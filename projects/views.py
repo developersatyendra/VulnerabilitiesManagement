@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView
 from dashboard.views import RenderSideBar
+from django.utils.datastructures import MultiValueDictKeyError
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.core.paginator import Paginator
@@ -31,10 +32,19 @@ class ProjectsView(TemplateView):
 
 
 class ProjectsDetailView(TemplateView):
-    def get(self, request, *args, **kwargs):
-        pass
+    template = 'project_detailed.html'
 
-#
+    def get(self, request, *args, **kwargs):
+        form = ProjectForm()
+        sidebarHtml = RenderSideBar(request)
+        context = {
+            'sidebar': sidebarHtml,
+            'form': form,
+        }
+        return render(request, self.template, context)
+
+
+######################################################
 #   APIGetProjects get Projects from these params:
 #   searchText: Search content
 #   sortName: Name of column is applied sort
@@ -94,9 +104,9 @@ class APIGetProjects(APIView):
         data['rows'] = dataSerialized.data
         return Response(data)
 
-#
+######################################################
 # APIGetProjectByID get project from id
-# return {'retVal': '-1'} if id not found
+# return {'status': '-1'} if something wrong
 # return project object if it's success
 #
 
@@ -106,37 +116,22 @@ class APIGetProjectByID(APIView):
             id = request.GET.get('id')
             try:
                 retService = ScanProjectModel.objects.get(pk=id)
-            except (ScanProjectModel.DoesNotExist, ValueError):
-                return Response({'retVal': '-1'})
+            except ValueError:
+                return Response({'status': '-1', 'message': 'Value error',
+                                 'detail': {"id": [{"message": "ID is not integer", "code": "value error"}]}})
+            except ScanProjectModel.DoesNotExist:
+                return Response({'status': '-1', 'message': 'Project ID does not exist',
+                                 'detail': {}})
             dataSerialized = ProjectSerializer(retService, many=False)
-            return Response(dataSerialized.data)
+            return Response({'status': '0', 'object': dataSerialized.data})
         else:
-            return Response({'retVal': '-1'})
+            return Response({'status': '-1', 'message': 'fields are required',
+                             'detail': {"id": [{"message": "ID is required", "code": "required"}]}})
 
-#
-# APIGetVulnByID get services from id
-# return {'retVal': '-1'} if id not found
-# return service object if it's success
-#
-
-class APIGetVulnByID(APIView):
-    def get(self, request):
-        if request.GET.get('id'):
-            id = request.GET.get('id')
-            try:
-                retService = VulnerabilityModel.objects.get(pk=id)
-            except (VulnerabilityModel.DoesNotExist, ValueError):
-                return Response({'retVal': '-1'})
-            dataSerialized = VulnSerializer(retService, many=False)
-            return Response(dataSerialized.data)
-        else:
-            return Response({'retVal': '-1'})
-
-
-#
-# APIAddProject add new Project
-# return {'retVal': '-1'} if id not found
-# return Project object if it's success
+######################################################
+# APIAddProject add new project
+# return {'status': '-1'} if id not found
+# return Vuln object if it's success
 #
 
 class APIAddProject(APIView):
@@ -148,19 +143,12 @@ class APIAddProject(APIView):
             vulnObj.createBy = User.objects.get(pk=1)
             vulnObj.save()
             dataSerialized = ProjectSerializer(vulnObj, many=False)
-            return Response(dataSerialized.data)
+            return Response({'status': '0', 'object': dataSerialized.data})
         else:
-            retNotification = ''
-            for field in projectForm:
-                for error in field.errors:
-                    retNotification += error
-            for error in projectForm.non_field_errors():
-                retNotification += error
-            retJson = {'notification': retNotification}
-            return Response(retJson)
+            return Response({'status': '-1', 'message': 'Form is invalid', 'detail': projectForm.errors})
 
 
-#
+######################################################
 # APIDeleteProjects delete existing projects
 # return {'retVal': '-1'} if id not found
 # return {'retVal': 'Num of Success on Deleting'} if it's success
@@ -171,7 +159,12 @@ class APIDeleteProject(APIView):
         projectForm = ProjectIDForm(request.POST)
         if projectForm.is_valid():
             successOnDelete = 0
-            for rawID in projectForm.data['id'].split(','):
+            try:
+                ids = projectForm.data['id'].split(',')
+            except MultiValueDictKeyError:
+                return Response({'status': '-1', 'message': 'Fields are required',
+                                 'detail': {"id": [{"message": "ID is required", "code": "required"}]}})
+            for rawID in ids:
                 try:
                     id = int(rawID)
                 except ValueError:
@@ -184,12 +177,13 @@ class APIDeleteProject(APIView):
                     else:
                         retVuln.delete()
                         successOnDelete = successOnDelete + 1
-            return Response({'retVal': successOnDelete})
+            return Response(
+                {'status': '0', 'message': '{} Scanning Task(s) is successfully deleted'.format(successOnDelete)})
         else:
-            return Response({'retVal': '-1'})
+            return Response({'status': '-1', 'message': 'Form is invalid', 'detail': {projectForm.errors}})
 
 
-#
+######################################################
 # APIUpdateProject update project
 # return {'notification': 'error_msg'} if id not found
 # return Project object if it's success
@@ -197,19 +191,20 @@ class APIDeleteProject(APIView):
 
 class APIUpdateProject(APIView):
     def post(self, request):
-        id = request.POST.get('id')
-        projectObj = ScanProjectModel.objects.get(pk=id)
-        projectForm = ProjectForm(request.POST, instance=projectObj)
+        if request.POST.get('id'):
+            try:
+                id = int(request.POST.get('id'))
+            except ValueError:
+                return Response({'status': '-1', 'message': 'Value error',
+                                 'detail': {"id": [{"message": "ID is not integer", "code": "value error"}]}})
+            projectObj = ScanProjectModel.objects.get(pk=id)
+            projectForm = ProjectForm(request.POST, instance=projectObj)
+        else:
+            return Response({'status': '-1', 'message': 'Fields are required',
+                             'detail': {"id": [{"message": "ID is required", "code": "required"}]}})
         if projectForm.is_valid():
             entry = projectForm.save()
             dataSerialized = ProjectSerializer(entry, many=False)
-            return Response(dataSerialized.data)
+            return Response({'status': '0', 'object': dataSerialized.data})
         else:
-            retNotification = ''
-            for field in projectForm:
-                for error in field.errors:
-                    retNotification += error
-            for error in projectForm.non_field_errors():
-                retNotification += error
-            retJson = {'notification': retNotification}
-            return Response(retJson)
+            return Response({'status': '-1', 'message': 'Form is invalid', 'detail': projectForm.errors})
