@@ -108,7 +108,7 @@ class APIGetScans(APIView):
         data = dict()
         data["total"] = numObject
         data['rows'] = dataSerialized.data
-        return Response(data)
+        return Response({'status': 0, 'object': data})
 
 
 ######################################################

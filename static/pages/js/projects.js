@@ -85,6 +85,9 @@ $(document).ready(
                 notification.html("The project is updated.");
                 notification.removeClass("alert-danger");
                 notification.addClass("alert-info");
+
+                // Disable Save button
+                $("#saveEditBtn").attr('disabled', true);
             }
             notification.append(closebtn);
             $("#projectstable").bootstrapTable('refresh');
@@ -92,7 +95,8 @@ $(document).ready(
         e.preventDefault();
     }),
     $("#editProjectModal").on("hidden.bs.modal", function () {
-        $("#retMsgEdit").hide();
+        $("#retMsgEdit").addClass("hidden");
+        // $("#retMsgEdit").hide();
     }),
 
     //////////////////////////////////////////
@@ -116,13 +120,13 @@ $(document).ready(
                 notification.removeClass("alert-info");
                 notification.addClass("alert-danger");
             }
-            if(data.notification != null){
-                notification.html(data.notification);
-            }
             else{
                 notification.html("New project is added.");
                 notification.removeClass("alert-danger");
                 notification.addClass("alert-info");
+
+                // Disable Save button
+                $("#saveAddBtn").attr('disabled', true);
             }
             notification.append(closebtn);
             $("#projectstable").bootstrapTable('refresh');
@@ -161,14 +165,6 @@ $(document).ready(
     }),
 
     //////////////////////////////////////////
-    // When the close does. Hide it instead of remove it with Dom
-    //
-    $('.alert').on('close.bs.alert', function (e) {
-        $(this).addClass("hidden");
-        e.preventDefault();
-    }),
-
-    //////////////////////////////////////////
     // show delete scan tasks warning
     //
     $("#delete").click(function () {
@@ -188,6 +184,9 @@ $(document).ready(
     // Fill in edit form when edit btn is clicked
     //
     $("#edit").click(function () {
+        // Disable edit save button
+        $('#saveEditBtn').attr('disabled', true);
+
         var data = $("#projectstable").bootstrapTable('getSelections');
         if(data.length > 1){
             $('#msgInfo').text("Please choose only one row for editing.");
@@ -220,6 +219,40 @@ $(document).ready(
         else{
             delBtn.removeClass("disabled");
         }
+    }),
+
+    //////////////////////////////////////////
+    // When the close does. Hide it instead of remove it with Dom
+    //
+    $('.alert').on('close.bs.alert', function (e) {
+        $(this).addClass("hidden");
+        e.preventDefault();
+    }),
+
+    //////////////////////////////////////////
+    // Form on change to enable submit buttons
+    //
+
+    // Add form
+    $('#addProjectPostForm').change(function () {
+        $('#saveAddBtn').attr('disabled', false);
+    }),
+    $("#id_name").on("input", function () {
+        $("#saveAddBtn").attr('disabled', false);
+    }),
+    $("#id_description").on("input", function () {
+        $("#saveAddBtn").attr('disabled', false);
+    }),
+
+    //Edit form
+    $('#editProjectPostForm').change(function () {
+        $('#saveEditBtn').attr('disabled', false);
+    }),
+    $("#id_name_edit").on("input", function () {
+        $("#saveEditBtn").attr('disabled', false);
+    }),
+    $("#id_description_edit").on("input", function () {
+        $("#saveEditBtn").attr('disabled', false);
     })
 );
 

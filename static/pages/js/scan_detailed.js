@@ -479,16 +479,16 @@ function FormattedDate(input) {
     hours = hours % 12;
     hours = hours.toString();
     hours = hours.length > 1 ? hours: '0' + hours;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
 
     // Get minutes
     var minutes = date.getMinutes().toString();
+    minutes = minutes < 10 ? '0'+minutes : minutes;
     minutes = minutes.length > 1 ? minutes: '0' + minutes;
 
     // Get seconds
     var seconds = date.getSeconds().toString();
     seconds = seconds.length > 1 ? seconds: '0' + seconds;
-    hours = hours ? hours : 12; // the hour '0' should be '12'
-    minutes = minutes < 10 ? '0'+minutes : minutes;
 
     return month + '/' + day + '/' + year + ' ' + hours + ':' + minutes +':'+seconds+ ' ' + ampm;
 }

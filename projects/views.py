@@ -51,7 +51,7 @@ class ProjectsDetailView(TemplateView):
 #   sortOrder: sort entry by order 'asc' or 'desc'
 #   pageSize: number of entry per page
 #   pageNumber: page number of curent view
-#
+
 
 class APIGetProjects(APIView):
     def get(self, request):

@@ -1,6 +1,6 @@
 var rowIDSelected = null;
 $(document).ready(
-    //
+    //////////////////////////////////////////
     // Decleare scan tasks table
     //
     $(function () {
@@ -59,8 +59,9 @@ $(document).ready(
                   sortable: true
                 }
             ],
-            url: "/scans/api/getscans",
-            method: "get",
+            // url: "/scans/api/getscans",
+            // method: "get",
+            ajax: ajaxRequest,
             idField: "id",
             queryParamsType: "",
             striped: true,
@@ -70,7 +71,8 @@ $(document).ready(
             search: true,
         })
     }),
-    //
+
+    //////////////////////////////////////////
     // Initial datetime picker
     //
     $('#dpStartTime').datetimepicker({
@@ -89,7 +91,8 @@ $(document).ready(
         format: 'MM/DD/YYYY hh:mm:ss A',
         sideBySide: true
         }),
-    //
+
+    //////////////////////////////////////////
     // Fill data from datetimepicker to form
     //
     $("#dpEditStartTime").on('dp.change', function(e){
@@ -108,7 +111,8 @@ $(document).ready(
         var date = e.date.toISOString();
         $('#id_endTime').val(date);
     }),
-    //
+
+    //////////////////////////////////////////
     // Edit scanning task
     //
     $("#editScanPostForm").submit(function(e){
@@ -138,6 +142,9 @@ $(document).ready(
                 notification.html("The vulnerability is updated.");
                 notification.removeClass("alert-danger");
                 notification.addClass("alert-info");
+
+                // Disable Save button
+                $("#saveEditBtn").attr('disabled', true);
             }
             notification.append(closebtn);
             $("#scanstable").bootstrapTable('refresh');
@@ -148,7 +155,7 @@ $(document).ready(
         $("#retMsgEdit").addClass("hidden");
     }),
 
-    //
+    //////////////////////////////////////////
     // Add New scan
     //
     $("#addScanPostForm").submit(function(e){
@@ -180,6 +187,9 @@ $(document).ready(
                     notification.html("New vulnerability is added.");
                     notification.removeClass("alert-danger");
                     notification.addClass("alert-info");
+
+                    // Disable Save button
+                    $("#saveAddBtn").attr('disabled', true);
                 }
                 notification.append(closebtn);
                 $("#scanstable").bootstrapTable('refresh');
@@ -194,7 +204,7 @@ $(document).ready(
         $("#retMsgAdd").addClass("hidden");
     }),
 
-    //
+    //////////////////////////////////////////
     // Confirm delete scan tasks
     //
     $("#confirmDelete").click(function () {
@@ -221,7 +231,7 @@ $(document).ready(
         $('#warningOnDelete').modal('hide')
     }),
 
-    //
+    //////////////////////////////////////////
     // show delete scan tasks warning
     //
     $("#delete").click(function () {
@@ -236,7 +246,8 @@ $(document).ready(
             $('#warningOnDelete').modal('show')
         }
     }),
-    //
+
+    //////////////////////////////////////////
     // Fill in edit form when edit btn is clicked
     //
     $("#edit").click(function () {
@@ -258,10 +269,13 @@ $(document).ready(
             $("#dpEditStartTime").data("DateTimePicker").date(new Date(data[0].startTime));
             $("#dpEditEndTime").data("DateTimePicker").date(new Date(data[0].endTime));
             rowIDSelected = data[0].id;
+
+            // Dissable Save Edit Button
+            $("#saveEditBtn").attr('disabled', true);
         }
     }),
 
-    //
+    //////////////////////////////////////////
     // Detect changes on Select row to enable or disable Delete/ Edit button
     //
     $("#scanstable").change(function () {
@@ -280,7 +294,46 @@ $(document).ready(
         else{
             delBtn.removeClass("disabled");
         }
+    }),
+
+    //////////////////////////////////////////
+    // Form on change to enable submit buttons
+    //
+
+    // Add form
+    $('#addScanPostForm').change(function () {
+        $('#saveAddBtn').attr('disabled', false);
+    }),
+    $("#id_name").on("input", function () {
+        $("#saveAddBtn").attr('disabled', false);
+    }),
+    $("#id_description").on("input", function () {
+        $("#saveAddBtn").attr('disabled', false);
+    }),
+    $("#dpStartTime").on('dp.change', function(){
+        $("#saveAddBtn").attr('disabled', false);
+    }),
+    $("#dpEndTime").on('dp.change', function(){
+        $("#saveAddBtn").attr('disabled', false);
+    }),
+
+    // Edit form
+    $('#editScanPostForm').change(function () {
+        $('#saveEditBtn').attr('disabled', false);
+    }),
+    $("#id_name_edit").on("input", function () {
+        $("#saveEditBtn").attr('disabled', false);
+    }),
+    $("#id_description_edit").on("input", function () {
+        $("#saveEditBtn").attr('disabled', false);
+    }),
+    $("#dpEditStartTime").on('dp.change', function(){
+        $("#saveEditBtn").attr('disabled', false);
+    }),
+    $("#dpEditEndTime").on('dp.change', function(){
+        $("#saveEditBtn").attr('disabled', false);
     })
+
 );
 
 // Format href for bootstrap table
@@ -323,10 +376,40 @@ function FormattedDate(input) {
 
     return month + '/' + day + '/' + year + ' ' + hours + ':' + minutes +':'+seconds+ ' ' + ampm;
 }
+
+// Boolean Formatter for Tables
 function BooleanFormatter(value, row, index){
     if(value){
         return '<b><i class="fa fa-check" aria-hidden="true"></i></b>';
     }
     else
         return '<b><i class="fa fa-remove" aria-hidden="true"></i></i></b>';
+}
+
+//////////////////////////////////////////
+// Ajax get data to table
+//
+function ajaxRequest(params) {
+
+    // data you may need
+    console.log(params.data);
+
+    $.ajax({
+        type: "GET",
+        url: "/scans/api/getscans",
+        data: params.data,
+        dataType: "json",
+        success: function(data) {
+            if(data.status == 0){
+                console.log(data);
+                params.success({
+                    "rows": data.object.rows,
+                    "total": data.object.total
+                })
+            }
+        },
+       error: function (er) {
+            params.error(er);
+        }
+    });
 }
