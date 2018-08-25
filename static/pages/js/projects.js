@@ -45,8 +45,9 @@ $(document).ready(
                     sortable: true
                 }
             ],
-            url: "/projects/api/getprojects",
-            method: "get",
+            // url: "/projects/api/getprojects",
+            // method: "get",
+            ajax: ajaxRequest,
             idField: "id",
             queryParamsType: "",
             striped: true,
@@ -56,7 +57,6 @@ $(document).ready(
             search: true,
         })
     }),
-
 
     //////////////////////////////////////////
     // Edit project
@@ -266,4 +266,32 @@ function FormattedDate(input) {
     seconds = seconds.length > 1 ? seconds: '0' + seconds;
 
     return month + '/' + day + '/' + year + ' ' + hours + ':' + minutes +':'+seconds+ ' ' + ampm;
+}
+
+//////////////////////////////////////////
+// Ajax get data to table
+//
+function ajaxRequest(params) {
+
+    // data you may need
+    console.log(params.data);
+
+    $.ajax({
+        type: "GET",
+        url: "/projects/api/getprojects",
+        data: params.data,
+        dataType: "json",
+        success: function(data) {
+            if(data.status == 0){
+                console.log(data);
+                params.success({
+                    "rows": data.object.rows,
+                    "total": data.object.total
+                })
+            }
+        },
+       error: function (er) {
+            params.error(er);
+        }
+    });
 }
