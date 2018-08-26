@@ -3,8 +3,20 @@ var apiurl = "/vuln/api/getvulnbyid?id=";
 var url = window.location.pathname;
 var id = url.split("/")[url.split("/").length -1];
 var geturl = apiurl.concat(id);
+
+//////////////////////////////////////////////////
+var flagDataStored = false;
+var dataStored;
+
 $(document).ready(
-    FillInfo(),
+
+    //////////////////////////////////////////////////
+    // Fill data to forms and set them to readonly state
+    //
+    $.when(FillInfo()).done(function (result) {
+        dataStored = result;
+        flagDataStored = true;
+    }),
     SetReadonly(true),
 
     // Click Edit button
@@ -14,6 +26,7 @@ $(document).ready(
 
     // Click Delete button
     $("#delete").click(function () {
+        $("#msgOnDelete").text("Are you sure to delete this vulnerability?");
         $("#warningOnDeleteModal").modal("show");
     }),
     // Click Delete button from warning modal
@@ -30,7 +43,7 @@ $(document).ready(
                 if(data.status == 0){
                     $('#warningOnDeleteModal').modal('hide');
                     $("#titleInfo").text("About");
-                    $("#msgInfo").text("The host is deleted.");
+                    $("#msgInfo").text("The vulnerability is deleted.");
                     $("#infoModal").modal("show");
                     $("#infoModal").on('hidden.bs.modal', function (e) {
                           $( location ).attr("href", '/vuln');
@@ -46,9 +59,14 @@ $(document).ready(
         $('#warningOnDelete').modal('hide')
     }),
     $("#cancelUpdateBtn").click(function () {
-            FillInfo();
+            if(flagDataStored){
+                FillInfo(dataStored);
+            }
+            else{
+                FillInfo();
+            }
             SetReadonly(true);
-        }),
+    }),
     $("#editVulnPostForm").submit(function(e){
         $.post("/vuln/api/updatevuln", $(this).serialize(), function(data){
             if(data.status != 0){
@@ -58,17 +76,46 @@ $(document).ready(
             else{
                 $("#titleInfo").text("About");
                 $("#msgInfo").text("The host is updated.");
-
+                SetReadonly(true);
             }
             $("#infoModal").modal("show");
         });
         e.preventDefault();
-        })
+    }),
+
+    //////////////////////////////////////////
+    // Form on change
+    //
+
+    // Main Form
+    $('#editVulnPostForm').change(function () {
+        $('#saveInfoBtn').attr('disabled', false);
+    }),
+    $("#id_name").on("input", function () {
+        $("#saveInfoBtn").attr('disabled', false);
+    }),
+    $("#id_levelRisk").on("input", function(){
+        $("#saveInfoBtn").attr('disabled', false);
+    }),
+    $("#id_cve").on("input", function () {
+        $("#saveInfoBtn").attr('disabled', false);
+    }),
+    $("#id_observation").on("input", function () {
+        $("#saveInfoBtn").attr('disabled', false);
+    }),
+    $("#id_recommendation").on("input", function () {
+        $("#saveInfoBtn").attr('disabled', false);
+    }),
+    $("#id_description").on("input", function () {
+        $("#saveInfoBtn").attr('disabled', false);
+    })
 );
 
 // Fill in information of service
-function FillInfo(vulninfo) {
-    if(vulninfo === undefined)
+function FillInfo(input) {
+    flagDataStored = false;
+    var deferred = new $.Deferred();
+    if(input === undefined)
         $.get( geturl, function( data ) {
             $('#brVuln').text(data.name);
             //  Fill in form
@@ -80,28 +127,34 @@ function FillInfo(vulninfo) {
             $("#id_observation").val(data.observation);
             $("#id_recommendation").val(data.recommendation);
             $("#id_description").val(data.description);
+            deferred.resolve(data);
             });
     else {
-        $('#brVuln').text(vulninfo.name);
+        $('#brVuln').text(input.name);
         //  Fill in form
-        $('#id_name').val(vulninfo.name);
-        $('#id_id').val(vulninfo.id);
-        $("#id_levelRisk").val(vulninfo.levelRisk);
-        $("#id_service").val(vulninfo.service.id);
-        $("#id_cve").val(vulninfo.cve);
-        $("#id_observation").val(vulninfo.observation);
-        $("#id_recommendation").val(vulninfo.recommendation);
-        $("#id_description").val(vulninfo.description);
+        $('#id_name').val(input.name);
+        $('#id_id').val(input.id);
+        $("#id_levelRisk").val(input.levelRisk);
+        $("#id_service").val(input.service.id);
+        $("#id_cve").val(input.cve);
+        $("#id_observation").val(input.observation);
+        $("#id_recommendation").val(input.recommendation);
+        $("#id_description").val(input.description);
+        deferred.resolve(input);
     }
+    return deferred.promise();
 }
 
 // Disable input until edit button is clicked
 function SetReadonly(Enable) {
     if(Enable){
+        // Disable Save Update button
+        $("#saveInfoBtn").attr('disabled', true);
+
         $('#id_name').attr("readonly","readonly");
         $('#id_id').attr("readonly","readonly");
         $("#id_levelRisk").attr("readonly","readonly");
-        $("#id_service").attr("readonly","readonly");
+        $("#id_service").attr("disabled", true);
         $("#id_cve").attr("readonly","readonly");
         $("#id_observation").attr("readonly","readonly");
         $("#id_recommendation").attr("readonly","readonly");
@@ -112,7 +165,7 @@ function SetReadonly(Enable) {
         $('#id_name').removeAttr("readonly");
         $('#id_id').removeAttr("readonly");
         $("#id_levelRisk").removeAttr("readonly");
-        $("#id_service").removeAttr("readonly");
+        $("#id_service").attr("disabled", false);
         $("#id_cve").removeAttr("readonly");
         $("#id_observation").removeAttr("readonly");
         $("#id_recommendation").removeAttr("readonly");

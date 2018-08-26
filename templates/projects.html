@@ -125,7 +125,7 @@
                                 <div class = row>
                                     <div class="col-lg-12">
                                         <div class="form-group">
-                                            <label>Project Name</label>
+                                            <label>Project Name*</label>
                                             {{ form.name }}
                                         </div>
                                     </div>
@@ -157,7 +157,7 @@
                             {% csrf_token %}
                             <!-- Modal Header -->
                             <div class="modal-header">
-                              <h4 class="modal-title">Edit Vulnerability</h4>
+                              <h4 class="modal-title">Edit Project</h4>
                               <button type="button" class="close" data-dismiss="modal">&times;</button>
                             </div>
 
@@ -172,7 +172,7 @@
                                 <div class = row>
                                     <div class="col-lg-12">
                                         <div class="form-group">
-                                            <label>Project Name</label>
+                                            <label>Project Name*</label>
                                             {{ formEdit.name }}
                                         </div>
                                     </div>
@@ -217,7 +217,7 @@
                 </div>
             </div>
             <!-- Modal information -->
-            <div class="modal" id="warningOnDelete" tabindex="-1" role="dialog">
+            <div class="modal" id="infoModal" tabindex="-1" role="dialog">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">

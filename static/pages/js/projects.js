@@ -96,7 +96,6 @@ $(document).ready(
     }),
     $("#editProjectModal").on("hidden.bs.modal", function () {
         $("#retMsgEdit").addClass("hidden");
-        // $("#retMsgEdit").hide();
     }),
 
     //////////////////////////////////////////
@@ -106,7 +105,6 @@ $(document).ready(
         $.post("./api/addproject", $(this).serialize(), function(data){
             var notification = $("#retMsgAdd");
             var closebtn = '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>';
-            // var closebtn = '<button type="button" class="close">×</button>';
             notification.removeClass("hidden");
             if(data.status != 0){
                 var errStr = "Error: "+data.message;
@@ -159,6 +157,9 @@ $(document).ready(
                 if(returnedData.status == 0){
                     $('#warningOnDelete').modal('hide');
                     $("#projectstable").bootstrapTable('refresh');
+
+                    $('#msgInfo').text(returnedData.message);
+                    $('#infoModal').modal('show');
                 }
         }, 'json');
         $('#warningOnDelete').modal('hide')
@@ -171,10 +172,10 @@ $(document).ready(
         var data = $("#projectstable").bootstrapTable('getSelections');
         if(data.length > 0){
             if(data.length == 1){
-                $('#msgOnDelete').text("Are you sure to delete " + data.length + " selected scan task?");
+                $('#msgOnDelete').text("Are you sure to delete " + data.length + " selected project?");
             }
             else{
-                $('#msgOnDelete').text("Are you sure to delete " + data.length + " selected scan tasks?");
+                $('#msgOnDelete').text("Are you sure to delete " + data.length + " selected projects?");
             }
             $('#warningOnDelete').modal('show')
         }
@@ -305,10 +306,6 @@ function FormattedDate(input) {
 // Ajax get data to table
 //
 function ajaxRequest(params) {
-
-    // data you may need
-    console.log(params.data);
-
     $.ajax({
         type: "GET",
         url: "/projects/api/getprojects",
@@ -316,7 +313,6 @@ function ajaxRequest(params) {
         dataType: "json",
         success: function(data) {
             if(data.status == 0){
-                console.log(data);
                 params.success({
                     "rows": data.object.rows,
                     "total": data.object.total

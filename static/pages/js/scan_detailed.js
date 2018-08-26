@@ -123,12 +123,14 @@ $(document).ready(
             $.post('/scans/api/deleteattachment', $.param(data),
                 function(data){
                     if(data.status == 0){
+                        console.log(data);
                         $('#warningOnDeleteModal').modal('hide');
                         $("#titleInfo").text("About");
                         $("#msgInfo").text("The attachment of scan task is deleted.");
                         $("#infoModal").modal("show");
                         $("#infoModal").on('hidden.bs.modal', function (e) {
-                              FillInfoAttachment(data);
+                               $("#fileAtt").val(null);
+                               $("#fileAtt").trigger('change');
                         });
                     }
                     else{
@@ -178,9 +180,6 @@ $(document).ready(
                 $("#titleInfo").text("About");
                 $("#msgInfo").text("The scan task is updated.");
                 SetReadonly(true);
-
-                // Dissable Save button
-                $("#saveInfoBtn").attr('disabled', true);
             }
             $("#infoModal").modal("show");
         });
@@ -212,8 +211,6 @@ $(document).ready(
                     $("#titleInfo").text("About");
                     $("#msgInfo").text("The attachment is successfully uploaded.");
                     SetReadonlyAttachment(true);
-                    // Dissable Upload Butotn
-                    $('#uploadAttBtn').attr('disabled', true);
                     FillInfoAttachment();
                 }
                 $("#infoModal").modal("show");
@@ -382,11 +379,11 @@ function FillInfoAttachment(scaninfo) {
                 $("#btnDownloadAtt").attr("download", data.fileAttachment);
 
                 //Disable btnDownloadAtt if fileAtt is empty
-                if(data.fileAttachment!=''){
-                    $("#btnDownloadAtt").attr('disabled', false);
+                if(data.fileAttachment==''||data.fileAttachment==null){
+                    $("#btnDownloadAtt").attr('disabled', true);
                 }
                 else{
-                    $("#btnDownloadAtt").attr('disabled', true);
+                    $("#btnDownloadAtt").attr('disabled', false);
                 }
                 deferred.resolve(data);
             }
@@ -397,11 +394,11 @@ function FillInfoAttachment(scaninfo) {
         $('#id_id').val(scaninfo.id);
 
         //Disable btnDownloadAtt if fileAtt is empty
-        if(scaninfo.fileAttachment!=''){
-            $("#btnDownloadAtt").attr('disabled', false);
+        if(scaninfo.fileAttachment==''||scaninfo.fileAttachment==null){
+            $("#btnDownloadAtt").attr('disabled', true);
         }
         else{
-            $("#btnDownloadAtt").attr('disabled', true);
+            $("#btnDownloadAtt").attr('disabled', false);
         }
         deferred.resolve(scaninfo);
     }
@@ -422,6 +419,9 @@ function SetReadonly(Enable) {
         $("#id_isProcessed").attr('disabled', true);
         $("#id_description").attr("readonly","readonly");
         $("#scanInfoBtn").addClass("hidden");
+
+        // Dissable Save button
+        ("#saveInfoBtn").attr('disabled', true);
     }
     else{
         $('#id_name').removeAttr("readonly");
@@ -445,6 +445,9 @@ function SetReadonlyAttachment(Enable) {
         $("#fileAtt").attr('disabled', true);
         // $("#btnDownloadAtt").attr('disabled', false);
         $("#scanAttBtn").addClass("hidden");
+
+        // Disable Upload Button
+        $('#uploadAttBtn').attr('disabled', true);
     }
     else{
         $("#btnBrowseAtt").attr('disabled', false);

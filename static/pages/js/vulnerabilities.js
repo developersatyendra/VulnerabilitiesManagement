@@ -49,8 +49,9 @@ $(document).ready(
                     sortable: true
                 }
             ],
-            url: "/vuln/api/getvulns",
-            method: "get",
+            // url: "/vuln/api/getvulns",
+            // method: "get",
+            ajax: ajaxRequest,
             idField: "id",
             queryParamsType: "",
             striped: true,
@@ -82,6 +83,9 @@ $(document).ready(
                 notification.html("The vulnerability is edited.");
                 notification.removeClass("alert-danger");
                 notification.addClass("alert-info");
+
+                // Disable Save button
+                $("#saveEditBtn").attr('disabled', true);
             }
             notification.append(closebtn);
             $("#vulntable").bootstrapTable('refresh');
@@ -109,6 +113,9 @@ $(document).ready(
                 notification.html("New vulnerability is added.");
                 notification.removeClass("alert-danger");
                 notification.addClass("alert-info");
+
+                // Disable Save button
+                $("#saveAddBtn").attr('disabled', true);
             }
             notification.append(closebtn);
             $("#vulntable").bootstrapTable('refresh');
@@ -141,6 +148,9 @@ $(document).ready(
                 if(returnedData.status == 0){
                     $('#warningOnDelete').modal('hide');
                     $("#vulntable").bootstrapTable('refresh');
+
+                    $('#msgInfo').text(returnedData.message);
+                    $('#infoModal').modal('show');
                 }
         }, 'json');
         $('#warningOnDelete').modal('hide')
@@ -180,6 +190,9 @@ $(document).ready(
             $('#id_description_edit').val(data[0].description);
             $('#editVulnModal').modal('show');
             rowIDSelected = data[0].id;
+
+            // Disable Save Edit
+            $("#saveEditBtn").attr('disabled', true);
         }
     }),
 
@@ -199,10 +212,91 @@ $(document).ready(
         else{
             delBtn.removeClass("disabled");
         }
+    }),
+
+    //////////////////////////////////////////
+    // When the close does. Hide it instead of remove it with Dom
+    //
+    $('.alert').on('close.bs.alert', function (e) {
+        $(this).addClass("hidden");
+        e.preventDefault();
+    }),
+
+    //////////////////////////////////////////
+    // Form on change to enable submit buttons
+    //
+
+    // Add form
+    $('#addVulnPostForm').change(function () {
+        $('#saveAddBtn').attr('disabled', false);
+    }),
+    $("#id_name").on("input", function () {
+        $("#saveAddBtn").attr('disabled', false);
+    }),
+    $("#id_levelRisk").on("input", function(){
+        $("#saveAddBtn").attr('disabled', false);
+    }),
+    $("#id_cve").on("input", function () {
+        $("#saveAddBtn").attr('disabled', false);
+    }),
+    $("#id_observation").on("input", function () {
+        $("#saveAddBtn").attr('disabled', false);
+    }),
+    $("#id_recommendation").on("input", function () {
+        $("#saveAddBtn").attr('disabled', false);
+    }),
+    $("#id_description").on("input", function () {
+        $("#saveAddBtn").attr('disabled', false);
+    }),
+
+    // Edit form
+    $('#editVulnPostForm').change(function () {
+        $('#saveEditBtn').attr('disabled', false);
+    }),
+    $("#id_name_edit").on("input", function () {
+        $('#saveEditBtn').attr('disabled', false);
+    }),
+    $("#id_levelRisk_edit").on("input", function(){
+        $("#saveEditBtn").attr('disabled', false);
+    }),
+    $("#id_cve_edit").on("input", function () {
+        $('#saveEditBtn').attr('disabled', false);
+    }),
+    $("#id_observation_edit").on("input", function () {
+        $('#saveEditBtn').attr('disabled', false);
+    }),
+    $("#id_recommendation_edit").on("input", function () {
+        $('#saveEditBtn').attr('disabled', false);
+    }),
+    $("#id_description_edit").on("input", function () {
+        $('#saveEditBtn').attr('disabled', false);
     })
 );
 
 // Format Href for bootstrap table
 function HrefFormater(value, row, index) {
     return '<a href="' + row.id + '"> ' + row.name +'</a>';
+}
+
+//////////////////////////////////////////
+// Ajax get data to table
+//
+function ajaxRequest(params) {
+    $.ajax({
+        type: "GET",
+        url: "/vuln/api/getvulns",
+        data: params.data,
+        dataType: "json",
+        success: function(data) {
+            if(data.status == 0){
+                params.success({
+                    "rows": data.object.rows,
+                    "total": data.object.total
+                })
+            }
+        },
+       error: function (er) {
+            params.error(er);
+        }
+    });
 }

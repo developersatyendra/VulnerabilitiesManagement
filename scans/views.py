@@ -171,6 +171,7 @@ class APIDeleteScan(APIView):
             successOnDelete = 0
             try:
                 ids = scanForm.data['id'].split(',')
+                idLength = len(ids)
             except MultiValueDictKeyError:
                 return Response({'status': '-1', 'message': 'Fields are required',
                                  'detail': {"id": [{"message": "ID is required", "code": "required"}]}})
@@ -187,8 +188,12 @@ class APIDeleteScan(APIView):
                     else:
                         retVuln.delete()
                         successOnDelete = successOnDelete + 1
-            return Response(
-                {'status': '0', 'message': '{} Scanning Task(s) is successfully deleted'.format(successOnDelete)})
+            if successOnDelete==1:
+                return Response(
+                    {'status': '0', 'message': '1 Scanning Task is successfully deleted.', 'numDeleted':successOnDelete})
+            else:
+                return Response(
+                {'status': '0', 'message': '{} Scanning Tasks are successfully deleted.'.format(successOnDelete), 'numDeleted': successOnDelete})
         else:
             return Response({'status': '-1', 'message': 'Form is invalid', 'detail': {scanForm.errors}})
 
@@ -305,8 +310,7 @@ class APIDeleteAttachment(APIView):
                 RemoveFile(scanObj.fileAttachment.path)
                 scanObj.fileAttachment = None
                 scanObj.save()
-                dataSerialized = ScanSerializer(scanObj, many=False)
-                return Response({'status': '0', 'message': 'Attachment is deleted successfully', 'object': dataSerialized.data})
+                return Response({'status': '0', 'message': 'Attachment is deleted successfully'})
             return Response({'status': '-1', 'message': 'Scan Task does not have attachment'})
         else:
             return Response({'status': '-1', 'message': 'Fields are required',

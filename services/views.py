@@ -97,7 +97,7 @@ class APIGetServices(APIView):
         data = dict()
         data["total"] = numObject
         data['rows'] = dataSerialized.data
-        return Response(data)
+        return Response({"status":0, "object":data})
 
 
 #
@@ -169,9 +169,13 @@ class APIDeleteService(APIView):
                     else:
                         retService.delete()
                         successOnDelete = successOnDelete + 1
-            return Response({'status': '0', 'message': '{} service(s) is successfully deleted'.format(successOnDelete)})
+            if successOnDelete==1:
+                return Response(
+                    {'status': '0', 'message': '1 service is successfully deleted.', "numDelete": successOnDelete})
+            else:
+                return Response({'status': '0', 'message': '{} services are successfully deleted.'.format(successOnDelete), "numDelete":successOnDelete})
         else:
-            return Response({'status': '-1', 'message': 'Form is invalid', 'detail': {serviceForm.errors}})
+            return Response({'status': '-1', 'message': 'Form is invalid.', 'detail': {serviceForm.errors}})
 
 
 #

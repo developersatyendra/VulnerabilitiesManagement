@@ -107,7 +107,7 @@ class APIGetVulns(APIView):
         data = dict()
         data["total"] = numObject
         data['rows'] = dataSerialized.data
-        return Response(data)
+        return Response({'status':0, 'object':data})
 
 
 #
@@ -179,8 +179,12 @@ class APIDeleteVuln(APIView):
                     else:
                         retVuln.delete()
                         successOnDelete = successOnDelete + 1
+            if successOnDelete==1:
                 return Response(
-                            {'status': '0', 'message': '{} vulnerability(ies) is successfully deleted'.format(successOnDelete)})
+                            {'status': '0', 'message': '1 Vulnerability is successfully deleted.'})
+            else:
+                return Response(
+                {'status': '0', 'message': '{} Vulnerabilities are successfully deleted.'.format(successOnDelete), 'numDeleted': successOnDelete})
         else:
             return Response({'status': '-1', 'message': 'Form is invalid', 'detail': {vulnForm.errors}})
 

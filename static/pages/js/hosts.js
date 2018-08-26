@@ -43,8 +43,9 @@ $(document).ready(
                     sortable: true
                 }
             ],
-            url: "/hosts/api/gethosts",
-            method: "get",
+            // url: "/hosts/api/gethosts",
+            // method: "get",
+            ajax: ajaxRequest,
             idField: "id",
             queryParamsType: "",
             striped: true,
@@ -75,6 +76,9 @@ $(document).ready(
                 notification.html("The host is edited.");
                 notification.removeClass("alert-danger");
                 notification.addClass("alert-info");
+
+                // Disable Save Edit Button
+                $('#saveEditBtn').attr('disabled', true);
             }
             notification.append(closebtn);
             $("#hosttable").bootstrapTable('refresh');
@@ -102,6 +106,9 @@ $(document).ready(
                 notification.html("New Host is added.");
                 notification.removeClass("alert-danger");
                 notification.addClass("alert-info");
+
+                // Disable Save Add button
+                $('#saveAddBtn').attr('disabled', true);
             }
             notification.append(closebtn);
             $("#hosttable").bootstrapTable('refresh');
@@ -134,6 +141,9 @@ $(document).ready(
                 if(returnedData.status == 0){
                     $('#warningOnDelete').modal('hide');
                     $("#hosttable").bootstrapTable('refresh');
+
+                    $('#msgInfo').text(returnedData.message);
+                    $('#infoModal').modal('show');
                 }
         }, 'json');
         $('#warningOnDelete').modal('hide')
@@ -168,6 +178,9 @@ $(document).ready(
             $('#id_description_edit').val(data[0].description);
             $('#editHostModal').modal('show');
             rowIDSelected = data[0].id;
+
+            // Disable Save Edit Button
+            $('#saveEditBtn').attr('disabled', true);
         }
     }),
     //
@@ -189,10 +202,86 @@ $(document).ready(
         else{
             delBtn.removeClass("disabled");
         }
+    }),
+
+    //////////////////////////////////////////
+    // When the close does. Hide it instead of remove it with Dom
+    //
+    $('.alert').on('close.bs.alert', function (e) {
+        $(this).addClass("hidden");
+        e.preventDefault();
+    }),
+
+    //////////////////////////////////////////
+    // Form on change to enable submit buttons
+    //
+
+    // Add form
+    $('#addHostPostForm').change(function () {
+        $('#saveAddBtn').attr('disabled', false);
+    }),
+    $("#id_hostName").on("input", function () {
+        $("#saveAddBtn").attr('disabled', false);
+    }),
+    $("#id_ipAddr").on("input", function () {
+        $("#saveAddBtn").attr('disabled', false);
+    }),
+    $("#id_osName").on("input", function () {
+        $("#saveAddBtn").attr('disabled', false);
+    }),
+    $("#id_osVersion").on("input", function () {
+        $("#saveAddBtn").attr('disabled', false);
+    }),
+    $("#id_description").on("input", function () {
+        $("#saveAddBtn").attr('disabled', false);
+    }),
+
+    // Edit form
+    $('#editHostModal').change(function () {
+        $('#saveEditBtn').attr('disabled', false);
+    }),
+    $("#id_hostName_edit").on("input", function () {
+        $("#saveEditBtn").attr('disabled', false);
+    }),
+    $("#id_ipAddr_edit").on("input", function () {
+        $("#saveEditBtn").attr('disabled', false);
+    }),
+    $("#id_osName_edit").on("input", function () {
+        $("#saveEditBtn").attr('disabled', false);
+    }),
+    $("#id_osVersion_edit").on("input", function () {
+        $("#saveEditBtn").attr('disabled', false);
+    }),
+    $("#id_description_edit").on("input", function () {
+        $("#saveEditBtn").attr('disabled', false);
     })
+
 );
 
 // Format Href for bootstrap table
 function HrefFormater(value, row, index) {
     return '<a href="./' + row.id + '"> ' + row.hostName +'</a>';
+}
+
+//////////////////////////////////////////
+// Ajax get data to table
+//
+function ajaxRequest(params) {
+    $.ajax({
+        type: "GET",
+        url: "/hosts/api/gethosts",
+        data: params.data,
+        dataType: "json",
+        success: function(data) {
+            if(data.status == 0){
+                params.success({
+                    "rows": data.object.rows,
+                    "total": data.object.total
+                })
+            }
+        },
+       error: function (er) {
+            params.error(er);
+        }
+    });
 }

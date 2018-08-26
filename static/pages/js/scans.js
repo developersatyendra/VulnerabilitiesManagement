@@ -226,6 +226,9 @@ $(document).ready(
                 if(returnedData.status == 0){
                     $('#warningOnDelete').modal('hide');
                     $("#scanstable").bootstrapTable('refresh');
+
+                    $('#msgInfo').text(returnedData.message);
+                    $('#infoModal').modal('show');
                 }
         }, 'json');
         $('#warningOnDelete').modal('hide')
@@ -297,6 +300,14 @@ $(document).ready(
     }),
 
     //////////////////////////////////////////
+    // When the close does. Hide it instead of remove it with Dom
+    //
+    $('.alert').on('close.bs.alert', function (e) {
+        $(this).addClass("hidden");
+        e.preventDefault();
+    }),
+
+    //////////////////////////////////////////
     // Form on change to enable submit buttons
     //
 
@@ -333,7 +344,6 @@ $(document).ready(
     $("#dpEditEndTime").on('dp.change', function(){
         $("#saveEditBtn").attr('disabled', false);
     })
-
 );
 
 // Format href for bootstrap table
@@ -390,10 +400,6 @@ function BooleanFormatter(value, row, index){
 // Ajax get data to table
 //
 function ajaxRequest(params) {
-
-    // data you may need
-    console.log(params.data);
-
     $.ajax({
         type: "GET",
         url: "/scans/api/getscans",
@@ -401,7 +407,6 @@ function ajaxRequest(params) {
         dataType: "json",
         success: function(data) {
             if(data.status == 0){
-                console.log(data);
                 params.success({
                     "rows": data.object.rows,
                     "total": data.object.total

@@ -97,9 +97,6 @@ $(document).ready(
                 $("#titleInfo").text("About");
                 $("#msgInfo").text("The project is updated.");
                 SetReadonly(true);
-
-                // Dissable Save button
-                $("#saveInfoBtn").attr('disabled', true);
             }
             $("#infoModal").modal("show");
         });

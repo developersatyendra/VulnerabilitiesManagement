@@ -177,8 +177,12 @@ class APIDeleteProject(APIView):
                     else:
                         retVuln.delete()
                         successOnDelete = successOnDelete + 1
-            return Response(
-                {'status': '0', 'message': '{} Scanning Task(s) is successfully deleted'.format(successOnDelete)})
+            if successOnDelete==1:
+                return Response(
+                    {'status': '0', 'message': '1 Project is successfully deleted.', 'numDeleted':successOnDelete})
+            else:
+                return Response(
+                {'status': '0', 'message': '{} Projects are successfully deleted.'.format(successOnDelete), 'numDeleted':successOnDelete})
         else:
             return Response({'status': '-1', 'message': 'Form is invalid', 'detail': {projectForm.errors}})
 

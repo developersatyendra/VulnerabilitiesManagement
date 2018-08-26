@@ -33,7 +33,7 @@ $(document).ready(
                     field: "dateCreated",
                     align: "center",
                     valign: "middle",
-                    formatter: DateTimeFormater,
+                    formatter: FormattedDate,
                     sortable: true
                 },
                 {
@@ -44,8 +44,9 @@ $(document).ready(
                     sortable: true
                 }
             ],
-            url: "/services/api/getservices",
-            method: "get",
+            // url: "/services/api/getservices",
+            // method: "get",
+            ajax: ajaxRequest,
             idField: "id",
             queryParamsType: "",
             striped: true,
@@ -76,6 +77,9 @@ $(document).ready(
                 notification.html("The service is edited.");
                 notification.removeClass("alert-danger");
                 notification.addClass("alert-info");
+
+                // Disable Save button
+                $("#saveEditBtn").attr('disabled', true);
             }
             notification.append(closebtn);
             $("#servicetable").bootstrapTable('refresh');
@@ -103,6 +107,9 @@ $(document).ready(
                 notification.html("New service is added.");
                 notification.removeClass("alert-danger");
                 notification.addClass("alert-info");
+
+                // Disable Save button
+                $("#saveAddBtn").attr('disabled', true);
             }
             notification.append(closebtn);
             $("#servicetable").bootstrapTable('refresh');
@@ -135,6 +142,9 @@ $(document).ready(
                 if(returnedData.status == 0){
                     $('#warningOnDelete').modal('hide');
                     $("#servicetable").bootstrapTable('refresh');
+
+                    $('#msgInfo').text(returnedData.message);
+                    $('#infoModal').modal('show');
                 }
         }, 'json');
         $('#warningOnDelete').modal('hide')
@@ -170,6 +180,9 @@ $(document).ready(
             $('#id_description_edit').val(data[0].description);
             $('#editServiceModal').modal('show');
             rowIDSelected = data[0].id;
+
+            // Dissable Save Edit Button
+            $("#saveEditBtn").attr('disabled', true);
         }
     }),
     //
@@ -191,16 +204,109 @@ $(document).ready(
         else{
             delBtn.removeClass("disabled");
         }
+    }),
+
+    //////////////////////////////////////////
+    // When the close does. Hide it instead of remove it with Dom
+    //
+    $('.alert').on('close.bs.alert', function (e) {
+        $(this).addClass("hidden");
+        e.preventDefault();
+    }),
+
+    //////////////////////////////////////////
+    // Form on change to enable submit buttons
+    //
+
+    // Add form
+    $('#addServicePostForm').change(function () {
+        $('#saveAddBtn').attr('disabled', false);
+    }),
+    $("#id_name").on("input", function () {
+        $("#saveAddBtn").attr('disabled', false);
+    }),
+    $("#id_port").on("input", function () {
+        $("#saveAddBtn").attr('disabled', false);
+    }),
+    $("#id_description").on("input", function () {
+        $("#saveAddBtn").attr('disabled', false);
+    }),
+
+    // Edit form
+    $('#editServicePostForm').change(function () {
+        $('#saveEditBtn').attr('disabled', false);
+    }),
+    $("#id_name_edit").on("input", function () {
+        $("#saveEditBtn").attr('disabled', false);
+    }),
+    $("#id_port_edit").on("input", function () {
+        $("#saveEditBtn").attr('disabled', false);
+    }),
+    $("#id_description_edit").on("input", function () {
+        $("#saveEditBtn").attr('disabled', false);
     })
 );
 
 // Format Datetime for bootstrap table
-function DateTimeFormater(value, row, index) {
-    date_t = new Date(value);
-    return date_t.toLocaleString();
+function FormattedDate(input) {
+    date = new Date(input);
+    // Get year
+    var year = date.getFullYear();
+
+    // Get month
+    var month = (1 + date.getMonth()).toString();
+    month = month.length > 1 ? month : '0' + month;
+
+    // Get day
+    var day = date.getDate().toString();
+    day = day.length > 1 ? day : '0' + day;
+
+    // Get hours
+    var hours = date.getHours();
+
+    // AM PM
+    var ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours.toString();
+    hours = hours.length > 1 ? hours: '0' + hours;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+
+    // Get minutes
+    var minutes = date.getMinutes().toString();
+    minutes = minutes < 10 ? '0'+minutes : minutes;
+    minutes = minutes.length > 1 ? minutes: '0' + minutes;
+
+    // Get seconds
+    var seconds = date.getSeconds().toString();
+    seconds = seconds.length > 1 ? seconds: '0' + seconds;
+
+    return month + '/' + day + '/' + year + ' ' + hours + ':' + minutes +':'+seconds+ ' ' + ampm;
 }
 
 // Format Href for bootstrap table
 function HrefFormater(value, row, index) {
     return '<a href="' + row.id + '"> ' + row.name +'</a>';
+}
+
+//////////////////////////////////////////
+// Ajax get data to table
+//
+function ajaxRequest(params) {
+    $.ajax({
+        type: "GET",
+        url: "/services/api/getservices",
+        data: params.data,
+        dataType: "json",
+        success: function (data) {
+            if (data.status == 0) {
+                params.success({
+                    "rows": data.object.rows,
+                    "total": data.object.total
+                })
+            }
+        },
+        error: function (er) {
+            params.error(er);
+        }
+    });
 }

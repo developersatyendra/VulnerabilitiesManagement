@@ -101,7 +101,7 @@ class APIGetHosts(APIView):
         data = dict()
         data["total"] = numObject
         data['rows'] = dataSerialized.data
-        return Response(data)
+        return Response({'status': 0, 'object':data})
 
 
 #
@@ -175,8 +175,12 @@ class APIDeleteHost(APIView):
                     else:
                         retService.delete()
                         successOnDelete = successOnDelete + 1
-                        return Response(
-                            {'status': '0', 'message': '{} host(s) is successfully deleted'.format(successOnDelete)})
+            if successOnDelete==1:
+                return Response(
+                    {'status': '0', 'message': '1 host is successfully deleted.', 'numDeleted': successOnDelete})
+            else:
+                return Response(
+                            {'status': '0', 'message': '{} hosts are successfully deleted.'.format(successOnDelete), 'numDeleted': successOnDelete})
         else:
             return Response({'status': '-1', 'message': 'Form is invalid', 'detail': {hostForm.errors}})
 
