@@ -27,6 +27,9 @@ body {
     border-left: 1px solid #e7e7e7;
   }
 }
+.divnav{
+  margin-bottom: 20px;
+}
 .navbar-top-links {
   margin-right: 0;
 }

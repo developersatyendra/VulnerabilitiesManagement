@@ -2,30 +2,18 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7e1e5878-3e63-44a6-b2e6-eb13b43afe37" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/hosts/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/hosts/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/projects/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scans/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/scans/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/pages/js/host_detailed.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/pages/js/host_detailed.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/pages/js/hosts.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/pages/js/hosts.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/pages/js/project_detailed.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/pages/js/project_detailed.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/pages/js/projects.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/pages/js/projects.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/pages/js/scan_detailed.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/pages/js/scan_detailed.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/pages/js/scans.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/pages/js/scans.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/pages/js/service_detailed.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/pages/js/service_detailed.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/pages/js/services.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/pages/js/services.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/pages/js/vuln_detailed.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/pages/js/vuln_detailed.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/pages/js/vulnerabilities.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/pages/js/vulnerabilities.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/host_detailed.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/host_detailed.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/hosts.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/hosts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/attachments/2018/07/16/3._KichBan_XuLy_Virus_ATM.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/attachments/2018/07/16/bcs_ds_fullproxy_900-9000_v5l.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/attachments/2018/07/16/cuckoo.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/attachments/2018/07/16/cuckoo_dX1918j.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/attachments/2018/07/16/mantis.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/attachments/2018/07/17/cuckoo.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/attachments/2018/07/17/cuckoo_nXf231k.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/dist/css/sb-admin-2.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/dist/css/sb-admin-2.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/project_detailed.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/project_detailed.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/projects.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/projects.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/scans.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/scans.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/service_detailed.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/service_detailed.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/services.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/services.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/vuln_detailed.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/vuln_detailed.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/vulns.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/vulns.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vulnerabilities/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/vulnerabilities/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/submit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/submit.html" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -40,28 +28,32 @@
     <session id="-1580128110">
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="html" value="16" />
+          <entry key="css" value="1" />
+          <entry key="html" value="18" />
           <entry key="js" value="22" />
-          <entry key="py" value="11" />
+          <entry key="py" value="13" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="HTML" value="16" />
+          <entry key="CSS" value="1" />
+          <entry key="HTML" value="18" />
           <entry key="JavaScript" value="22" />
-          <entry key="Python" value="11" />
+          <entry key="Python" value="13" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="html" value="148" />
+          <entry key="css" value="22" />
+          <entry key="html" value="291" />
           <entry key="js" value="1306" />
           <entry key="py" value="481" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="HTML" value="148" />
+          <entry key="CSS" value="22" />
+          <entry key="HTML" value="291" />
           <entry key="JavaScript" value="1306" />
           <entry key="Python" value="481" />
         </counts>
@@ -69,13 +61,13 @@
     </session>
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.47929397">
+    <splitter split-orientation="horizontal" split-proportion="0.47106874">
       <split-first>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file pinned="false" current-in-tab="true">
+          <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/static/pages/js/hosts.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="2050">
+                <state relative-caret-position="340">
                   <caret line="212" column="7" selection-start-line="212" selection-start-column="7" selection-end-line="212" selection-end-column="7" />
                 </state>
               </provider>
@@ -99,15 +91,33 @@
               </provider>
             </entry>
           </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/templates/submit.html">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="527">
+                  <caret line="83" column="10" selection-start-line="83" selection-start-column="10" selection-end-line="83" selection-end-column="10" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/scans/models.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="390">
+                  <caret line="32" lean-forward="true" selection-start-line="32" selection-end-line="32" />
+                </state>
+              </provider>
+            </entry>
+          </file>
         </leaf>
       </split-first>
       <split-second>
         <leaf>
-          <file pinned="false" current-in-tab="false">
+          <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/scans/views.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="609">
-                  <caret line="195" column="65" selection-start-line="195" selection-start-column="65" selection-end-line="195" selection-end-column="65" />
+                <state relative-caret-position="135">
+                  <caret line="45" column="54" lean-forward="true" selection-start-line="45" selection-start-column="54" selection-end-line="45" selection-end-column="54" />
                   <folding>
                     <element signature="e#0#35#0" expanded="true" />
                   </folding>
@@ -115,7 +125,37 @@
               </provider>
             </entry>
           </file>
-          <file pinned="false" current-in-tab="true">
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/templates/project_detailed.html">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="262">
+                  <caret line="62" column="22" lean-forward="true" selection-start-line="62" selection-start-column="22" selection-end-line="62" selection-end-column="22" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/projects/views.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="510">
+                  <caret line="184" column="81" selection-start-line="184" selection-start-column="81" selection-end-line="184" selection-end-column="81" />
+                  <folding>
+                    <element signature="e#0#35#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/static/dist/css/sb-admin-2.css">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="570">
+                  <caret line="38" column="24" selection-start-line="38" selection-start-column="24" selection-end-line="38" selection-end-column="24" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/static/pages/js/projects.js">
               <provider selected="true" editor-type-id="text-editor">
                 <state relative-caret-position="203">
@@ -128,7 +168,7 @@
             <entry file="file://$PROJECT_DIR$/static/pages/js/scans.js">
               <provider selected="true" editor-type-id="text-editor">
                 <state relative-caret-position="354">
-                  <caret line="300" lean-forward="true" selection-start-line="300" selection-end-line="300" />
+                  <caret line="300" selection-start-line="300" selection-end-line="300" />
                 </state>
               </provider>
             </entry>
@@ -136,8 +176,8 @@
           <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/templates/projects.html">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="442">
-                  <caret line="159" column="65" selection-start-line="159" selection-start-column="65" selection-end-line="159" selection-end-column="65" />
+                <state relative-caret-position="352">
+                  <caret line="72" column="22" selection-start-line="72" selection-start-column="22" selection-end-line="72" selection-end-column="22" />
                 </state>
               </provider>
             </entry>
@@ -146,7 +186,7 @@
             <entry file="file://$PROJECT_DIR$/scans/urls.py">
               <provider selected="true" editor-type-id="text-editor">
                 <state relative-caret-position="225">
-                  <caret line="15" column="1" lean-forward="true" selection-start-line="15" selection-start-column="1" selection-end-line="15" selection-end-column="1" />
+                  <caret line="15" column="1" selection-start-line="15" selection-start-column="1" selection-end-line="15" selection-end-column="1" />
                   <folding>
                     <element signature="e#0#28#0" expanded="true" />
                   </folding>
@@ -166,8 +206,8 @@
           <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/static/pages/js/service_detailed.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="-532">
-                  <caret line="118" column="28" lean-forward="true" selection-start-line="118" selection-start-column="28" selection-end-line="118" selection-end-column="28" />
+                <state relative-caret-position="728">
+                  <caret line="118" column="28" selection-start-line="118" selection-start-column="28" selection-end-line="118" selection-end-column="28" />
                 </state>
               </provider>
             </entry>
@@ -187,7 +227,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>FillIn</find>
       <find>FillInfoAttachment</find>
       <find>getAttachm</find>
       <find>hours</find>
@@ -215,8 +254,9 @@
       <find>flagDataStored</find>
       <find>$('#saveInfoBtn').attr('disabled', true);</find>
       <find>saveInfoBtn</find>
-      <find>serviceinfo</find>
       <find>saveEditBtn</find>
+      <find>serviceinfo</find>
+      <find>nav nav-tabs</find>
     </findStrings>
     <replaceStrings>
       <replace>querySet</replace>
@@ -250,7 +290,6 @@
         <option value="$PROJECT_DIR$/submit/models.py" />
         <option value="$PROJECT_DIR$/static/pages/js/submit.js" />
         <option value="$PROJECT_DIR$/submit/submitprocessor.py" />
-        <option value="$PROJECT_DIR$/templates/submit.html" />
         <option value="$PROJECT_DIR$/services/urls.py" />
         <option value="$PROJECT_DIR$/submit/views.py" />
         <option value="$PROJECT_DIR$/services/models.py" />
@@ -271,13 +310,10 @@
         <option value="$PROJECT_DIR$/projects/models.py" />
         <option value="$PROJECT_DIR$/scans/models.py" />
         <option value="$PROJECT_DIR$/projects/urls.py" />
-        <option value="$PROJECT_DIR$/static/dist/css/sb-admin-2.css" />
         <option value="$PROJECT_DIR$/projects/serializers.py" />
-        <option value="$PROJECT_DIR$/templates/project_detailed.html" />
         <option value="$PROJECT_DIR$/templates/vulns.html" />
         <option value="$PROJECT_DIR$/templates/scans.html" />
         <option value="$PROJECT_DIR$/vulnerabilities/views.py" />
-        <option value="$PROJECT_DIR$/templates/projects.html" />
         <option value="$PROJECT_DIR$/scans/views.py" />
         <option value="$PROJECT_DIR$/projects/views.py" />
         <option value="$PROJECT_DIR$/templates/base.html" />
@@ -298,6 +334,10 @@
         <option value="$PROJECT_DIR$/static/pages/js/hosts.js" />
         <option value="$PROJECT_DIR$/static/pages/js/scans.js" />
         <option value="$PROJECT_DIR$/static/pages/js/projects.js" />
+        <option value="$PROJECT_DIR$/templates/projects.html" />
+        <option value="$PROJECT_DIR$/static/dist/css/sb-admin-2.css" />
+        <option value="$PROJECT_DIR$/templates/submit.html" />
+        <option value="$PROJECT_DIR$/templates/project_detailed.html" />
       </list>
     </option>
   </component>
@@ -335,6 +375,11 @@
             <path>
               <item name="VulnerabilitiesManagement" type="b2602c69:ProjectViewProjectNode" />
               <item name="VulnerabilitiesManagement" type="462c0819:PsiDirectoryNode" />
+              <item name="media" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="VulnerabilitiesManagement" type="b2602c69:ProjectViewProjectNode" />
+              <item name="VulnerabilitiesManagement" type="462c0819:PsiDirectoryNode" />
               <item name="projects" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -351,6 +396,19 @@
               <item name="VulnerabilitiesManagement" type="b2602c69:ProjectViewProjectNode" />
               <item name="VulnerabilitiesManagement" type="462c0819:PsiDirectoryNode" />
               <item name="static" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="VulnerabilitiesManagement" type="b2602c69:ProjectViewProjectNode" />
+              <item name="VulnerabilitiesManagement" type="462c0819:PsiDirectoryNode" />
+              <item name="static" type="462c0819:PsiDirectoryNode" />
+              <item name="dist" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="VulnerabilitiesManagement" type="b2602c69:ProjectViewProjectNode" />
+              <item name="VulnerabilitiesManagement" type="462c0819:PsiDirectoryNode" />
+              <item name="static" type="462c0819:PsiDirectoryNode" />
+              <item name="dist" type="462c0819:PsiDirectoryNode" />
+              <item name="css" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="VulnerabilitiesManagement" type="b2602c69:ProjectViewProjectNode" />
@@ -618,13 +676,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scans/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="32" lean-forward="true" selection-start-line="32" selection-end-line="32" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/VulnerablititesManagement/settings.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="17">
@@ -655,13 +706,6 @@
           <folding>
             <element signature="e#0#28#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/dist/css/sb-admin-2.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="16" column="18" lean-forward="true" selection-start-line="16" selection-start-column="18" selection-end-line="16" selection-end-column="18" />
         </state>
       </provider>
     </entry>
@@ -703,16 +747,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/templates/submit.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1395">
-          <caret line="93" column="61" selection-start-line="93" selection-start-column="61" selection-end-line="93" selection-end-column="61" />
-          <folding>
-            <element signature="e#5454#6511#0#HTML" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/templates/scan_detailed.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1027">
@@ -723,7 +757,7 @@
     <entry file="file://$PROJECT_DIR$/scans/urls.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="225">
-          <caret line="15" column="1" lean-forward="true" selection-start-line="15" selection-start-column="1" selection-end-line="15" selection-end-column="1" />
+          <caret line="15" column="1" selection-start-line="15" selection-start-column="1" selection-end-line="15" selection-end-column="1" />
           <folding>
             <element signature="e#0#28#0" expanded="true" />
           </folding>
@@ -748,16 +782,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="302">
           <caret line="35" column="36" lean-forward="true" selection-start-line="35" selection-start-column="36" selection-end-line="35" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/projects/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="510">
-          <caret line="184" column="81" selection-start-line="184" selection-start-column="81" selection-end-line="184" selection-end-column="81" />
-          <folding>
-            <element signature="e#0#35#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -789,23 +813,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="952">
           <caret line="139" column="61" lean-forward="true" selection-start-line="139" selection-start-column="61" selection-end-line="139" selection-end-column="61" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/project_detailed.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1785">
-          <caret line="119" column="73" selection-start-line="119" selection-start-column="73" selection-end-line="119" selection-end-column="73" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scans/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="609">
-          <caret line="195" column="65" selection-start-line="195" selection-start-column="65" selection-end-line="195" selection-end-column="65" />
-          <folding>
-            <element signature="e#0#35#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -879,13 +886,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/static/pages/js/service_detailed.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-532">
-          <caret line="118" column="28" lean-forward="true" selection-start-line="118" selection-start-column="28" selection-end-line="118" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/static/pages/js/vulnerabilities.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="265">
@@ -896,14 +896,7 @@
     <entry file="file://$PROJECT_DIR$/static/pages/js/scans.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="354">
-          <caret line="300" lean-forward="true" selection-start-line="300" selection-end-line="300" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/projects.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="159" column="65" selection-start-line="159" selection-start-column="65" selection-end-line="159" selection-end-column="65" />
+          <caret line="300" selection-start-line="300" selection-end-line="300" />
         </state>
       </provider>
     </entry>
@@ -923,8 +916,70 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/static/pages/js/hosts.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2050">
+        <state relative-caret-position="340">
           <caret line="212" column="7" selection-start-line="212" selection-start-column="7" selection-end-line="212" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/projects.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="352">
+          <caret line="72" column="22" selection-start-line="72" selection-start-column="22" selection-end-line="72" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/static/pages/js/service_detailed.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="728">
+          <caret line="118" column="28" selection-start-line="118" selection-start-column="28" selection-end-line="118" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/static/dist/css/sb-admin-2.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="570">
+          <caret line="38" column="24" selection-start-line="38" selection-start-column="24" selection-end-line="38" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/project_detailed.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="262">
+          <caret line="62" column="22" lean-forward="true" selection-start-line="62" selection-start-column="22" selection-end-line="62" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/projects/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="510">
+          <caret line="184" column="81" selection-start-line="184" selection-start-column="81" selection-end-line="184" selection-end-column="81" />
+          <folding>
+            <element signature="e#0#35#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/submit.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="527">
+          <caret line="83" column="10" selection-start-line="83" selection-start-column="10" selection-end-line="83" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scans/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="390">
+          <caret line="32" lean-forward="true" selection-start-line="32" selection-end-line="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scans/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="45" column="54" lean-forward="true" selection-start-line="45" selection-start-column="54" selection-end-line="45" selection-end-column="54" />
+          <folding>
+            <element signature="e#0#35#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
