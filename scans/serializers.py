@@ -38,15 +38,14 @@ class ScanInfoSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ScanVulnSerializer(serializers.ModelSerializer):
-    # vulnCount = serializers.IntegerField(source='scanInfo_vulnFound.count')?
-    # scanInfo = ScanInfoSerializer(read_only=True, many=True)
+# Serializer Scan Task with Vulnerabilities Information
 
+class ScanVulnSerializer(serializers.ModelSerializer):
     vulnerabilities = serializers.SerializerMethodField()
     numHost = serializers.SerializerMethodField()
     class Meta:
         model = ScanTaskModel
-        fields = ['id', 'name', 'vulnerabilities' ,'numHost']
+        fields = ['id', 'name', 'startTime', 'endTime', 'vulnerabilities', 'numHost']
         depth = 3
 
     def get_attribute(self, obj):
@@ -54,14 +53,23 @@ class ScanVulnSerializer(serializers.ModelSerializer):
         return obj
 
     def get_vulnerabilities(self, obj):
-        for scanInfo in obj.scanInfo.all():
-            vulnIDs = scanInfo.vulnFound.all().values_list("id", flat=True)
-            high = VulnerabilityModel.objects.filter(Q(id__in=vulnIDs)&Q(levelRisk__gte=LEVEL_HIGH)).count()
-            med = VulnerabilityModel.objects.filter(Q(id__in=vulnIDs)&Q(levelRisk__gte=LEVEL_MED)&Q(levelRisk__lt=LEVEL_MED)).count()
-            low = VulnerabilityModel.objects.filter(
-                Q(id__in=vulnIDs) & Q(levelRisk__gt=LEVEL_INFO) & Q(levelRisk__lt=LEVEL_MED)).count()
-            info = VulnerabilityModel.objects.filter(Q(id__in=vulnIDs) & Q(levelRisk=LEVEL_INFO)).count()
-        return {'high':high, 'medium':med, 'low':low, 'information':info}
+        if self.context and self.context['advFilter'] == 'hostID':
+            vuln = obj.scanInfo.get(Q(hostScanned__id=self.context['advFilterValue'])).vulnFound
+            high = vuln.filter(levelRisk__gte=LEVEL_HIGH).count()
+            med = vuln.filter(Q(levelRisk__gte=LEVEL_MED)&Q(levelRisk__lt=LEVEL_MED)).count()
+            low = vuln.filter(Q(levelRisk__gt=LEVEL_INFO) & Q(levelRisk__lt=LEVEL_MED)).count()
+            info = vuln.filter(levelRisk=LEVEL_INFO).count()
+        else:
+            for scanInfo in obj.scanInfo.all():
+                vulnIDs = scanInfo.vulnFound.all().values_list("id", flat=True)
+                vuln = VulnerabilityModel.objects.filter(id__in=vulnIDs)
+                high = vuln.filter(levelRisk__gte=LEVEL_HIGH).count()
+                med = vuln.filter(Q(levelRisk__gte=LEVEL_MED)&Q(levelRisk__lt=LEVEL_MED)).count()
+                low = vuln.filter(Q(levelRisk__gt=LEVEL_INFO) & Q(levelRisk__lt=LEVEL_MED)).count()
+                info = vuln.filter(levelRisk=LEVEL_INFO).count()
+        return {'high': high, 'medium': med, 'low': low, 'information': info}
 
     def get_numHost(self, obj):
         return obj.scanInfo.all().count()
+
+

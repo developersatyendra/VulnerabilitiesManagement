@@ -8,6 +8,8 @@ urlpatterns = [
     path('<int:id>', views.ScansDetailView.as_view(), name='scanDetail'),
 
     # APIs
+    path('api/getscansvulns', apis.APIGetScansVuln.as_view(), name='APIgetscansvulns'),
+
     path('api/getscans', apis.APIGetScans.as_view(), name='APIgetscans'),
     path('api/getscanbyid', apis.APIGetScanByID.as_view(), name='APIgetscanbyid'),
     path('api/addscan', apis.APIAddScan.as_view(), name='APIaddscan'),
