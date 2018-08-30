@@ -50,7 +50,11 @@ def RenderSideBar(request):
         if btn.childBtn:
             ndBtnHtml = ''
             for btnSub in btn.childBtn:
-                if btnSub.href == request.get_full_path():
+                btnSubHref = str(btnSub.href).lower()
+                fullPathUrl = str(request.get_full_path())
+                print(btnSubHref)
+                print(fullPathUrl)
+                if btnSubHref in fullPathUrl:
                     btn.isActive = True
                     btnSub.isActive = True
                 ndBtnHtml = ndBtnHtml + "<li>\
@@ -64,7 +68,9 @@ def RenderSideBar(request):
                         <!-- /.nav-second-level -->\
                     </li>".format('class=\"active\"' if btn.isActive else "", btn.href, btn.iconRef, btn.name, 'collapse in' if btn.isActive else 'collapse', ndBtnHtml)
         else:
-            if btn.href == request.get_full_path():
+            btnHref = str(btn.href).lower()
+            fullPathUrl = str(request.get_full_path())
+            if btnHref in fullPathUrl:
                 sidebarHtml = sidebarHtml + "<li><a href=\"{}\" {}><i class=\"{}\"></i> {}</a></li>".format(btn.href,
                                                                                                             'class=\"active\"',
                                                                                                             btn.iconRef,

@@ -5,25 +5,25 @@
     <title>Scans management - Services</title>
 
     <!-- Bootstrap Core CSS -->
-    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css'%}" rel="stylesheet">
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
 
     <!-- MetisMenu CSS -->
-    <link href="{% static 'vendor/metisMenu/metisMenu.min.css'%}" rel="stylesheet">
+    <link href="{% static 'vendor/metisMenu/metisMenu.min.css' %}" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="{% static 'dist/css/sb-admin-2.css'%}" rel="stylesheet">
+    <link href="{% static 'dist/css/sb-admin-2.css' %}" rel="stylesheet">
 
     <!-- Morris Charts CSS -->
-    <link href="{% static 'vendor/morrisjs/morris.css'%}" rel="stylesheet">
+    <link href="{% static 'vendor/morrisjs/morris.css' %}" rel="stylesheet">
 
     <!-- DataTables CSS -->
 {#    <link href="{% static 'vendor/datatables-plugins/dataTables.css' %}" rel="stylesheet">#}
 
     <!-- DataTables Responsive CSS -->
-    <link href=" {% static 'vendor/datatables-responsive/dataTables.responsive.css'%}" rel="stylesheet">
+    <link href=" {% static 'vendor/datatables-responsive/dataTables.responsive.css' %}" rel="stylesheet">
 
     <!--Datatable-checkboxes-->
-    <link href="{% static  'vendor/datatables-plugins/DataTables-checkboxes/css/dataTables.checkboxes.css'%}" rel="stylesheet">
+    <link href="{% static  'vendor/datatables-plugins/DataTables-checkboxes/css/dataTables.checkboxes.css' %}" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="{% static 'vendor/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
@@ -76,8 +76,8 @@
                     <div class="divnav">
                         <ul class="nav nav-tabs">
                                 <li><a href="#"><i class="fa fa-line-chart fa-fw"></i> Statistics</a></li>
-                                <li><a href="#"><i class="fa fa-search fa-fw"></i> Scan Tasks</a></li>
-                                <li class="active"><a href="#"><i class="fa fa-info fa-fw"></i> Detailed Information</a></li>
+                                <li><a href="./scantasks"><i class="fa fa-search fa-fw"></i> Scan Tasks In Project</a></li>
+                                <li class="active"><a href="#"><i class="fa fa-info fa-fw"></i> Project Information</a></li>
                         </ul>
                     </div>
                 </div>
@@ -199,13 +199,13 @@
 
 {% block js %}
     <!-- jQuery -->
-    <script src="{% static 'vendor/jquery/jquery.min.js'%}"></script>
+    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
 
     <!-- Bootstrap Core JavaScript -->
-    <script src="{% static 'vendor/bootstrap/js/bootstrap.min.js'%}"></script>
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
 
     <!-- Metis Menu Plugin JavaScript -->
-    <script src="{% static 'vendor/metisMenu/metisMenu.min.js'%}"></script>
+    <script src="{% static 'vendor/metisMenu/metisMenu.min.js' %}"></script>
 
     <!-- DataTables JavaScript -->
 {#    <script src="{% static 'vendor/datatables/js/jquery.dataTables.min.js' %}"></script>#}
@@ -214,13 +214,13 @@
 {#    <script src="{% static 'vendor/datatables-plugins/DataTables-checkboxes/js/dataTables.checkboxes.js' %}"></script>#}
 
     <!-- Custom Theme JavaScript -->
-    <script src="{% static 'dist/js/sb-admin-2.js'%}"></script>
+    <script src="{% static 'dist/js/sb-admin-2.js' %}"></script>
 
     <!-- Bootstrap-table JavaScript -->
-    <script src="{% static 'vendor/bootstrap-table/js/bootstrap-table.min.js'%}"></script>
+    <script src="{% static 'vendor/bootstrap-table/js/bootstrap-table.min.js' %}"></script>
 
     <!-- Service JavaScript -->
-    <script src="{% static 'pages/js/project_detailed.js'%}"></script>
+    <script src="{% static 'pages/js/project_detailed.js' %}"></script>
 
 {% endblock %}
 

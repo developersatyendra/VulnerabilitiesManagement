@@ -421,7 +421,7 @@ function SetReadonly(Enable) {
         $("#scanInfoBtn").addClass("hidden");
 
         // Dissable Save button
-        ("#saveInfoBtn").attr('disabled', true);
+        $("#saveInfoBtn").attr('disabled', true);
     }
     else{
         $('#id_name').removeAttr("readonly");

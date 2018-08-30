@@ -8,7 +8,7 @@ from vulnerabilities.models import VulnerabilityModel
 
 
 class ScanInfoModel(models.Model):
-    hostScanned = models.ForeignKey(to=HostModel,on_delete=models.CASCADE)
+    hostScanned = models.ForeignKey(to=HostModel, on_delete=models.CASCADE)
     vulnFound = models.ManyToManyField(VulnerabilityModel, blank=True)
 
 
