@@ -30,14 +30,6 @@ $(document).ready(
                     sortable: true
                 },
                 {
-                    title: "Is Processed",
-                    field: "isProcessed",
-                    align: "center",
-                    valign: "middle",
-                    formatter: BooleanFormatter,
-                    sortable: true
-                },
-                {
                     title: "Start Time",
                     field: "startTime",
                     align: "center",
@@ -53,23 +45,50 @@ $(document).ready(
                     formatter: FormattedDate,
                     sortable: true
                 },
-                // {
-                //     title: "Scan Project",
-                //     field: "scanProject.name",
-                //     align: "center",
-                //     valign: "middle",
-                //     sortable: true
-                // },
                 {
-                  title: "Description",
-                  field: "description",
-                  align: "center",
-                  valign: "middle",
-                  sortable: true
+                    title: "Processed",
+                    field: "isProcessed",
+                    align: "center",
+                    valign: "middle",
+                    formatter: BooleanFormatter,
+                    sortable: true
+                },
+                {
+                    title: "High",
+                    field: "vulnerabilities.high",
+                    align: "center",
+                    valign: "middle",
+                    sortable: true
+                },
+                {
+                    title: "Medium",
+                    field: "vulnerabilities.medium",
+                    align: "center",
+                    valign: "middle",
+                    sortable: true
+                },
+                {
+                    title: "Low",
+                    field: "vulnerabilities.low",
+                    align: "center",
+                    valign: "middle",
+                    sortable: true
+                },
+                {
+                    title: "Information",
+                    field: "vulnerabilities.information",
+                    align: "center",
+                    valign: "middle",
+                    sortable: true
+                },
+                {
+                    title: "Scanned Host",
+                    field: "numHost",
+                    align: "center",
+                    valign: "middle",
+                    sortable: true
                 }
             ],
-            // url: "/scans/api/getscans",
-            // method: "get",
             ajax: ajaxRequest,
             idField: "id",
             queryParams: queryParams,
@@ -411,7 +430,7 @@ function BooleanFormatter(value, row, index){
 function ajaxRequest(params) {
     $.ajax({
         type: "GET",
-        url: "/scans/api/getscans",
+        url: "/scans/api/getscansvulns",
         data: params.data,
         dataType: "json",
         success: function(data) {

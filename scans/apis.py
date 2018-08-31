@@ -56,23 +56,24 @@ class APIGetScansVuln(APIView):
                 queryAdv = Q(scanInfo__vulnFound__id__iexact=advFilterValue)
             if queryAdv:
                 querySet = querySet.filter(queryAdv)
-        else:
-            return Response({'status': -1, 'message': "advFilter and advFilterValue are required"})
+        # else:
+        #     return Response({'status': -1, 'message': "advFilter and advFilterValue are required"})
 
         # Get number of object
         numObject = querySet.count()
         # Get sort order
-        if request.GET.get('sortOrder') == 'asc':
+        if request.GET.get('order') == 'asc':
             sortString = ''
         else:
             sortString = '-'
 
         # Get sort filed
-        if request.GET.get('sortName'):
-            sortString = sortString + request.GET.get('sortName')
+        if request.GET.get('sort'):
+            sortString = sortString + request.GET.get('sort')
         else:
             sortString = sortString + 'id'
         sortString = sortString.replace('.', '__')
+        print(sortString)
         querySet = querySet.order_by(sortString)
 
         # Get Page Number

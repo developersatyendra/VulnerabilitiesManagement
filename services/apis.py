@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.contrib.auth.models import User
+from hosts.models import HostModel
 from .models import ServiceModel
 from .serializers import ServiceSerializer
 from .forms import ServiceForm, ServiceIDForm
@@ -20,6 +21,8 @@ NUM_ENTRY_DEFAULT = 50
 #   sortOrder: sort entry by order 'asc' or 'desc'
 #   pageSize: number of entry per page
 #   pageNumber: page number of curent view
+#   advFilter: "hostID"
+#   advFilterValue: Value to be used to filter
 
 class APIGetServices(APIView):
     def get(self, request):
@@ -32,6 +35,22 @@ class APIGetServices(APIView):
             querySet = ServiceModel.objects.filter(query)
         else:
             querySet = ServiceModel.objects.all()
+
+        # Adv Filter
+        if request.GET.get('advFilter') and request.GET.get('advFilterValue'):
+            advFilter = request.GET.get('advFilter')
+            advFilterValue = request.GET.get('advFilterValue')
+
+            # if advFilter is hostID
+            queryAdv = None
+            if advFilter == 'hostID':
+                serviceIDs = HostModel.objects.get(pk=advFilterValue).services.values_list('id', flat=True)
+                queryAdv = Q(id__in=serviceIDs)
+                querySet = querySet.filter(queryAdv)
+
+
+        # get total
+        numObject = querySet.count()
 
         # Get sort order
         if request.GET.get('sortOrder') == 'asc':

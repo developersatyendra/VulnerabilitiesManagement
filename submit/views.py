@@ -50,8 +50,6 @@ class SubmitsView(TemplateView):
 
 class APIGetSubmits(APIView):
     def get(self, request):
-        numObject = SubmitModel.objects.all().count()
-
         # Filter by search keyword
         if request.GET.get('searchText'):
             search = request.GET.get('searchText')
@@ -68,7 +66,7 @@ class APIGetSubmits(APIView):
             querySet = SubmitModel.objects.filter(queryVulnModel)
         else:
             querySet = SubmitModel.objects.all()
-
+        numObject = querySet.count()
         # Get sort order
         if request.GET.get('sortOrder') == 'asc':
             sortString = ''

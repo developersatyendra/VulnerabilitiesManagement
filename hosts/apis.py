@@ -1,4 +1,5 @@
 from django.utils.datastructures import MultiValueDictKeyError
+from scans.models import ScanTaskModel, ScanInfoModel
 from .models import HostModel
 from .forms import HostForm, HostIDForm
 from .serializers import HostSerializer
@@ -12,71 +13,17 @@ PAGE_DEFAULT = 1
 NUM_ENTRY_DEFAULT = 50
 
 
-#
 # APIGetHosts get host from these params:
 #   searchText: Search content
 #   sortName: Name of column is applied sort
 #   sortOrder: sort entry by order 'asc' or 'desc'
 #   pageSize: number of entry per page
 #   pageNumber: page number of current view
-#   advFilter: "projectID", "hostID", "vulnID"
+#   advFilter: "scanID", "vulnID", "serviceID"
 #   advFilterValue: Value to be used to filter
-
-# class APIGetHosts(APIView):
-#     def get(self, request):
-#         numObject = HostModel.objects.all().count()
-#
-#         # Filter by search keyword
-#         if request.GET.get('searchText'):
-#             search = request.GET.get('searchText')
-#             query = Q(ipAddr__icontains=search)\
-#                     | Q(hostName__icontains=search)\
-#                     | Q(osName__icontains=search) \
-#                     | Q(osVersion__icontains=search) \
-#                     | Q(description__icontains=search)
-#             querySet = HostModel.objects.filter(query)
-#         else:
-#             querySet = HostModel.objects.all()
-#
-#         # Get sort order
-#         if request.GET.get('sortOrder') == 'asc':
-#             sortString = ''
-#         else:
-#             sortString = '-'
-#
-#         # Get sort filed
-#         if request.GET.get('sortName'):
-#             sortString = sortString + request.GET.get('sortName')
-#         else:
-#             sortString = sortString + 'id'
-#         querySet = querySet.order_by(sortString)
-#
-#         # Get Page Number
-#         if request.GET.get('pageNumber'):
-#             page = request.GET.get('pageNumber')
-#         else:
-#             page = PAGE_DEFAULT
-#
-#         # Get Page Size
-#         if request.GET.get('pageSize'):
-#             numEntry = request.GET.get('pageSize')
-#             # IF Page size is 'ALL'
-#             if numEntry.lower() == 'all' or numEntry == -1:
-#                 numEntry = numObject
-#         else:
-#             numEntry = NUM_ENTRY_DEFAULT
-#         querySetPaged = Paginator(querySet, int(numEntry))
-#         dataPaged = querySetPaged.get_page(page)
-#         dataSerialized = HostSerializer(dataPaged, many=True)
-#         data = dict()
-#         data["total"] = numObject
-#         data['rows'] = dataSerialized.data
-#         return Response({'status': 0, 'object':data})
-
 
 class APIGetHosts(APIView):
     def get(self, request):
-        numObject = HostModel.objects.all().count()
 
         # Filter by search keyword
         if request.GET.get('searchText'):
@@ -90,6 +37,26 @@ class APIGetHosts(APIView):
         else:
             querySet = HostModel.objects.all()
 
+        # Adv Filter
+        if request.GET.get('advFilter') and request.GET.get('advFilterValue'):
+            advFilter = request.GET.get('advFilter')
+            advFilterValue = request.GET.get('advFilterValue')
+
+            # if advFilter is scanID
+            queryAdv = None
+            if advFilter == 'scanID':
+                hostIDs = ScanTaskModel.objects.get(pk=advFilterValue).scanInfo.all().values_list('hostScanned__id', flat=True)
+                queryAdv = Q(id__in=hostIDs)
+            elif advFilter == 'vulnID':
+                hostIDs = ScanInfoModel.objects.filter(vulnFound__id=advFilterValue).values_list('hostScanned__id', flat=True)
+                queryAdv = Q(id__in=hostIDs)
+            elif advFilter == 'serviceID':
+                queryAdv = Q(services__id=advFilterValue)
+            if queryAdv:
+                querySet = querySet.filter(queryAdv)
+
+        # get total
+        numObject = querySet.count()
         # Get sort order
         if request.GET.get('sortOrder') == 'asc':
             sortString = ''

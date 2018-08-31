@@ -21,7 +21,7 @@ NUM_ENTRY_DEFAULT = 50
 #   sortOrder: sort entry by order 'asc' or 'desc'
 #   pageSize: number of entry per page
 #   pageNumber: page number of curent view
-#   advFilter: "projectID", "scanID", "hostID",
+#   advFilter: "scanID", "hostID", "serviceID",
 #   advFilterValue: Value to be used to filter
 
 class APIGetVulns(APIView):
@@ -42,29 +42,29 @@ class APIGetVulns(APIView):
         else:
             querySet = VulnerabilityModel.objects.all()
 
+        # Adv Filter
         if request.GET.get('advFilter') and request.GET.get('advFilterValue'):
-            advFilter=request.GET.get('advFilter')
-            advFilterValue=request.GET.get('advFilterValue')
+            advFilter = request.GET.get('advFilter')
+            advFilterValue = request.GET.get('advFilterValue')
 
-            # if advFilter is projectID
-            if advFilter=='projectID':
-                try:
-                    projectID = int(advFilterValue)
-                except ValueError:
-                    return Response({'status': -1, 'message': 'project ID is not Integer'})
-                scanInfoID = ScanTaskModel.objects.filter(Q(scanProject__id__iexact=projectID)).values_list('scanInfo', flat=True)
-                vulnID = ScanInfoModel.objects.filter(Q(id__in=scanInfoID)).values_list('vulnFound', flat=True)
-                querySet = querySet.filter(Q(id__in=vulnID))
-            elif advFilter=='scanID':
-                try:
-                    scanID = int(advFilterValue)
-                except ValueError:
-                    return Response({'status': -1, 'message': 'scan ID is not Integer'})
-                try:
-                    vulnID = ScanTaskModel.objects.get(pk=scanID).scanInfo.values_list('vulnFound', flat=True)
-                except ScanTaskModel.DoesNotExist:
-                    return Response({'status': -1, 'message': 'scan with provided ID does not exist'})
-                querySet = querySet.filter(Q(id__in=vulnID))
+            # if advFilter is scanID
+            queryAdv = None
+            if advFilter == 'scanID':
+                vulnIDs = ScanTaskModel.objects.get(pk=advFilterValue).scanInfo.all().values_list('vulnFound__id',
+                                                                                                  flat=True)
+                queryAdv = Q(id__in=vulnIDs)
+            elif advFilter == 'hostID':
+
+                scanTask = ScanTaskModel.objects.filter(scanInfo__hostScanned__id=advFilterValue).order_by('-startTime').first()
+                vulnIDs = scanTask.scanInfo.get(hostScanned__id=advFilterValue).vulnFound.all().values_list('id', flat=True)
+
+                queryAdv = Q(id__in=vulnIDs)
+            elif advFilter == 'serviceID':
+                queryAdv = Q(service__id=advFilterValue)
+            if queryAdv:
+                querySet = querySet.filter(queryAdv)
+
+        # get total
         numObject = querySet.count()
         # Get sort order
         if request.GET.get('sortOrder') == 'asc':

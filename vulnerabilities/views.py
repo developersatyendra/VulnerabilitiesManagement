@@ -9,7 +9,7 @@ NUM_ENTRY_DEFAULT = 50
 
 
 class VulnerabilitiesView(TemplateView):
-    template = 'vulns.html'
+    template = 'vulns/vulns.html'
 
     def get(self, request, *args, **kwargs):
         form = VulnForm()
@@ -24,7 +24,7 @@ class VulnerabilitiesView(TemplateView):
 
 
 class VulnerabilityDetailView(TemplateView):
-    template = 'vuln_detailed.html'
+    template = 'vulns/vuln_detailed.html'
 
     def get(self, request, *args, **kwargs):
         form = VulnForm()

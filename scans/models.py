@@ -11,6 +11,9 @@ class ScanInfoModel(models.Model):
     hostScanned = models.ForeignKey(to=HostModel, on_delete=models.CASCADE)
     vulnFound = models.ManyToManyField(VulnerabilityModel, blank=True)
 
+    def __str__(self):
+        return self.hostScanned.hostName
+
 
 class ScanTaskModel(models.Model):
     name = models.CharField(max_length=128, verbose_name='Name of Scanning Task', unique=True)

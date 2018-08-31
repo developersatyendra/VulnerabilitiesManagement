@@ -45,7 +45,7 @@ class ScanVulnSerializer(serializers.ModelSerializer):
     numHost = serializers.SerializerMethodField()
     class Meta:
         model = ScanTaskModel
-        fields = ['id', 'name', 'startTime', 'endTime', 'vulnerabilities', 'numHost']
+        fields = ['id', 'name', 'startTime', 'endTime', 'isProcessed', 'vulnerabilities', 'numHost']
         depth = 3
 
     def get_attribute(self, obj):
@@ -56,7 +56,7 @@ class ScanVulnSerializer(serializers.ModelSerializer):
         if self.context and self.context['advFilter'] == 'hostID':
             vuln = obj.scanInfo.get(Q(hostScanned__id=self.context['advFilterValue'])).vulnFound
             high = vuln.filter(levelRisk__gte=LEVEL_HIGH).count()
-            med = vuln.filter(Q(levelRisk__gte=LEVEL_MED)&Q(levelRisk__lt=LEVEL_MED)).count()
+            med = vuln.filter(Q(levelRisk__gte=LEVEL_MED) & Q(levelRisk__lt=LEVEL_HIGH)).count()
             low = vuln.filter(Q(levelRisk__gt=LEVEL_INFO) & Q(levelRisk__lt=LEVEL_MED)).count()
             info = vuln.filter(levelRisk=LEVEL_INFO).count()
         else:
@@ -64,7 +64,7 @@ class ScanVulnSerializer(serializers.ModelSerializer):
                 vulnIDs = scanInfo.vulnFound.all().values_list("id", flat=True)
                 vuln = VulnerabilityModel.objects.filter(id__in=vulnIDs)
                 high = vuln.filter(levelRisk__gte=LEVEL_HIGH).count()
-                med = vuln.filter(Q(levelRisk__gte=LEVEL_MED)&Q(levelRisk__lt=LEVEL_MED)).count()
+                med = vuln.filter(Q(levelRisk__gte=LEVEL_MED)&Q(levelRisk__lt=LEVEL_HIGH)).count()
                 low = vuln.filter(Q(levelRisk__gt=LEVEL_INFO) & Q(levelRisk__lt=LEVEL_MED)).count()
                 info = vuln.filter(levelRisk=LEVEL_INFO).count()
         return {'high': high, 'medium': med, 'low': low, 'information': info}
