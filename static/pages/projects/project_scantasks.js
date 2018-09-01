@@ -14,12 +14,13 @@ $(document).ready(
     //
     $(function () {
         $("#scanstable").bootstrapTable({
-            columns:[
+            columns:[[
                 {
                     field: 'state',
                     checkbox: true,
                     align: 'center',
-                    valign: 'middle'
+                    valign: 'middle',
+                    rowspan: 2
                 },
                 {
                     title: "Scan Task",
@@ -27,6 +28,7 @@ $(document).ready(
                     align: "center",
                     valign: "middle",
                     formatter: HrefFormater,
+                    rowspan: 2,
                     sortable: true
                 },
                 {
@@ -35,6 +37,7 @@ $(document).ready(
                     align: "center",
                     valign: "middle",
                     formatter: FormattedDate,
+                    rowspan: 2,
                     sortable: true
                 },
                 {
@@ -43,6 +46,7 @@ $(document).ready(
                     align: "center",
                     valign: "middle",
                     formatter: FormattedDate,
+                    rowspan: 2,
                     sortable: true
                 },
                 {
@@ -51,44 +55,52 @@ $(document).ready(
                     align: "center",
                     valign: "middle",
                     formatter: BooleanFormatter,
+                    rowspan: 2,
                     sortable: true
                 },
                 {
+                    title: "Host Scanned",
+                    field: "numHost",
+                    align: "center",
+                    valign: "middle",
+                    rowspan: 2,
+                    sortable: true
+                },
+                {
+                    title: "Vulnerabilities",
+                    align: "center",
+                    valign: "middle",
+                    colspan: 4
+                }],[
+                {
                     title: "High",
-                    field: "vulnerabilities.high",
+                    field: "high",
                     align: "center",
                     valign: "middle",
                     sortable: true
                 },
                 {
                     title: "Medium",
-                    field: "vulnerabilities.medium",
+                    field: "med",
                     align: "center",
                     valign: "middle",
                     sortable: true
                 },
                 {
                     title: "Low",
-                    field: "vulnerabilities.low",
+                    field: "low",
                     align: "center",
                     valign: "middle",
                     sortable: true
                 },
                 {
                     title: "Information",
-                    field: "vulnerabilities.information",
-                    align: "center",
-                    valign: "middle",
-                    sortable: true
-                },
-                {
-                    title: "Scanned Host",
-                    field: "numHost",
+                    field: "info",
                     align: "center",
                     valign: "middle",
                     sortable: true
                 }
-            ],
+            ]],
             ajax: ajaxRequest,
             idField: "id",
             queryParams: queryParams,
@@ -451,8 +463,8 @@ function ajaxRequest(params) {
 // Custom params for bootstrap table
 //
 function queryParams(params) {
-    params.advFilter = "projectID";
-    params.advFilterValue = id;
+    // params.advFilter = "projectID";
+    params.projectID = id;
     return(params);
     // return {advFilter: 'projectID', advFilterValue: id};
 }

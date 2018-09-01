@@ -41,35 +41,28 @@ class ScanInfoSerializer(serializers.ModelSerializer):
 # Serializer Scan Task with Vulnerabilities Information
 
 class ScanVulnSerializer(serializers.ModelSerializer):
-    vulnerabilities = serializers.SerializerMethodField()
+    high = serializers.SerializerMethodField()
+    med = serializers.SerializerMethodField()
+    low = serializers.SerializerMethodField()
+    info = serializers.SerializerMethodField()
     numHost = serializers.SerializerMethodField()
     class Meta:
         model = ScanTaskModel
-        fields = ['id', 'name', 'startTime', 'endTime', 'isProcessed', 'vulnerabilities', 'numHost']
-        depth = 3
+        fields = ['id', 'name', 'startTime', 'endTime', 'isProcessed', 'high', 'med', 'low', 'info', 'numHost']
 
-    def get_attribute(self, obj):
-        obj.acb = "Test"
-        return obj
+    def get_high(self, obj):
+        return obj.high
 
-    def get_vulnerabilities(self, obj):
-        if self.context and self.context['advFilter'] == 'hostID':
-            vuln = obj.scanInfo.get(Q(hostScanned__id=self.context['advFilterValue'])).vulnFound
-            high = vuln.filter(levelRisk__gte=LEVEL_HIGH).count()
-            med = vuln.filter(Q(levelRisk__gte=LEVEL_MED) & Q(levelRisk__lt=LEVEL_HIGH)).count()
-            low = vuln.filter(Q(levelRisk__gt=LEVEL_INFO) & Q(levelRisk__lt=LEVEL_MED)).count()
-            info = vuln.filter(levelRisk=LEVEL_INFO).count()
-        else:
-            for scanInfo in obj.scanInfo.all():
-                vulnIDs = scanInfo.vulnFound.all().values_list("id", flat=True)
-                vuln = VulnerabilityModel.objects.filter(id__in=vulnIDs)
-                high = vuln.filter(levelRisk__gte=LEVEL_HIGH).count()
-                med = vuln.filter(Q(levelRisk__gte=LEVEL_MED)&Q(levelRisk__lt=LEVEL_HIGH)).count()
-                low = vuln.filter(Q(levelRisk__gt=LEVEL_INFO) & Q(levelRisk__lt=LEVEL_MED)).count()
-                info = vuln.filter(levelRisk=LEVEL_INFO).count()
-        return {'high': high, 'medium': med, 'low': low, 'information': info}
+    def get_med(self, obj):
+        return obj.med
+
+    def get_low(self, obj):
+        return obj.low
+
+    def get_info(self, obj):
+        return obj.info
 
     def get_numHost(self, obj):
-        return obj.scanInfo.all().count()
+        return obj.numHost
 
 
