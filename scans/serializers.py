@@ -1,8 +1,6 @@
 from rest_framework import serializers
 from .models import ScanTaskModel, ScanInfoModel
-from vulnerabilities.models import VulnerabilityModel
 from projects.serializers import ProjectNameSerializer
-from django.db.models import Q
 
 
 LEVEL_HIGH = 7  # High is >= LEVEL_HIGH

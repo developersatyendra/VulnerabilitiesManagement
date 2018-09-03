@@ -7,7 +7,6 @@ from django.contrib.auth.models import User
 from .models import ScanTaskModel
 from .serializers import ScanSerializer, ScanAttachmentSerializer, ScanVulnSerializer
 from .forms import ScanIDForm, ScanAttachmentForm, ScanAddForm
-from projects.models import ScanProjectModel
 from rest_framework.parsers import MultiPartParser, FormParser, FileUploadParser
 from os import remove as RemoveFile
 from datetime import datetime, timedelta
@@ -45,7 +44,6 @@ class APIGetScansVuln(APIView):
         # Adv Filter
         #
         # Filter by project
-        query = Q()
         if request.GET.get('projectID'):
             try:
                 projectID = int(request.GET.get('projectID'))
@@ -249,87 +247,6 @@ class APIGetScans(APIView):
         data["total"] = numObject
         data['rows'] = dataSerialized.data
         return Response({'status': 0, 'object': data})
-
-
-# ######################################################
-# #   APIGetScans get scan from these params:
-# #   searchText: Search content
-# #   sortName: Name of column is applied sort
-# #   sortOrder: sort entry by order 'asc' or 'desc'
-# #   pageSize: number of entry per page
-# #   pageNumber: page number of curent view
-# #   advFilter: "projectID", "hostID", "vulnID"
-# #   advFilterValue: Value to be used to filter
-# class APIGetScans(APIView):
-#     def get(self, request):
-#         # Filter by search keyword
-#         if request.GET.get('searchText'):
-#             search = request.GET.get('searchText')
-#             # Query on Projects Model
-#             queryProjectModel = Q(name__icontains=search)
-#             projectPK = ScanProjectModel.objects.filter(queryProjectModel).values_list('pk', flat=True)
-#
-#             # Query on ScanTask
-#             query = Q(name__icontains=search) |\
-#                     Q(scanProject__in=projectPK) | \
-#                     Q(description__icontains=search)
-#             querySet = ScanTaskModel.objects.filter(query)
-#         else:
-#             querySet = ScanTaskModel.objects.all()
-#
-#         # Adv Filter
-#         if request.GET.get('advFilter') and request.GET.get('advFilterValue'):
-#             advFilter=request.GET.get('advFilter')
-#             advFilterValue=request.GET.get('advFilterValue')
-#
-#             # if advFilter is projectID
-#             queryAdv = None
-#             if advFilter=='projectID':
-#                 queryAdv = Q(scanProject__id__iexact=advFilterValue)
-#             elif advFilter=='hostID':
-#                 queryAdv = Q(scanInfo__hostScanned__id__iexact=advFilterValue)
-#             elif advFilter=='vulnID':
-#                 queryAdv = Q(scanInfo__vulnFound__id__iexact=advFilterValue)
-#             if queryAdv:
-#                 querySet = querySet.filter(queryAdv)
-#
-#         # Get number of object
-#         numObject = querySet.count()
-#         # Get sort order
-#         if request.GET.get('sortOrder') == 'asc':
-#             sortString = ''
-#         else:
-#             sortString = '-'
-#
-#         # Get sort filed
-#         if request.GET.get('sortName'):
-#             sortString = sortString + request.GET.get('sortName')
-#         else:
-#             sortString = sortString + 'id'
-#         sortString = sortString.replace('.', '__')
-#         querySet = querySet.order_by(sortString)
-#
-#         # Get Page Number
-#         if request.GET.get('pageNumber'):
-#             page = request.GET.get('pageNumber')
-#         else:
-#             page = PAGE_DEFAULT
-#
-#         # Get Page Size
-#         if request.GET.get('pageSize'):
-#             numEntry = request.GET.get('pageSize')
-#             # IF Page size is 'ALL'
-#             if numEntry.lower() == 'all' or numEntry == -1:
-#                 numEntry = numObject
-#         else:
-#             numEntry = NUM_ENTRY_DEFAULT
-#         querySetPaged = Paginator(querySet, int(numEntry))
-#         dataPaged = querySetPaged.get_page(page)
-#         dataSerialized = ScanSerializer(dataPaged, many=True)
-#         data = dict()
-#         data["total"] = numObject
-#         data['rows'] = dataSerialized.data
-#         return Response({'status': 0, 'object': data})
 
 
 ######################################################

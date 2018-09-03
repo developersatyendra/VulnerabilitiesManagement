@@ -1,6 +1,5 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
-from hosts.models import HostModel
 from services.models import ServiceModel
 
 

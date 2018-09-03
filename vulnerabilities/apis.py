@@ -21,8 +21,10 @@ NUM_ENTRY_DEFAULT = 50
 #   sortOrder: sort entry by order 'asc' or 'desc'
 #   pageSize: number of entry per page
 #   pageNumber: page number of curent view
-#   advFilter: "scanID", "hostID", "serviceID",
-#   advFilterValue: Value to be used to filter
+#   projectID: project to be used to filter
+#   scanID: ScanTask to be used to filter
+#   hostID: Vuln to be used to filter
+#   serviceID: Service to be used to filter
 
 class APIGetVulns(APIView):
     def get(self, request):
@@ -42,27 +44,43 @@ class APIGetVulns(APIView):
         else:
             querySet = VulnerabilityModel.objects.all()
 
+        ######################################################
         # Adv Filter
-        if request.GET.get('advFilter') and request.GET.get('advFilterValue'):
-            advFilter = request.GET.get('advFilter')
-            advFilterValue = request.GET.get('advFilterValue')
+        #
 
-            # if advFilter is scanID
-            queryAdv = None
-            if advFilter == 'scanID':
-                vulnIDs = ScanTaskModel.objects.get(pk=advFilterValue).scanInfo.all().values_list('vulnFound__id',
-                                                                                                  flat=True)
-                queryAdv = Q(id__in=vulnIDs)
-            elif advFilter == 'hostID':
+        # Filter by serviceID
+        if request.GET.get('serviceID'):
+            try:
+                serviceID = int(request.GET.get('serviceID'))
+            except ValueError:
+                return Response({'status': -1, 'message': "serviceID is not integer"})
+            querySet = querySet.filter(service=serviceID)
 
-                scanTask = ScanTaskModel.objects.filter(scanInfo__hostScanned__id=advFilterValue).order_by('-startTime').first()
-                vulnIDs = scanTask.scanInfo.get(hostScanned__id=advFilterValue).vulnFound.all().values_list('id', flat=True)
+        # Filter by project
+        if request.GET.get('projectID'):
+            try:
+                projectID = int(request.GET.get('projectID'))
+            except ValueError:
+                return Response({'status': -1, 'message': "projectID is not integer"})
+            querySet = querySet.filter(ScanInfoVuln__ScanTaskScanInfo__scanProject=projectID)
 
-                queryAdv = Q(id__in=vulnIDs)
-            elif advFilter == 'serviceID':
-                queryAdv = Q(service__id=advFilterValue)
-            if queryAdv:
-                querySet = querySet.filter(queryAdv)
+        # Filter by scanTask
+        if request.GET.get('scanID'):
+            try:
+                scanID = int(request.GET.get('scanID'))
+            except ValueError:
+                return Response({'status': -1, 'message': "scanID is not integer"})
+            querySet = querySet.filter(ScanInfoVuln__ScanTaskScanInfo__id=scanID)
+
+        # Filter by host
+        if request.GET.get('hostID'):
+            try:
+                hostID = int(request.GET.get('hostID'))
+            except ValueError:
+                return Response({'status': -1, 'message': "hostID is not integer"})
+            querySet = querySet.filter(ScanInfoVuln__hostScanned__id=hostID)
+
+        querySet=querySet.distinct()
 
         # get total
         numObject = querySet.count()

@@ -2,28 +2,86 @@ from django.utils.datastructures import MultiValueDictKeyError
 from scans.models import ScanTaskModel, ScanInfoModel
 from .models import HostModel
 from .forms import HostForm, HostIDForm
-from .serializers import HostSerializer
+from .serializers import HostSerializer, HostVulnSerializer
 from django.contrib.auth.models import User
 from rest_framework.views import APIView
 from django.core.paginator import Paginator
-from django.db.models import Q
+from django.db.models import Q, Count, F
 from rest_framework.response import Response
 
 PAGE_DEFAULT = 1
 NUM_ENTRY_DEFAULT = 50
 
+# High is >= LEVEL_HIGH
+LEVEL_HIGH = 7
 
-# APIGetHosts get host from these params:
+# Med is >= LEVEL_MED AND < LEVEL_HIGH
+LEVEL_MED = 4
+
+# Low is > LEVEL_INFO AND < LEVEL_MED
+# Info is = LEVEL_INFO
+LEVEL_INFO = 0
+
+
+# APIGetHostsVuln get host with vuln from these params:
 #   searchText: Search content
 #   sortName: Name of column is applied sort
 #   sortOrder: sort entry by order 'asc' or 'desc'
 #   pageSize: number of entry per page
 #   pageNumber: page number of current view
-#   advFilter: "scanID", "vulnID", "serviceID"
-#   advFilterValue: Value to be used to filter
+#   projectID: project to be used to filter
+#   scanID: ScanTask to be used to filter
+#   vulnID: Vuln to be used to filter
+#   serviceID: Service to be used to filter
 
-class APIGetHosts(APIView):
+class APIGetHostsVuln(APIView):
     def get(self, request):
+        hostQuery = HostModel.objects.all()
+        print(hostQuery.count())
+        ######################################################
+        # Adv Filter
+        #
+        # Filter by serviceID
+        if request.GET.get('serviceID'):
+            try:
+                serviceID = int(request.GET.get('serviceID'))
+            except ValueError:
+                return Response({'status': -1, 'message': "serviceID is not integer"})
+            hostQuery = hostQuery.filter(services=serviceID)
+
+        # Filter by vulnID
+        if request.GET.get('vulnID'):
+            try:
+                vulnID = int(request.GET.get('vulnID'))
+            except ValueError:
+                return Response({'status': -1, 'message': "vulnID is not integer"})
+            hostQuery = hostQuery.filter(ScanInfoHost__vulnFound=vulnID)
+
+        # Filter by scanTask
+        if request.GET.get('scanID'):
+            try:
+                scanID = int(request.GET.get('scanID'))
+            except ValueError:
+                return Response({'status': -1, 'message': "scanID is not integer"})
+            hostQuery = hostQuery.filter(ScanInfoHost__ScanTaskScanInfo__id=scanID)
+
+        # Filter by project
+        if request.GET.get('projectID'):
+            try:
+                projectID = int(request.GET.get('projectID'))
+            except ValueError:
+                return Response({'status': -1, 'message': "projectID is not integer"})
+            hostQuery = hostQuery.filter(ScanInfoHost__ScanTaskScanInfo__scanProject=projectID)
+
+        hostQuery = hostQuery.distinct()
+        hostQuery = hostQuery.annotate(
+                high=Count('ScanInfoHost__vulnFound', filter=Q(ScanInfoHost__vulnFound__levelRisk__gte=LEVEL_HIGH), distinct=True),
+                med=Count('ScanInfoHost__vulnFound', filter=(Q(ScanInfoHost__vulnFound__levelRisk__gte=LEVEL_MED)&Q(ScanInfoHost__vulnFound__levelRisk__lt=LEVEL_HIGH)),distinct=True),
+                low=Count('ScanInfoHost__vulnFound', filter=Q(ScanInfoHost__vulnFound__levelRisk__gt=LEVEL_INFO)&Q(ScanInfoHost__vulnFound__levelRisk__lt=LEVEL_MED), distinct=True),
+                info=Count('ScanInfoHost__vulnFound', filter=Q(ScanInfoHost__vulnFound__levelRisk=LEVEL_INFO), distinct=True),
+                idScan=F('ScanInfoHost__ScanTaskScanInfo__id'),
+                scanName=F('ScanInfoHost__ScanTaskScanInfo__name'),
+                startTime=F('ScanInfoHost__ScanTaskScanInfo__startTime'))
 
         # Filter by search keyword
         if request.GET.get('searchText'):
@@ -32,31 +90,13 @@ class APIGetHosts(APIView):
                     | Q(hostName__icontains=search)\
                     | Q(osName__icontains=search) \
                     | Q(osVersion__icontains=search) \
-                    | Q(description__icontains=search)
-            querySet = HostModel.objects.filter(query)
-        else:
-            querySet = HostModel.objects.all()
+                    | Q(description__icontains=search) \
+                    | Q(scanName__icontains=search)
 
-        # Adv Filter
-        if request.GET.get('advFilter') and request.GET.get('advFilterValue'):
-            advFilter = request.GET.get('advFilter')
-            advFilterValue = request.GET.get('advFilterValue')
-
-            # if advFilter is scanID
-            queryAdv = None
-            if advFilter == 'scanID':
-                hostIDs = ScanTaskModel.objects.get(pk=advFilterValue).scanInfo.all().values_list('hostScanned__id', flat=True)
-                queryAdv = Q(id__in=hostIDs)
-            elif advFilter == 'vulnID':
-                hostIDs = ScanInfoModel.objects.filter(vulnFound__id=advFilterValue).values_list('hostScanned__id', flat=True)
-                queryAdv = Q(id__in=hostIDs)
-            elif advFilter == 'serviceID':
-                queryAdv = Q(services__id=advFilterValue)
-            if queryAdv:
-                querySet = querySet.filter(queryAdv)
-
+            hostQuery = hostQuery.filter(query)
+        print(hostQuery.count())
         # get total
-        numObject = querySet.count()
+        numObject = hostQuery.count()
         # Get sort order
         if request.GET.get('sortOrder') == 'asc':
             sortString = ''
@@ -68,7 +108,112 @@ class APIGetHosts(APIView):
             sortString = sortString + request.GET.get('sortName')
         else:
             sortString = sortString + 'id'
-        querySet = querySet.order_by(sortString)
+        querySet = hostQuery.order_by(sortString)
+
+        # Get Page Number
+        if request.GET.get('pageNumber'):
+            page = request.GET.get('pageNumber')
+        else:
+            page = PAGE_DEFAULT
+
+        # Get Page Size
+        if request.GET.get('pageSize'):
+            numEntry = request.GET.get('pageSize')
+            # IF Page size is 'ALL'
+            if numEntry.lower() == 'all' or numEntry == -1:
+                numEntry = numObject
+        else:
+            numEntry = NUM_ENTRY_DEFAULT
+        querySetPaged = Paginator(querySet, int(numEntry))
+        dataPaged = querySetPaged.get_page(page)
+        dataSerialized = HostVulnSerializer(dataPaged, many=True)
+        data = dict()
+        data["total"] = numObject
+        data['rows'] = dataSerialized.data
+        return Response({'status': 0, 'object':data})
+
+
+# APIGetHosts get host from these params:
+#   searchText: Search content
+#   sortName: Name of column is applied sort
+#   sortOrder: sort entry by order 'asc' or 'desc'
+#   pageSize: number of entry per page
+#   pageNumber: page number of current view
+#   projectID: project to be used to filter
+#   scanID: ScanTask to be used to filter
+#   vulnID: Vuln to be used to filter
+#   serviceID: Service to be used to filter
+
+class APIGetHosts(APIView):
+    def get(self, request):
+        scanTask = ScanTaskModel.objects.all()
+
+        ######################################################
+        # Adv Filter
+        #
+        # Filter by project
+        if request.GET.get('projectID'):
+            try:
+                projectID = int(request.GET.get('projectID'))
+            except ValueError:
+                return Response({'status': -1, 'message': "projectID is not integer"})
+            scanTask = scanTask.filter(scanProject=projectID)
+
+        # Filter by scanTask
+        if request.GET.get('scanID'):
+            try:
+                scanID = int(request.GET.get('scanID'))
+            except ValueError:
+                return Response({'status': -1, 'message': "scanID is not integer"})
+            scanTask = scanTask.filter(id=scanID)
+
+        # Get ScanInfo
+        scanInfoID = scanTask.values_list('scanInfo', flat=True).distinct()
+        scanInfo = ScanInfoModel.objects.filter(id__in=scanInfoID)
+
+        # Filter by vulnID
+        if request.GET.get('vulnID'):
+            try:
+                vulnID = int(request.GET.get('vulnID'))
+            except ValueError:
+                return Response({'status': -1, 'message': "vulnID is not integer"})
+            scanInfo = scanInfo.filter(vulnFound=vulnID)
+
+        hostID = scanInfo.values_list('hostScanned', flat=True)
+        host = HostModel.objects.filter(id__in=hostID)
+        # Filter by serviceID
+        if request.GET.get('serviceID'):
+            try:
+                serviceID = int(request.GET.get('serviceID'))
+            except ValueError:
+                return Response({'status': -1, 'message': "serviceID is not integer"})
+            host = host.filter(services=serviceID)
+
+
+        # Filter by search keyword
+        if request.GET.get('searchText'):
+            search = request.GET.get('searchText')
+            query = Q(ipAddr__icontains=search)\
+                    | Q(hostName__icontains=search)\
+                    | Q(osName__icontains=search) \
+                    | Q(osVersion__icontains=search) \
+                    | Q(description__icontains=search)
+            querySet = host.filter(query)
+
+        # get total
+        numObject = host.count()
+        # Get sort order
+        if request.GET.get('sortOrder') == 'asc':
+            sortString = ''
+        else:
+            sortString = '-'
+
+        # Get sort filed
+        if request.GET.get('sortName'):
+            sortString = sortString + request.GET.get('sortName')
+        else:
+            sortString = sortString + 'id'
+        querySet = host.order_by(sortString)
 
         # Get Page Number
         if request.GET.get('pageNumber'):

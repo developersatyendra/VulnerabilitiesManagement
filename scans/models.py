@@ -8,8 +8,8 @@ from vulnerabilities.models import VulnerabilityModel
 
 
 class ScanInfoModel(models.Model):
-    hostScanned = models.ForeignKey(to=HostModel, on_delete=models.CASCADE)
-    vulnFound = models.ManyToManyField(VulnerabilityModel, blank=True)
+    hostScanned = models.ForeignKey(to=HostModel, on_delete=models.CASCADE, related_name="ScanInfoHost")
+    vulnFound = models.ManyToManyField(VulnerabilityModel, blank=True, related_name="ScanInfoVuln")
 
     def __str__(self):
         return self.hostScanned.hostName
@@ -27,7 +27,7 @@ class ScanTaskModel(models.Model):
     dateCreated = models.DateTimeField(auto_now_add=True)
     dateUpdate = models.DateTimeField(auto_now=True)
     scanProject = models.ForeignKey(to=ScanProjectModel, on_delete=models.CASCADE)
-    scanInfo = models.ManyToManyField(ScanInfoModel, blank=True)
+    scanInfo = models.ManyToManyField(ScanInfoModel, blank=True, related_name="ScanTaskScanInfo")
 
     def __str__(self):
         return self.name
