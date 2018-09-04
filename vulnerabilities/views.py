@@ -34,3 +34,14 @@ class VulnerabilityDetailView(TemplateView):
             'form': form,
         }
         return render(request, self.template, context)
+
+
+class HostInvolvedView(TemplateView):
+    template = 'vulns/vuln_hostinvolved.html'
+
+    def get(self, request, *args, **kwargs):
+        sidebarHtml = RenderSideBar(request)
+        context = {
+            'sidebar': sidebarHtml,
+        }
+        return render(request, self.template, context)

@@ -8,7 +8,7 @@ NUM_ENTRY_DEFAULT = 50
 
 
 class HostsView(TemplateView):
-    template = 'hosts.html'
+    template = 'hosts/hosts.html'
 
     def get(self, request, *args, **kwargs):
         form = HostForm()
@@ -23,7 +23,7 @@ class HostsView(TemplateView):
 
 
 class HostDetailView(TemplateView):
-    template = 'host_detailed.html'
+    template = 'hosts/host_detailed.html'
 
     def get(self, request, *args, **kwargs):
         form = HostForm()
@@ -31,5 +31,16 @@ class HostDetailView(TemplateView):
         context = {
             'sidebar': sidebarHtml,
             'form': form,
+        }
+        return render(request, self.template, context)
+
+
+class HostScanTaskView(TemplateView):
+    template = 'hosts/host_scantask.html'
+
+    def get(self, request, *args, **kwargs):
+        sidebarHtml = RenderSideBar(request)
+        context = {
+            'sidebar': sidebarHtml,
         }
         return render(request, self.template, context)

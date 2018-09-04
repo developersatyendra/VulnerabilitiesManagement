@@ -1,0 +1,328 @@
+{% extends "base.html" %}
+
+{% block css %}
+    {% load staticfiles %}
+    <title>Scans management - Scans</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- MetisMenu CSS -->
+    <link href="{% static 'vendor/metisMenu/metisMenu.min.css' %}" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="{% static 'dist/css/sb-admin-2.css' %}" rel="stylesheet">
+
+    <!-- Morris Charts CSS -->
+    <link href="{% static 'vendor/morrisjs/morris.css' %}" rel="stylesheet">
+
+    <!-- DataTables CSS -->
+    <link href="{% static 'vendor/datatables-plugins/datatables.css' %}" rel="stylesheet">
+
+    <!-- DataTables Responsive CSS -->
+    <link href=" {% static 'vendor/datatables-responsive/dataTables.responsive.css' %}" rel="stylesheet">
+
+    <!--Datatable-checkboxes-->
+    <link href="{% static  'vendor/datatables-plugins/DataTables-checkboxes/css/dataTables.checkboxes.css' %}" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="{% static 'vendor/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+
+    <!--Bootstrap-table-->
+    <link href="{% static 'vendor/bootstrap-table/css/bootstrap-table.min.css' %}" rel="stylesheet" type="text/css">
+
+    <!--Bootstrap-datepicker -->
+    <link href="{% static 'vendor/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block sidebar %}
+    <div class="navbar-default sidebar" role="navigation">
+                <div class="sidebar-nav navbar-collapse">
+                    <ul class="nav" id="side-menu">
+                        <li class="sidebar-search">
+                            <div class="input-group custom-search-form">
+                                <input type="text" class="form-control" placeholder="Search...">
+                                <span class="input-group-btn">
+                                <button class="btn btn-default" type="button">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </span>
+                            </div>
+                            <!-- /input-group -->
+                        </li>
+                        {% autoescape off %}{{ sidebar }}{% endautoescape %}
+                    </ul>
+                </div>
+                <!-- /.sidebar-collapse -->
+            </div>
+            <!-- /.navbar-static-side -->
+{% endblock %}
+
+{% block body%}
+    <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">Scans</h1>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <ul class="breadcrumb">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/scans">Scan Tasks</a></li>
+                        <li class="active" id="brScan"></li>
+                    </ul>
+                </div>
+                <div class="col-lg-12">
+                    <div class="divnav">
+                        <ul class="nav nav-tabs">
+                            <li><a href="#"><i class="fa fa-line-chart fa-fw"></i> Statistics</a></li>
+                            <li><a href="./hostscanned"><i class="fa fa-search fa-fw"></i> Scanned Hosts</a></li>
+                            <li class="active"><a href="#"><i class="fa fa-info fa-fw"></i> Scan Task Information</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-info-circle fa-info fa-fw" aria-hidden="true"></i> Scan Task Information
+                            <div class="pull-right">
+                                <div class="dropdown">
+                                    <button class="btn btn-default dropdown-toggle btn-xs" type="button" data-toggle="dropdown">
+                                        <i class="fa fa-gear fa-fw"></i>Actions
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu pull-right">
+                                        <li id="edit"><a href="#" ><i class="fa fa-pencil fa-fw"></i> Edit Vulnerability</a></li>
+                                        <li id="delete"><a href="#" ><i class="fa fa-trash-o fa-fw"></i> Delete Vulnerability</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body" >
+                            <form method="post" id="editScanPostForm">
+                                {% csrf_token %}
+                                <input type="hidden" name="id" id="id_id">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label>Create By</label>
+                                            <input type="text" class="form-control" placeholder="Create By"  id="id_submitter" readonly="readonly">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="form-group">
+                                            <label>Date Create</label>
+                                            <input type="text" class="form-control" placeholder="Date Created"  id="id_dateCreated" readonly="readonly">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="form-group">
+                                            <label>Date Update</label>
+                                            <input type="text" class="form-control" placeholder="Date Update"  id="id_dateUpdate" readonly="readonly">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label>Scan Task *</label>
+                                            {{ form.name }}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="form-group">
+                                            <label>Start Time *</label>
+                                            <div class='input-group date' id='dpStartTime'>
+                                                <input type="text" class="form-control" required="">
+                                                <span class="input-group-addon">
+                                                    <span class="glyphicon glyphicon-calendar"></span>
+                                                </span>
+                                            </div>
+                                            {{ form.startTime }}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="form-group">
+                                            <label>Finished Time *</label>
+                                            <div class='input-group date' id='dpEndTime'>
+                                                <input type="text" class="form-control" required="">
+                                                <span class="input-group-addon">
+                                                    <span class="glyphicon glyphicon-calendar"></span>
+                                                </span>
+                                            </div>
+                                            {{ form.endTime }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <label>Project *</label>
+                                            {{ form.scanProject }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <label>Descriptions</label>
+                                            {{ form.description }}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="form-group">
+                                            <label>Processed</label>
+                                            {{ form.isProcessed }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row hidden" id="scanInfoBtn">
+                                    <div class="col-lg-12">
+                                        <div class="text-center">
+                                            <button type="button" class="btn btn-default" id="cancelUpdateBtn">Cancel</button>
+                                            <button type="submit" class="btn btn-primary" disabled id="saveInfoBtn">Save Changes</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-paperclip fa-fw" aria-hidden="true"></i> Scan Task Attachment
+                            <div class="pull-right">
+                                <div class="dropdown">
+                                    <button class="btn btn-default dropdown-toggle btn-xs" type="button" data-toggle="dropdown">
+                                        <i class="fa fa-gear fa-fw"></i>Actions
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu pull-right">
+                                        <li id="editAtt"><a href="#" ><i class="fa fa-pencil fa-fw"></i> Edit Attachment</a></li>
+                                        <li id="deleteAtt"><a href="#" ><i class="fa fa-trash-o fa-fw"></i> Delete Attachment</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body" >
+                            <form method="post" id="editAttachmentForm">
+                                {% csrf_token %}
+                                <input type="hidden" name="id" id="id_id">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <label>File Attachment</label>
+                                             <div class="input-group">
+                                                <span class="input-group-btn">
+                                                    <button type="button" class="btn btn-default" id="btnBrowseAtt"><i class="fa fa-folder-open"></i></button>
+                                                </span>
+                                                <input type="text" class="form-control" id="fileAtt" readonly>
+                                                {{ form.fileAttachment }}
+                                                <span class="input-group-btn">
+                                                    <button type="button" class="btn btn-primary" id="btnDownloadAtt" href="#"><i class="fa fa-download"></i></button>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row hidden" id="scanAttBtn">
+                                    <div class="col-lg-12">
+                                        <div class="text-center">
+                                            <button type="button" class="btn btn-default" id="cancelAttBtn">Cancel</button>
+                                            <button type="submit" class="btn btn-primary" disabled id="uploadAttBtn"><i class="fa fa-upload fa-fw"></i> Upload</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+            </div>
+            <!-- /.row -->
+
+            <!-- Modal Warning on Deleting Hosts -->
+            <div class="modal" id="warningOnDeleteModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title"><b>Warning</b></h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body"  id="msgOnDelete">
+                            <p>Warning on Delete</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="button" id="confirmDelete" class="btn btn-danger">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal information -->
+            <div class="modal" id="infoModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                            <h4 class="modal-title" id="titleInfo">About</h4>
+                        </div>
+                        <div class="modal-body"  id="msgInfo">
+                            <p>Message information</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /#page-wrapper -->
+    <meta name="csrf-token" content="{{ csrf_token }}">
+{% endblock %}
+
+{% block js %}
+    <!-- jQuery -->
+    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+
+    <!-- Moment -->
+    <script src="{% static 'vendor/moment/moment.js' %}"></script>
+
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="{% static 'vendor/metisMenu/metisMenu.min.js' %}"></script>
+
+    <!-- DataTables JavaScript -->
+    <script src="{% static 'vendor/datatables/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static  'vendor/datatables/js/dataTables.bootstrap.min.js' %}"></script>
+    <script src="{% static 'vendor/datatables-responsive/dataTables.responsive.js' %}"></script>
+    <script src="{% static 'vendor/datatables-plugins/DataTables-checkboxes/js/dataTables.checkboxes.js' %}"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="{% static 'dist/js/sb-admin-2.js' %}"></script>
+
+    <!-- Bootstrap-table JavaScript -->
+    <script src="{% static 'vendor/bootstrap-table/js/bootstrap-table.min.js' %}"></script>
+
+    <!-- Bootstrap-datetimepicker JavaScript -->
+    <script src="{% static 'vendor/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js' %}"></script>
+
+    <!-- Host JavaScript -->
+    <script src="{% static 'pages/scans/scan_detailed.js' %}"></script>
+
+{% endblock %}
+
+

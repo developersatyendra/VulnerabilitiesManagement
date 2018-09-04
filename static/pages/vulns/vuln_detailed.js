@@ -1,7 +1,7 @@
 var rowIDSelected = null;
 var apiurl = "/vuln/api/getvulnbyid?id=";
 var url = window.location.pathname;
-var id = url.split("/")[url.split("/").length -1];
+var id = url.split("/")[2];
 var geturl = apiurl.concat(id);
 
 //////////////////////////////////////////////////

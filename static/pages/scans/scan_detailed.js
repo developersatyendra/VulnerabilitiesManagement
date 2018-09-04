@@ -3,8 +3,8 @@ var apiattachment = "/scans/api/getattachment?id=";
 
 //////////////////////////////////////////////////
 var url = window.location.pathname;
-var id = url.split("/")[url.split("/").length -1];
-
+var id = url.split("/")[2];
+console.log(url.split("/"));
 //////////////////////////////////////////////////
 var geturl = apiurl.concat(id);
 var getAttachment = apiattachment.concat(id);

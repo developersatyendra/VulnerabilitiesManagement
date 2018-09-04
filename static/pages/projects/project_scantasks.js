@@ -1,6 +1,5 @@
 var rowIDSelected = null;
 var url = window.location.pathname;
-console.log(url.split("/"));
 var id = url.split("/")[url.split("/").length -2];
 $(document).ready(
     //////////////////////////////////////////

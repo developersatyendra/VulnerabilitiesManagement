@@ -14,6 +14,24 @@ PAGE_DEFAULT = 1
 NUM_ENTRY_DEFAULT = 50
 
 
+######################################################
+#   APIGetVulnName get Name of Vuln from id
+#
+
+class APIGetVulnName(APIView):
+    def get(self, request):
+        try:
+            id = int(request.GET.get('id'))
+        except (ValueError, TypeError):
+            return Response({'status': '-1', 'message': 'Value error',
+                             'detail': {"id": [{"message": "ID is not integer", "code": "value error"}]}})
+        try:
+            name = VulnerabilityModel.objects.get(pk=id).name
+        except VulnerabilityModel.DoesNotExist:
+            return Response({'status': '-1', 'message': 'Vuln does not exist'})
+        return Response({'status': 0, 'object':name})
+
+
 #
 # APIGetVulns get vulns from these params:
 #   searchText: Search content

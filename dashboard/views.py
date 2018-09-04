@@ -52,8 +52,6 @@ def RenderSideBar(request):
             for btnSub in btn.childBtn:
                 btnSubHref = str(btnSub.href).lower()
                 fullPathUrl = str(request.get_full_path())
-                print(btnSubHref)
-                print(fullPathUrl)
                 if btnSubHref in fullPathUrl:
                     btn.isActive = True
                     btnSub.isActive = True

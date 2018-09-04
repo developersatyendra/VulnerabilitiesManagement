@@ -5,9 +5,12 @@ from . import apis
 app_name='scans'
 urlpatterns = [
     path('', views.ScansView.as_view(), name='scans'),
-    path('<int:id>', views.ScansDetailView.as_view(), name='scanDetail'),
+    path('<int:id>/', views.ScansDetailView.as_view(), name='scanDetail'),
+    path('<int:id>/detailed', views.ScansDetailView.as_view(), name='scanDetail'),
+    path('<int:id>/hostscanned', views.ScanHostsView.as_view(), name='scanHostsview'),
 
     # APIs
+    path('api/getscanname', apis.APIGetScanName.as_view(), name='APIgetscanname'),
     path('api/getscansvulns', apis.APIGetScansVuln.as_view(), name='APIgetscansvulns'),
 
     path('api/getscans', apis.APIGetScans.as_view(), name='APIgetscans'),

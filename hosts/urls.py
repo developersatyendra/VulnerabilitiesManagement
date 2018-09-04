@@ -5,7 +5,10 @@ from . import apis
 app_name = 'hosts'
 urlpatterns = [
     path('', views.HostsView.as_view(), name='hosts'),
-    path('<int:id>', views.HostDetailView.as_view(), name='hostDetail'),
+    path('<int:id>/', views.HostDetailView.as_view(), name='hostDetail'),
+    path('<int:id>/detailed', views.HostDetailView.as_view(), name='hostDetail'),
+    path('<int:id>/scantask', views.HostScanTaskView.as_view(), name='hostDetail'),
+    path('<int:id>/currentvuln', views.HostDetailView.as_view(), name='hostDetail'),
 
     # APIs
     path('api/gethostsvuln', apis.APIGetHostsVuln.as_view(), name='APIgethostsvuln'),

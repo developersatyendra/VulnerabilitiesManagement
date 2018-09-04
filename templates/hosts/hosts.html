@@ -5,25 +5,25 @@
     <title>Scans management - Hosts</title>
 
     <!-- Bootstrap Core CSS -->
-    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css'%}" rel="stylesheet">
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
 
     <!-- MetisMenu CSS -->
-    <link href="{% static 'vendor/metisMenu/metisMenu.min.css'%}" rel="stylesheet">
+    <link href="{% static 'vendor/metisMenu/metisMenu.min.css' %}" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="{% static 'dist/css/sb-admin-2.css'%}" rel="stylesheet">
+    <link href="{% static 'dist/css/sb-admin-2.css' %}" rel="stylesheet">
 
     <!-- Morris Charts CSS -->
-    <link href="{% static 'vendor/morrisjs/morris.css'%}" rel="stylesheet">
+    <link href="{% static 'vendor/morrisjs/morris.css' %}" rel="stylesheet">
 
     <!-- DataTables CSS -->
-    <link href="{% static 'vendor/datatables-plugins/dataTables.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/datatables-plugins/datatables.css' %}" rel="stylesheet">
 
     <!-- DataTables Responsive CSS -->
-    <link href=" {% static 'vendor/datatables-responsive/dataTables.responsive.css'%}" rel="stylesheet">
+    <link href=" {% static 'vendor/datatables-responsive/dataTables.responsive.css' %}" rel="stylesheet">
 
     <!--Datatable-checkboxes-->
-    <link href="{% static  'vendor/datatables-plugins/DataTables-checkboxes/css/dataTables.checkboxes.css'%}" rel="stylesheet">
+    <link href="{% static  'vendor/datatables-plugins/DataTables-checkboxes/css/dataTables.checkboxes.css' %}" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="{% static 'vendor/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
@@ -90,12 +90,6 @@
                                         <li id="delete" class="disabled"><a href="#" ><i class="fa fa-trash-o fa-fw"></i> Delete Hosts</a></li>
                                     </ul>
                                 </div>
-{#                              <button id="delete" class="btn btn-danger" >#}
-{#                                <i class="fa fa-trash-o"></i> Delete#}
-{#                              </button>#}
-{#                              <button id="add" class="btn btn-primary" data-toggle="modal" data-target="#addHostModal">#}
-{#                                <i class="fa fa-plus"></i> Add New Host#}
-{#                              </button>#}
                             </div>
                             <table id="hosttable" data-toolbar="#toolbar"></table>
                             <!-- /.table-responsive -->
@@ -287,28 +281,28 @@
 
 {% block js %}
     <!-- jQuery -->
-    <script src="{% static 'vendor/jquery/jquery.min.js'%}"></script>
+    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
 
     <!-- Bootstrap Core JavaScript -->
-    <script src="{% static 'vendor/bootstrap/js/bootstrap.min.js'%}"></script>
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
 
     <!-- Metis Menu Plugin JavaScript -->
-    <script src="{% static 'vendor/metisMenu/metisMenu.min.js'%}"></script>
+    <script src="{% static 'vendor/metisMenu/metisMenu.min.js' %}"></script>
 
     <!-- DataTables JavaScript -->
     <script src="{% static 'vendor/datatables/js/jquery.dataTables.min.js' %}"></script>
-    <script src="{% static  'vendor/datatables/js/dataTables.bootstrap.min.js'%}"></script>
+    <script src="{% static  'vendor/datatables/js/dataTables.bootstrap.min.js' %}"></script>
     <script src="{% static 'vendor/datatables-responsive/dataTables.responsive.js' %}"></script>
     <script src="{% static 'vendor/datatables-plugins/DataTables-checkboxes/js/dataTables.checkboxes.js' %}"></script>
 
     <!-- Custom Theme JavaScript -->
-    <script src="{% static 'dist/js/sb-admin-2.js'%}"></script>
+    <script src="{% static 'dist/js/sb-admin-2.js' %}"></script>
 
     <!-- Bootstrap-table JavaScript -->
-    <script src="{% static 'vendor/bootstrap-table/js/bootstrap-table.min.js'%}"></script>
+    <script src="{% static 'vendor/bootstrap-table/js/bootstrap-table.min.js' %}"></script>
 
     <!-- Host JavaScript -->
-    <script src="{% static 'pages/js/hosts.js'%}"></script>
+    <script src="{% static 'pages/hosts/hosts.js' %}"></script>
 
 {% endblock %}
 

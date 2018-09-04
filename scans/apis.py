@@ -24,6 +24,25 @@ LEVEL_MED = 4
 # Info is = LEVEL_INFO
 LEVEL_INFO = 0
 
+
+######################################################
+#   APIGetScanName get Name of ScanTask from id
+#
+
+class APIGetScanName(APIView):
+    def get(self, request):
+        try:
+            id = int(request.GET.get('id'))
+        except (ValueError, TypeError):
+            return Response({'status': '-1', 'message': 'Value error',
+                             'detail': {"id": [{"message": "ID is not integer", "code": "value error"}]}})
+        try:
+            name = ScanTaskModel.objects.get(pk=id).name
+        except ScanTaskModel.DoesNotExist:
+            return Response({'status': '-1', 'message': 'Scan does not exist'})
+        return Response({'status': 0, 'object':name})
+
+
 ######################################################
 #   APIGetScansVuln get scan with vulnerabilities from these params:
 #   searchText: Search content
