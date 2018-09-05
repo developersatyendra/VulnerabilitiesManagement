@@ -13,7 +13,7 @@ from .models import SubmitModel
 from django.contrib.auth.models import User
 from .serializers import SubmitSerializer, SubmitNameSerializer
 from .forms import SubmitAddForm, SubmitForm, SubmitIDForm
-from .submitprocessor import ProcessFoundStoneZipXML
+from .submitprocessor import ProcessFoundStoneZipXML, SubmitQueueElement, SUBMIT_OBJ_QUEUE
 # from datetime import datetime, timedelta, time
 # import dateutil.parser
 from rest_framework.parsers import MultiPartParser, FormParser, FileUploadParser
@@ -23,7 +23,7 @@ NUM_ENTRY_DEFAULT = 50
 
 
 class SubmitsView(TemplateView):
-    template = 'submit.html'
+    template = 'submit/submit.html'
 
     def get(self, request, *args, **kwargs):
         form = SubmitAddForm()
@@ -33,11 +33,6 @@ class SubmitsView(TemplateView):
             'form': form,
         }
         return render(request, self.template, context)
-
-
-# class VulnerabilityDetailView(TemplateView):
-#     def get(self, request, *args, **kwargs):
-#         pass
 
 
 #
@@ -103,78 +98,6 @@ class APIGetSubmits(APIView):
         return Response(data)
 
 
-#
-# APIGetVulnsByID get vulns from id
-# return {'retVal': '-1'} if id not found
-# return vuln object if it's success
-#
-
-# class APIGetVulnByID(APIView):
-#     def get(self, request):
-#         if request.GET.get('id'):
-#             id = request.GET.get('id')
-#             try:
-#                 retService = VulnerabilityModel.objects.get(pk=id)
-#             except (VulnerabilityModel.DoesNotExist, ValueError):
-#                 return Response({'retVal': '-1'})
-#             dataSerialized = VulnSerializer(retService, many=False)
-#             return Response(dataSerialized.data)
-#         else:
-#             return Response({'retVal': '-1'})
-
-#
-# APIStatVulns show number of vulns with datetime
-# Param: starttime - Start time for statistic if this param is set to null
-#        endtime - End time for statistic
-# return {'retVal': '-1'} if syntax error
-#
-
-# class APIStatVulns(APIView):
-#     def get(self, request):
-#         print(request.GET)
-#         if request.GET.get('starttime'):
-#             try:
-#                 starttime = dateutil.parser.parse(request.GET.get('starttime'))
-#             except ValueError:
-#                 return Response({'retVal': '-1'})
-#         else:
-#             return Response({'retVal': '-1'})
-#
-#         if request.GET.get('endtime'):
-#             try:
-#                 endtime = dateutil.parser.parse(request.GET.get('endtime'))
-#             except ValueError:
-#                 return Response({'retVal': '-1'})
-#         else:
-#             return Response({'retVal': '-1'})
-#         days = []
-#         low = []
-#         med = []
-#         high = []
-#         for day in range(int((endtime - starttime).days)):
-#             statDay= starttime + timedelta(day)
-#             # Query Scan Task
-#             queryScanModel = Q(startTime__gte = datetime.combine(statDay, time.min), startTime__lte=datetime.combine(statDay, time.max))
-#             scanTaskPK = ScanTaskModel.objects.filter(queryScanModel).values_list('pk', flat=True)
-#             if scanTaskPK:
-#                 print(scanTaskPK)
-#                 # Query vulns
-#                 queryLowVuln = Q(scanTask__in=scanTaskPK, levelRisk=1)
-#                 queryMedVuln = Q(scanTask__in=scanTaskPK, levelRisk=2)
-#                 queryHiVuln = Q(scanTask__in=scanTaskPK, levelRisk=3)
-#                 low.append(VulnerabilityModel.objects.filter(queryLowVuln).count())
-#                 med.append(VulnerabilityModel.objects.filter(queryMedVuln).count())
-#                 high.append(VulnerabilityModel.objects.filter(queryHiVuln).count())
-#                 days.append(statDay)
-#         return Response(
-#             {
-#                 'datetime': days,
-#                 'low': low,
-#                 'med': med,
-#                 'high': high,
-#             }
-#         )
-
 
 # APIAddSubmit add new Submit
 # return {'retVal': '-1'} if id not found
@@ -188,9 +111,11 @@ class APIAddSubmit(APIView):
         submitForm = SubmitAddForm(request.POST, request.FILES)
         if submitForm.is_valid():
             submitObj = submitForm.save(commit=False)
-            submitObj.owner = User.objects.get(pk=1)
+            submitObj.submitter = User.objects.get(pk=1)
+            submitObj.status = 'uploaded'
             submitObj.save()
-            ProcessFoundStoneZipXML(submitObj, request.POST.get('scanProject'))
+            submitQueueElement = SubmitQueueElement(submitObj=submitObj, overwrite=False)
+            SUBMIT_OBJ_QUEUE.put(submitQueueElement)
             dataSerialized = SubmitSerializer(submitObj, many=False)
             return Response(dataSerialized.data)
         else:
@@ -230,29 +155,3 @@ class APIDeleteSubmit(APIView):
             return Response({'retVal': successOnDelete})
         else:
             return Response({'retVal': '-1'})
-
-
-#
-# APIUpdateVuln update vulnerability
-# return {'notification': 'error_msg'} if id not found
-# return Vuln object if it's success
-#
-
-# class APIUpdateVuln(APIView):
-#     def post(self, request):
-#         id = request.POST.get('id')
-#         vulnObj = VulnerabilityModel.objects.get(pk=id)
-#         vulnForm = VulnForm(request.POST)
-#         if vulnForm.is_valid():
-#             entry = vulnForm.save(instance=vulnObj)
-#             dataSerialized = VulnSerializer(entry, many=False)
-#             return Response(dataSerialized.data)
-#         else:
-#             retNotification = ''
-#             for field in vulnForm:
-#                 for error in field.errors:
-#                     retNotification += error
-#             for error in vulnForm.non_field_errors():
-#                 retNotification += error
-#             retJson = {'notification': retNotification}
-#             return Response(retJson)

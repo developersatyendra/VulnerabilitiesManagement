@@ -2,23 +2,20 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7e1e5878-3e63-44a6-b2e6-eb13b43afe37" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/static/pages/hosts/host_currentvuln.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/submit/submit.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/hosts/host_currentvuln.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/VulnerablititesManagement.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/VulnerablititesManagement.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hosts/apis.py" beforeDir="false" afterPath="$PROJECT_DIR$/hosts/apis.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hosts/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/hosts/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hosts/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/hosts/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scans/apis.py" beforeDir="false" afterPath="$PROJECT_DIR$/scans/apis.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/pages/hosts/host_scantask.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/pages/hosts/host_scantask.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/submit/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/submit/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/pages/js/submit.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/pages/submit/submit.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/submit/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/submit/apps.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/submit/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/submit/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/submit/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/submit/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/submit/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/submit/serializers.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/submit/submitprocessor.py" beforeDir="false" afterPath="$PROJECT_DIR$/submit/submitprocessor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vulnerabilities/apis.py" beforeDir="false" afterPath="$PROJECT_DIR$/vulnerabilities/apis.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vulnerabilities/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/vulnerabilities/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/submit/tests.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/submit/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/submit/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/submit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/submit/submit.html" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
-    <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -32,33 +29,33 @@
       <usages-collector id="statistics.file.extensions.open">
         <counts>
           <entry key="css" value="1" />
-          <entry key="html" value="18" />
-          <entry key="js" value="23" />
-          <entry key="py" value="24" />
+          <entry key="html" value="19" />
+          <entry key="js" value="24" />
+          <entry key="py" value="31" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
           <entry key="CSS" value="1" />
-          <entry key="HTML" value="18" />
-          <entry key="JavaScript" value="23" />
-          <entry key="Python" value="24" />
+          <entry key="HTML" value="19" />
+          <entry key="JavaScript" value="24" />
+          <entry key="Python" value="31" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="css" value="22" />
-          <entry key="html" value="291" />
-          <entry key="js" value="1374" />
-          <entry key="py" value="2702" />
+          <entry key="html" value="306" />
+          <entry key="js" value="1396" />
+          <entry key="py" value="3977" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="CSS" value="22" />
-          <entry key="HTML" value="291" />
-          <entry key="JavaScript" value="1374" />
-          <entry key="Python" value="2702" />
+          <entry key="HTML" value="306" />
+          <entry key="JavaScript" value="1396" />
+          <entry key="Python" value="3977" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.lifecycle.project">
@@ -73,45 +70,45 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="apis.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/scans/apis.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="629">
-              <caret line="238" column="63" selection-start-line="238" selection-start-column="63" selection-end-line="238" selection-end-column="63" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="settings.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/VulnerablititesManagement/settings.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1703" />
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="__init__.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/submit/__init__.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="17">
-              <caret line="1" lean-forward="true" selection-start-line="1" selection-end-line="1" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="apps.py" pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/submit/apps.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="238">
-              <caret line="14" column="46" lean-forward="true" selection-start-line="14" selection-start-column="46" selection-end-line="14" selection-end-column="46" />
+            <state relative-caret-position="285">
+              <caret line="19" column="30" selection-start-line="19" selection-start-column="30" selection-end-line="19" selection-end-column="30" />
+              <folding>
+                <element signature="e#0#33#0" expanded="true" />
+                <marker date="1536167079879" expanded="true" signature="303:308" ph="..." />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="submitprocessor.py" pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/submit/views.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="540">
+              <caret line="117" column="52" selection-start-line="117" selection-start-column="52" selection-end-line="117" selection-end-column="52" />
+              <folding>
+                <element signature="e#0#21#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/submit/forms.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="555">
+              <caret line="39" column="27" lean-forward="true" selection-start-line="39" selection-start-column="27" selection-end-line="39" selection-end-column="27" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/submit/submitprocessor.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3315">
-              <caret line="195" column="33" lean-forward="true" selection-start-line="195" selection-start-column="33" selection-end-line="195" selection-end-column="33" />
+            <state relative-caret-position="382">
+              <caret line="205" column="77" lean-forward="true" selection-start-line="205" selection-start-column="77" selection-end-line="205" selection-end-column="77" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
               </folding>
@@ -119,20 +116,35 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/submit/views.py">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/submit/models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-289">
-              <caret line="193" column="45" selection-start-line="193" selection-start-column="29" selection-end-line="193" selection-end-column="45" />
+            <state relative-caret-position="240">
+              <caret line="16" lean-forward="true" selection-start-line="16" selection-end-line="16" />
+              <folding>
+                <element signature="e#0#28#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="submit.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/submit/submit.py">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/static/pages/submit/submit.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="7" column="44" lean-forward="true" selection-end-line="7" selection-end-column="44" />
+            <state relative-caret-position="525">
+              <caret line="35" column="34" lean-forward="true" selection-start-line="35" selection-start-column="34" selection-end-line="35" selection-end-column="34" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/submit/serializers.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="270">
+              <caret line="18" column="30" lean-forward="true" selection-start-line="18" selection-start-column="30" selection-end-line="18" selection-end-column="30" />
+              <folding>
+                <element signature="e#0#38#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -150,8 +162,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>addClass(&quot;hidde</find>
-      <find>#delete</find>
       <find>$(&quot;#edit&quot;).click(function () {</find>
       <find>edit</find>
       <find>retMsgAdd</find>
@@ -180,6 +190,8 @@
       <find>pr</find>
       <find>hostData</find>
       <find>riskData</find>
+      <find>userID</find>
+      <find>submitObj</find>
     </findStrings>
     <replaceStrings>
       <replace>querySet</replace>
@@ -202,6 +214,7 @@
       <replace>getFormattedDate</replace>
       <replace>FormattedDate</replace>
       <replace>input</replace>
+      <replace>submitQueue.submitObj</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -210,11 +223,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/templates/projects.html" />
-        <option value="$PROJECT_DIR$/templates/submit.html" />
-        <option value="$PROJECT_DIR$/templates/project_detailed.html" />
-        <option value="$PROJECT_DIR$/templates/projects/project_scantasks.html" />
-        <option value="$PROJECT_DIR$/static/dist/css/sb-admin-2.css" />
         <option value="$PROJECT_DIR$/static/pages/js/scan_detailed.js" />
         <option value="$PROJECT_DIR$/projects/apis.py" />
         <option value="$PROJECT_DIR$/projects/views.py" />
@@ -222,7 +230,6 @@
         <option value="$PROJECT_DIR$/services/views.py" />
         <option value="$PROJECT_DIR$/services/urls.py" />
         <option value="$PROJECT_DIR$/services/apis.py" />
-        <option value="$PROJECT_DIR$/submit/views.py" />
         <option value="$PROJECT_DIR$/scans/serializers.py" />
         <option value="$PROJECT_DIR$/vulnerabilities/models.py" />
         <option value="$PROJECT_DIR$/scans/models.py" />
@@ -259,6 +266,12 @@
         <option value="$PROJECT_DIR$/scans/apis.py" />
         <option value="$PROJECT_DIR$/submit/submit.py" />
         <option value="$PROJECT_DIR$/submit/__init__.py" />
+        <option value="$PROJECT_DIR$/submit/forms.py" />
+        <option value="$PROJECT_DIR$/templates/submit/submit.html" />
+        <option value="$PROJECT_DIR$/submit/models.py" />
+        <option value="$PROJECT_DIR$/static/pages/submit/submit.js" />
+        <option value="$PROJECT_DIR$/submit/serializers.py" />
+        <option value="$PROJECT_DIR$/submit/views.py" />
         <option value="$PROJECT_DIR$/submit/apps.py" />
         <option value="$PROJECT_DIR$/submit/submitprocessor.py" />
       </list>
@@ -304,109 +317,51 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
             <path>
-              <item name="VulnerablititesManagement" type="b2602c69:ProjectViewProjectNode" />
-              <item name="VulnerablititesManagement" type="462c0819:PsiDirectoryNode" />
+              <item name="VulnerabilitiesManagement" type="b2602c69:ProjectViewProjectNode" />
+              <item name="VulnerabilitiesManagement" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="VulnerablititesManagement" type="b2602c69:ProjectViewProjectNode" />
-              <item name="VulnerablititesManagement" type="462c0819:PsiDirectoryNode" />
-              <item name="dashboard" type="462c0819:PsiDirectoryNode" />
+              <item name="VulnerabilitiesManagement" type="b2602c69:ProjectViewProjectNode" />
+              <item name="VulnerabilitiesManagement" type="462c0819:PsiDirectoryNode" />
+              <item name="media" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="VulnerablititesManagement" type="b2602c69:ProjectViewProjectNode" />
-              <item name="VulnerablititesManagement" type="462c0819:PsiDirectoryNode" />
-              <item name="hosts" type="462c0819:PsiDirectoryNode" />
+              <item name="VulnerabilitiesManagement" type="b2602c69:ProjectViewProjectNode" />
+              <item name="VulnerabilitiesManagement" type="462c0819:PsiDirectoryNode" />
+              <item name="static" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="VulnerablititesManagement" type="b2602c69:ProjectViewProjectNode" />
-              <item name="VulnerablititesManagement" type="462c0819:PsiDirectoryNode" />
-              <item name="projects" type="462c0819:PsiDirectoryNode" />
+              <item name="VulnerabilitiesManagement" type="b2602c69:ProjectViewProjectNode" />
+              <item name="VulnerabilitiesManagement" type="462c0819:PsiDirectoryNode" />
+              <item name="static" type="462c0819:PsiDirectoryNode" />
+              <item name="pages" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="VulnerablititesManagement" type="b2602c69:ProjectViewProjectNode" />
-              <item name="VulnerablititesManagement" type="462c0819:PsiDirectoryNode" />
-              <item name="scans" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="VulnerablititesManagement" type="b2602c69:ProjectViewProjectNode" />
-              <item name="VulnerablititesManagement" type="462c0819:PsiDirectoryNode" />
-              <item name="scans" type="462c0819:PsiDirectoryNode" />
-              <item name="migrations" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="VulnerablititesManagement" type="b2602c69:ProjectViewProjectNode" />
-              <item name="VulnerablititesManagement" type="462c0819:PsiDirectoryNode" />
-              <item name="services" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="VulnerablititesManagement" type="b2602c69:ProjectViewProjectNode" />
-              <item name="VulnerablititesManagement" type="462c0819:PsiDirectoryNode" />
-              <item name="settings" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="VulnerablititesManagement" type="b2602c69:ProjectViewProjectNode" />
-              <item name="VulnerablititesManagement" type="462c0819:PsiDirectoryNode" />
+              <item name="VulnerabilitiesManagement" type="b2602c69:ProjectViewProjectNode" />
+              <item name="VulnerabilitiesManagement" type="462c0819:PsiDirectoryNode" />
+              <item name="static" type="462c0819:PsiDirectoryNode" />
+              <item name="pages" type="462c0819:PsiDirectoryNode" />
               <item name="submit" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="VulnerablititesManagement" type="b2602c69:ProjectViewProjectNode" />
-              <item name="VulnerablititesManagement" type="462c0819:PsiDirectoryNode" />
-              <item name="templates" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="VulnerablititesManagement" type="b2602c69:ProjectViewProjectNode" />
-              <item name="VulnerablititesManagement" type="462c0819:PsiDirectoryNode" />
-              <item name="templates" type="462c0819:PsiDirectoryNode" />
-              <item name="hosts" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="VulnerablititesManagement" type="b2602c69:ProjectViewProjectNode" />
-              <item name="VulnerablititesManagement" type="462c0819:PsiDirectoryNode" />
-              <item name="templates" type="462c0819:PsiDirectoryNode" />
-              <item name="projects" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="VulnerablititesManagement" type="b2602c69:ProjectViewProjectNode" />
-              <item name="VulnerablititesManagement" type="462c0819:PsiDirectoryNode" />
-              <item name="templates" type="462c0819:PsiDirectoryNode" />
-              <item name="scans" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="VulnerablititesManagement" type="b2602c69:ProjectViewProjectNode" />
-              <item name="VulnerablititesManagement" type="462c0819:PsiDirectoryNode" />
-              <item name="templates" type="462c0819:PsiDirectoryNode" />
-              <item name="vulns" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="VulnerablititesManagement" type="b2602c69:ProjectViewProjectNode" />
-              <item name="VulnerablititesManagement" type="462c0819:PsiDirectoryNode" />
-              <item name="vulnerabilities" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="VulnerablititesManagement" type="b2602c69:ProjectViewProjectNode" />
-              <item name="VulnerablititesManagement" type="462c0819:PsiDirectoryNode" />
-              <item name="vulnerabilities" type="462c0819:PsiDirectoryNode" />
-              <item name="migrations" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="VulnerablititesManagement" type="b2602c69:ProjectViewProjectNode" />
-              <item name="VulnerablititesManagement" type="462c0819:PsiDirectoryNode" />
-              <item name="VulnerablititesManagement" type="462c0819:PsiDirectoryNode" />
+              <item name="VulnerabilitiesManagement" type="b2602c69:ProjectViewProjectNode" />
+              <item name="VulnerabilitiesManagement" type="462c0819:PsiDirectoryNode" />
+              <item name="submit" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
-    <property name="SearchEverywhereHistoryKey" value="terminal&#9;ACTION&#9;ActivateTerminalToolWindow&#10;ter&#9;ACTION&#9;ActivateTerminalToolWindow&#10;termina&#9;ACTION&#9;ActivateTerminalToolWindow&#10;term&#9;ACTION&#9;ActivateTerminalToolWindow&#10;termi&#9;ACTION&#9;ActivateTerminalToolWindow&#10;termin&#9;ACTION&#9;ActivateTerminalToolWindow&#10;te&#9;ACTION&#9;ActivateTerminalToolWindow" />
+    <property name="SearchEverywhereHistoryKey" value="ter&#9;ACTION&#9;ActivateTerminalToolWindow&#10;terminal&#9;ACTION&#9;ActivateTerminalToolWindow&#10;termina&#9;ACTION&#9;ActivateTerminalToolWindow&#10;term&#9;ACTION&#9;ActivateTerminalToolWindow&#10;termi&#9;ACTION&#9;ActivateTerminalToolWindow&#10;termin&#9;ACTION&#9;ActivateTerminalToolWindow&#10;te&#9;ACTION&#9;ActivateTerminalToolWindow" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
@@ -414,19 +369,19 @@
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\tuank\PycharmProjects\VulnerablititesManagement\static\pages\hosts" />
-      <recent name="C:\Users\tuank\PycharmProjects\VulnerablititesManagement\templates\hosts" />
-      <recent name="C:\Users\tuank\PycharmProjects\VulnerablititesManagement\static\pages\vulns" />
-      <recent name="C:\Users\tuank\PycharmProjects\VulnerablititesManagement\static\pages\projects" />
-      <recent name="C:\Users\tuank\PycharmProjects\VulnerablititesManagement\static\pages\scans" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\tuank\PycharmProjects\VulnerablititesManagement\static\pages\hosts" />
       <recent name="C:\Users\tuank\PycharmProjects\VulnerablititesManagement\templates\hosts" />
       <recent name="C:\Users\tuank\PycharmProjects\VulnerablititesManagement\static\pages\vulns" />
       <recent name="C:\Users\tuank\PycharmProjects\VulnerablititesManagement\static\pages\scans" />
       <recent name="C:\Users\tuank\PycharmProjects\VulnerablititesManagement\templates\scans" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/static/pages/submit" />
+      <recent name="$PROJECT_DIR$/templates/submit" />
+      <recent name="C:\Users\tuank\PycharmProjects\VulnerablititesManagement\static\pages\hosts" />
+      <recent name="C:\Users\tuank\PycharmProjects\VulnerablititesManagement\templates\hosts" />
+      <recent name="C:\Users\tuank\PycharmProjects\VulnerablititesManagement\static\pages\vulns" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -463,6 +418,7 @@
       <option name="runNoReload" value="false" />
       <option name="useCustomRunCommand" value="false" />
       <option name="customRunCommand" value="" />
+      <method v="2" />
     </configuration>
   </component>
   <component name="SvnConfiguration">
@@ -479,55 +435,54 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1616" height="886" extended-state="7" />
-    <editor active="true" />
+    <frame x="0" y="27" width="1920" height="1053" extended-state="6" />
     <layout>
-      <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
-      <window_info anchor="bottom" id="Database Changes" order="9" />
-      <window_info anchor="bottom" id="Version Control" order="8" />
-      <window_info anchor="bottom" id="Python Console" order="13" />
-      <window_info anchor="bottom" id="Run" order="2" />
-      <window_info anchor="bottom" x="274" y="104" width="1265" height="592" id="Terminal" order="10" type="WINDOWED" visible="true" weight="0.4035309" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.249375" />
-      <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
-      <window_info anchor="right" id="Database" order="3" />
-      <window_info anchor="right" id="SciView" order="4" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.13287087" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.2497332" />
       <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Version Control" order="8" />
+      <window_info anchor="bottom" id="Database Changes" order="9" />
+      <window_info active="true" anchor="bottom" x="0" y="78" width="1920" height="1002" id="Terminal" order="10" type="WINDOWED" visible="true" weight="0.4035309" />
+      <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
+      <window_info anchor="bottom" id="Messages" order="12" />
+      <window_info anchor="bottom" id="Python Console" order="13" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="bottom" id="Messages" order="12" />
-      <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="Database" order="3" />
+      <window_info anchor="right" id="SciView" order="4" />
     </layout>
     <layout-to-restore>
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info content_ui="combo" id="Project" order="2" weight="0.2114561" />
       <window_info id="Structure" order="0" side_tool="true" weight="0.25" />
-      <window_info anchor="right" id="Commander" order="0" weight="0.4" />
-      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Version Control" order="8" />
-      <window_info anchor="bottom" id="Run" order="2" />
-      <window_info anchor="bottom" id="Python Console" order="13" />
+      <window_info id="Favorites" order="1" side_tool="true" />
+      <window_info content_ui="combo" id="Project" order="2" weight="0.2114561" />
       <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
-      <window_info anchor="right" id="Database" order="3" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Version Control" order="8" />
+      <window_info anchor="bottom" id="Database Changes" order="9" show_stripe_button="false" />
       <window_info anchor="bottom" x="32775" y="32798" width="1604" height="881" id="Terminal" order="10" type="WINDOWED" visible="true" weight="0.4035309" />
       <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
-      <window_info anchor="bottom" id="Database Changes" order="9" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="right" id="SciView" order="4" />
-      <window_info anchor="bottom" id="Find" order="1" />
       <window_info anchor="bottom" id="Messages" order="12" />
-      <window_info id="Favorites" order="1" side_tool="true" />
+      <window_info anchor="bottom" id="Python Console" order="13" />
+      <window_info anchor="right" id="Commander" order="0" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="Database" order="3" />
+      <window_info anchor="right" id="SciView" order="4" />
     </layout-to-restore>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -562,75 +517,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/hosts/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="21" lean-forward="true" selection-start-line="21" selection-end-line="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hosts/serializers.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="19" column="24" selection-start-line="19" selection-start-column="6" selection-end-line="19" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/vulnerabilities/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="12" column="11" selection-start-line="12" selection-start-column="4" selection-end-line="12" selection-end-column="11" />
-          <folding>
-            <element signature="e#0#28#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/pages/projects/projects.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="49" column="12" selection-start-line="49" selection-start-column="12" selection-end-line="56" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/services/apis.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="29" selection-start-line="29" selection-end-line="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/scans/scans.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="629">
-          <caret line="367" lean-forward="true" selection-start-line="367" selection-end-line="367" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/projects/project_detailed.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3842">
-          <caret line="226" lean-forward="true" selection-start-line="226" selection-end-line="226" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/projects/urls.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="8" column="4" selection-start-line="8" selection-start-column="4" selection-end-line="9" selection-end-column="98" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scans/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="592">
-          <caret line="36" column="44" selection-start-line="36" selection-start-column="44" selection-end-line="36" selection-end-column="44" />
-          <folding>
-            <element signature="e#0#35#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/templates/projects/projects.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="643">
@@ -759,9 +645,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/scans/models.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="35" lean-forward="true" selection-start-line="35" selection-end-line="35" />
-          <caret line="31" column="22" lean-forward="true" selection-start-line="31" selection-start-column="22" selection-end-line="31" selection-end-column="22" />
+        <state relative-caret-position="60">
+          <caret line="10" column="15" selection-start-line="10" selection-start-column="4" selection-end-line="10" selection-end-column="15" />
         </state>
       </provider>
     </entry>
@@ -797,33 +682,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="388">
           <caret line="470" selection-start-line="470" selection-end-line="485" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hosts/urls.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="18" column="79" lean-forward="true" selection-start-line="18" selection-start-column="79" selection-end-line="18" selection-end-column="79" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/vulnerabilities/apis.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="16" selection-start-line="16" selection-end-line="32" />
-          <folding>
-            <element signature="e#0#62#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hosts/apis.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="29" column="20" selection-start-line="29" selection-start-column="6" selection-end-line="29" selection-end-column="20" />
-          <folding>
-            <element signature="e#0#62#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -878,8 +736,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/scans/apis.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="629">
-          <caret line="238" column="63" selection-start-line="238" selection-start-column="63" selection-end-line="238" selection-end-column="63" />
+        <state relative-caret-position="-30">
+          <caret line="4" selection-start-line="4" selection-end-line="4" selection-end-column="37" />
         </state>
       </provider>
     </entry>
@@ -890,13 +748,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/submit/apps.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="14" column="46" lean-forward="true" selection-start-line="14" selection-start-column="46" selection-end-line="14" selection-end-column="46" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/submit/submit.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
@@ -904,17 +755,130 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/vulnerabilities/apis.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="501">
+          <caret line="49" column="34" lean-forward="true" selection-start-line="49" selection-start-column="34" selection-end-line="49" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scans/serializers.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="720">
+          <caret line="48" column="99" selection-start-line="48" selection-start-column="71" selection-end-line="48" selection-end-column="99" />
+          <folding>
+            <element signature="e#0#38#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/projects/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="525">
+          <caret line="38" column="28" selection-start-line="38" selection-start-column="28" selection-end-line="38" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hosts/apis.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="375">
+          <caret line="70" column="37" selection-start-line="70" selection-start-column="37" selection-end-line="70" selection-end-column="37" />
+          <folding>
+            <element signature="e#0#62#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hosts/urls.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="14" column="26" selection-start-line="14" selection-start-column="14" selection-end-line="14" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hosts/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="21" selection-start-line="21" selection-end-line="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hosts/serializers.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="19" column="24" selection-start-line="19" selection-start-column="6" selection-end-line="19" selection-end-column="24" />
+          <folding>
+            <element signature="e#0#38#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/submit/submit.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2775">
+          <caret line="185" lean-forward="true" selection-start-line="185" selection-end-line="185" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/submit/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="16" lean-forward="true" selection-start-line="16" selection-end-line="16" />
+          <folding>
+            <element signature="e#0#28#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/static/pages/submit/submit.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="525">
+          <caret line="35" column="34" lean-forward="true" selection-start-line="35" selection-start-column="34" selection-end-line="35" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/submit/serializers.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="18" column="30" lean-forward="true" selection-start-line="18" selection-start-column="30" selection-end-line="18" selection-end-column="30" />
+          <folding>
+            <element signature="e#0#38#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/submit/forms.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="555">
+          <caret line="39" column="27" lean-forward="true" selection-start-line="39" selection-start-column="27" selection-end-line="39" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/submit/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-289">
-          <caret line="193" column="45" selection-start-line="193" selection-start-column="29" selection-end-line="193" selection-end-column="45" />
+        <state relative-caret-position="540">
+          <caret line="117" column="52" selection-start-line="117" selection-start-column="52" selection-end-line="117" selection-end-column="52" />
+          <folding>
+            <element signature="e#0#21#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/submit/apps.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="19" column="30" selection-start-line="19" selection-start-column="30" selection-end-line="19" selection-end-column="30" />
+          <folding>
+            <element signature="e#0#33#0" expanded="true" />
+            <marker date="1536167079879" expanded="true" signature="303:308" ph="..." />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/submit/submitprocessor.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3315">
-          <caret line="195" column="33" lean-forward="true" selection-start-line="195" selection-start-column="33" selection-end-line="195" selection-end-column="33" />
+        <state relative-caret-position="382">
+          <caret line="205" column="77" lean-forward="true" selection-start-line="205" selection-start-column="77" selection-end-line="205" selection-end-column="77" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
           </folding>

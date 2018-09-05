@@ -5,13 +5,13 @@
     <title>Scans management - Dashboard</title>
 
     <!-- Bootstrap Core CSS -->
-    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css'%}" rel="stylesheet">
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
 
     <!-- MetisMenu CSS -->
-    <link href="{% static 'vendor/metisMenu/metisMenu.min.css'%}" rel="stylesheet">
+    <link href="{% static 'vendor/metisMenu/metisMenu.min.css' %}" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="{% static 'dist/css/sb-admin-2.css'%}" rel="stylesheet">
+    <link href="{% static 'dist/css/sb-admin-2.css' %}" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="{% static 'vendor/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
@@ -93,7 +93,7 @@
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <label>Scan Project *</label>
-                                        {{ form.scanProject }}
+                                        {{ form.project }}
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
@@ -161,28 +161,28 @@
 
 {% block js %}
     <!-- jQuery -->
-    <script src="{% static 'vendor/jquery/jquery.min.js'%}"></script>
+    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
 
     <!-- Bootstrap Core JavaScript -->
-    <script src="{% static 'vendor/bootstrap/js/bootstrap.min.js'%}"></script>
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
 
     <!-- Metis Menu Plugin JavaScript -->
-    <script src="{% static 'vendor/metisMenu/metisMenu.min.js'%}"></script>
+    <script src="{% static 'vendor/metisMenu/metisMenu.min.js' %}"></script>
 
     <!-- DataTables JavaScript -->
     <script src="{% static 'vendor/datatables/js/jquery.dataTables.min.js' %}"></script>
-    <script src="{% static 'vendor/datatables/js/dataTables.bootstrap.min.js'%}"></script>
+    <script src="{% static 'vendor/datatables/js/dataTables.bootstrap.min.js' %}"></script>
     <script src="{% static 'vendor/datatables-responsive/dataTables.responsive.js' %}"></script>
     <script src="{% static 'vendor/datatables-plugins/DataTables-checkboxes/js/dataTables.checkboxes.js' %}"></script>
 
     <!-- Custom Theme JavaScript -->
-    <script src="{% static 'dist/js/sb-admin-2.js'%}"></script>
+    <script src="{% static 'dist/js/sb-admin-2.js' %}"></script>
 
     <!-- Bootstrap-table JavaScript -->
-    <script src="{% static 'vendor/bootstrap-table/js/bootstrap-table.min.js'%}"></script>
+    <script src="{% static 'vendor/bootstrap-table/js/bootstrap-table.min.js' %}"></script>
 
     <!-- Service JavaScript -->
-    <script src="{% static 'pages/js/submit.js'%}"></script>
+    <script src="{% static 'pages/submit/submit.js' %}"></script>
 
 
 {% endblock %}

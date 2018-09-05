@@ -36,6 +36,13 @@ $(document).ready(
                     sortable: true
                 },
                 {
+                    title: "Scan Project",
+                    field: "project.name",
+                    align: "center",
+                    valign: "middle",
+                    sortable: true
+                },
+                {
                     title: "Scan Task",
                     field: "scanTask.name",
                     align: "center",

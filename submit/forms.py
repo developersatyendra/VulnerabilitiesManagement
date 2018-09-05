@@ -32,7 +32,7 @@ class SubmitIDForm(forms.ModelForm):
 
 
 class SubmitAddForm(forms.ModelForm):
-    scanProject = forms.ModelChoiceField(
+    project = forms.ModelChoiceField(
         queryset=ScanProjectModel.objects.all().order_by('name'),
         widget=forms.Select(attrs={'class': 'form-control'}),
         label='Scan Task',

@@ -13,6 +13,7 @@ import dateutil.parser as DateParser
 from django.contrib.auth.models import User
 from queue import Queue
 import threading
+from .models import SubmitModel
 
 HOSTDATA = "1\\XML\\en\\Host_Data.xml"
 RISKDATA = "1\\XML\\en\\Risk_Data.xml"
@@ -23,40 +24,44 @@ SUBMIT_OBJ_QUEUE = Queue()
 FLG_STOP = False
 FLG_RESET = False
 
-class SubmitObj:
-    data = None
-    projectID = None
-    userID = None
-    overwrite = False
+
+class SubmitQueueElement:
+    submitObj = None   # SubmitModel object
+    overwrite = False   # To determine If object is needed to OverWrite
 
     def __init__(self, **kwargs):
-        self.data = kwargs['data']
-        self.projectID = kwargs['projectID']
-        self.userID = kwargs['userID']
+        self.submitObj = kwargs['submitObj']
+        self.overwrite = kwargs['overwrite']
 
 
-def ProcessFoundStoneZipXML(submitObj, projectID, userID):
+def ProcessFoundStoneZipXML(submitQueueElement):
     # extract zipped file
     try:
-        zipFile = zipfile.ZipFile(submitObj.fileSubmitted.path, 'r')
+        zipFile = zipfile.ZipFile(submitQueueElement.submitObj.fileSubmitted.path, 'r')
     except OSError:
-        submitObj.status = 'Error - Zip file not found'
-        submitObj.save()
+        submitQueueElement.submitObj.status = 'Error - Zip file not found'
+        submitQueueElement.submitObj.save()
         return -1
     tempdir = tempfile.mkdtemp()
     try:
         zipFile.extractall(tempdir)
     except zipfile.BadZipFile:
-        submitObj.status = 'Error - Extract error'
-        submitObj.save()
+        submitQueueElement.submitObj.status = 'Error - Extract error'
+        submitQueueElement.submitObj.save()
         return -1
     zipFile.close()
-    retVal = ProcessFoundStoneXML(path.join(tempdir, HOSTDATA), path.join(tempdir, RISKDATA), submitObj, projectID, userID)
+    retVal = ProcessFoundStoneXML(path.join(tempdir, HOSTDATA), path.join(tempdir, RISKDATA), submitQueueElement)
     shutil.rmtree(tempdir)
     return retVal
 
 
-def ProcessFoundStoneXML(hostdata, riskdata, submitObj, projectID, userID):
+def ProcessFoundStoneXML(hostdata, riskdata, submitQueueElement):
+
+    projectID = submitQueueElement.submitObj.project
+    userID = submitQueueElement.submitObj.submitter
+    submitObj = submitQueueElement.submitObj
+    overwrite = submitQueueElement.overwrite
+
     # Parse XML HostaData file
     try:
         xmltreeHostData = XMLTree.parse(hostdata)
@@ -74,14 +79,23 @@ def ProcessFoundStoneXML(hostdata, riskdata, submitObj, projectID, userID):
 
     # Check If ScanTask is exis on Database
     scanTaskQuery = Q(name=rootHostData[1].attrib['ScanName'])
-    print(rootHostData[1].attrib['ScanName'])
     scanTaskQueried = ScanTaskModel.objects.filter(scanTaskQuery)
-    print(scanTaskQueried.count())
     if scanTaskQueried:
-        submitObj.status = "Duplicated"
-        submitObj.scanTask = scanTaskQueried[0]
-        submitObj.save()
-        return -1
+
+        # If overwrite is not set. Just set status to 'duplicated'
+        if not overwrite:
+            submitObj.status = "Duplicated"
+            submitObj.scanTask = scanTaskQueried[0]
+            submitObj.save()
+            return -1
+
+        # Otherwise delete all involved scanInfo and scanTask then add new one
+        scantaskObj = scanTaskQueried[0]
+        scanInfoQuery = scantaskObj.scanInfo.all()
+        for scanInfo in scanInfoQuery:
+            scanInfo.delete()
+        scantaskObj.delete()
+
     scantaskObj = ScanTaskModel()
     scantaskObj.name = rootHostData[1].attrib['ScanName']
     scantaskObj.startTime = DateParser.parse(rootHostData[1].attrib['StartTime'])
@@ -177,13 +191,22 @@ def ProcessFoundStoneXML(hostdata, riskdata, submitObj, projectID, userID):
 
 
 def GetResourceFromQueue(stopEvent):
+    print("thread a")
     while not stopEvent.isSet():
         if not SUBMIT_OBJ_QUEUE.empty():
-            submitObj = SUBMIT_OBJ_QUEUE.get()
-            ProcessFoundStoneZipXML(submitObj=submitObj.data, projectID=submitObj.projectID, userID=submitObj.userID)
+            submitQueueElement = SUBMIT_OBJ_QUEUE.get()
+            print("Process ()".format(submitQueueElement.submitObj.fileSubmitted))
+            ProcessFoundStoneZipXML(submitQueueElement)
 
 
 def MgntThreadingSubmitProcess():
+    
+    # Whet Web App Startup. Put all Submit Objects were not processed to Queue
+    submitQuery = SubmitModel.objects.filter(status='uploaded')
+    for submitObj in submitQuery:
+        objectQueue = SubmitQueueElement(submitObj=submitObj, overwrite=True)
+        SUBMIT_OBJ_QUEUE.put(objectQueue)
+        
     stop = threading.Event()
     threads = []
     for worker in range(NUM_WORKER):
@@ -191,6 +214,8 @@ def MgntThreadingSubmitProcess():
         thread.daemon = True
         thread.start()
         threads.append(thread)
+
+    print("Start All Thread")
     while True:
         # Stop All Thread
         if FLG_RESET or FLG_STOP:
