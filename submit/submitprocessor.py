@@ -11,12 +11,31 @@ from services.models import ServiceModel
 from vulnerabilities.models import VulnerabilityModel
 import dateutil.parser as DateParser
 from django.contrib.auth.models import User
+from queue import Queue
+import threading
 
-hostData = "1\\XML\\en\\Host_Data.xml"
-riskData = "1\\XML\\en\\Risk_Data.xml"
+HOSTDATA = "1\\XML\\en\\Host_Data.xml"
+RISKDATA = "1\\XML\\en\\Risk_Data.xml"
+
+NUM_WORKER = 15
+SUBMIT_OBJ_QUEUE = Queue()
+
+FLG_STOP = False
+FLG_RESET = False
+
+class SubmitObj:
+    data = None
+    projectID = None
+    userID = None
+    overwrite = False
+
+    def __init__(self, **kwargs):
+        self.data = kwargs['data']
+        self.projectID = kwargs['projectID']
+        self.userID = kwargs['userID']
 
 
-def ProcessFoundStoneZipXML(submitObj, projectID):
+def ProcessFoundStoneZipXML(submitObj, projectID, userID):
     # extract zipped file
     try:
         zipFile = zipfile.ZipFile(submitObj.fileSubmitted.path, 'r')
@@ -32,7 +51,7 @@ def ProcessFoundStoneZipXML(submitObj, projectID):
         submitObj.save()
         return -1
     zipFile.close()
-    retVal = ProcessFoundStoneXML(path.join(tempdir, hostData), path.join(tempdir, riskData), submitObj, projectID, 1)
+    retVal = ProcessFoundStoneXML(path.join(tempdir, HOSTDATA), path.join(tempdir, RISKDATA), submitObj, projectID, userID)
     shutil.rmtree(tempdir)
     return retVal
 
@@ -134,6 +153,10 @@ def ProcessFoundStoneXML(hostdata, riskdata, submitObj, projectID, userID):
                 vulnObj.name = vuln.attrib['VulnName']
                 vulnObj.levelRisk = vuln[0].text
                 vulnObj.description = vuln[4].text
+                if vuln[5]:
+                    vulnObj.cve = vuln[5].text
+                else:
+                    vulnObj.cve = '-'
                 vulnObj.service = hostObj.services.all().filter(name=vuln[1].text, port=vuln[2].text)[0]
 
                 for vulnRisk in rootRiskData:
@@ -151,3 +174,41 @@ def ProcessFoundStoneXML(hostdata, riskdata, submitObj, projectID, userID):
     submitObj.status = "Processed"
     submitObj.save()
     return scantaskObj
+
+
+def GetResourceFromQueue(stopEvent):
+    while not stopEvent.isSet():
+        if not SUBMIT_OBJ_QUEUE.empty():
+            submitObj = SUBMIT_OBJ_QUEUE.get()
+            ProcessFoundStoneZipXML(submitObj=submitObj.data, projectID=submitObj.projectID, userID=submitObj.userID)
+
+
+def MgntThreadingSubmitProcess():
+    stop = threading.Event()
+    threads = []
+    for worker in range(NUM_WORKER):
+        thread = threading.Thread(target=GetResourceFromQueue, args=[stop,])
+        thread.daemon = True
+        thread.start()
+        threads.append(thread)
+    while True:
+        # Stop All Thread
+        if FLG_RESET or FLG_STOP:
+            stop.set()
+            # Wait for all thread is Stop
+            while True:
+                isAliveAll = False
+                for thread_t in threads:
+                    isAliveAll = isAliveAll | thread_t.isAlive()
+                if not isAliveAll:
+                    break
+            stop.clear()
+        # Start Thread Again
+        if FLG_RESET:
+            for thread_t in threads:
+                thread_t.start()
+
+        # Exit Function
+        if FLG_STOP:
+            break
+

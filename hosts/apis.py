@@ -23,6 +23,24 @@ LEVEL_MED = 4
 LEVEL_INFO = 0
 
 
+######################################################
+#   APIGetHostName get Name of Host from id
+#
+
+class APIGetHostName(APIView):
+    def get(self, request):
+        try:
+            id = int(request.GET.get('id'))
+        except (ValueError, TypeError):
+            return Response({'status': '-1', 'message': 'Value error',
+                             'detail': {"id": [{"message": "ID is not integer", "code": "value error"}]}})
+        try:
+            name = HostModel.objects.get(pk=id).hostName
+        except HostModel.DoesNotExist:
+            return Response({'status': '-1', 'message': 'Host does not exist'})
+        return Response({'status': 0, 'object':name})
+
+
 # APIGetHostsVuln get host with vuln from these params:
 #   searchText: Search content
 #   sortName: Name of column is applied sort

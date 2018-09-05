@@ -9,6 +9,7 @@ urlpatterns = [
     path('<int:id>/hostinvolved', views.HostInvolvedView.as_view(), name='hostInvoled'),
     
     # APIs
+    path('api/getcurrenthostvuln', apis.APIGetCurrentHostVuln.as_view(), name='APIgetcurrenthostvuln'),
     path('api/getvulnname', apis.APIGetVulnName.as_view(), name='APIgetvulnname'),
     path('api/getvulns', apis.APIGetVulns.as_view(), name='APIgetvulns'),
     path('api/getvulnbyid', apis.APIGetVulnByID.as_view(), name='APIgetvulnbyid'),

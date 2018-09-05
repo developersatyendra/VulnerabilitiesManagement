@@ -106,8 +106,8 @@ class APIGetScansVuln(APIView):
         ######################################################
         # Filter by search keyword
         #
-        if request.GET.get('searchText'):
-            search = request.GET.get('searchText')
+        if request.GET.get('search'):
+            search = request.GET.get('search')
             query = Q(name__icontains=search) | \
                     Q(startTime__icontains=search) | \
                     Q(endTime__icontains=search)
@@ -229,14 +229,14 @@ class APIGetScans(APIView):
         numObject = scanTask.count()
 
         # Get sort order
-        if request.GET.get('order') == 'asc':
+        if request.GET.get('sortOrder') == 'asc':
             sortString = ''
         else:
             sortString = '-'
 
         # Get sort filed
-        if request.GET.get('sort'):
-            sortString = sortString + request.GET.get('sort')
+        if request.GET.get('sortName'):
+            sortString = sortString + request.GET.get('sortName')
         else:
             sortString = sortString + 'id'
         sortString = sortString.replace('.', '__')

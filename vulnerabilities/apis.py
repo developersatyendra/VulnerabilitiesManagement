@@ -242,3 +242,75 @@ class APIUpdateVuln(APIView):
             return Response({'status': '0', 'object': dataSerialized.data})
         else:
             return Response({'status': '-1', 'message': 'Form is invalid', 'detail': vulnForm.errors})
+
+
+#
+# APIGetCurrentHostVuln get existing vulns on specific host:
+#   searchText: Search content
+#   sortName: Name of column is applied sort
+#   sortOrder: sort entry by order 'asc' or 'desc'
+#   pageSize: number of entry per page
+#   pageNumber: page number of curent view
+
+class APIGetCurrentHostVuln(APIView):
+    def get(self, request):
+        if request.GET.get('id'):
+            try:
+                id = int(request.GET.get('id'))
+            except ValueError:
+                return Response({'status': '-1', 'message': 'Value error',
+                                 'detail': {"id": [{"message": "ID is not integer", "code": "value error"}]}})
+            scanTask = ScanTaskModel.objects.filter(scanInfo__hostScanned=id).order_by('-startTime')[0]
+            scanInfo = scanTask.scanInfo.get(hostScanned=id)
+            vulns = scanInfo.vulnFound.all()
+            if request.GET.get('search'):
+                search = request.GET.get('search')
+                queryVulnModel = Q(description__icontains=search) \
+                                 | Q(name__icontains=search) \
+                                 | Q(observation__icontains=search) \
+                                 | Q(recommendation__icontains=search) \
+                                 | Q(cve__icontains=search) \
+                                 | Q(levelRisk__icontains=search) \
+                                 | Q(service__name__icontains=search)
+                vulns = vulns.filter(queryVulnModel)
+            vulns = vulns.distinct()
+
+            # get total
+            numObject = vulns.count()
+            # Get sort order
+            if request.GET.get('order') == 'asc':
+                sortString = ''
+            else:
+                sortString = '-'
+
+            # Get sort filed
+            if request.GET.get('sort'):
+                sortString = sortString + request.GET.get('sort')
+            else:
+                sortString = sortString + 'id'
+            sortString = sortString.replace('.', '__')
+            querySet = vulns.order_by(sortString)
+            # Get Page Number
+            if request.GET.get('pageNumber'):
+                page = request.GET.get('pageNumber')
+            else:
+                page = PAGE_DEFAULT
+
+            # Get Page Size
+            if request.GET.get('pageSize'):
+                numEntry = request.GET.get('pageSize')
+                # IF Page size is 'ALL'
+                if numEntry.lower() == 'all' or numEntry == -1:
+                    numEntry = numObject
+            else:
+                numEntry = NUM_ENTRY_DEFAULT
+            querySetPaged = Paginator(querySet, int(numEntry))
+            dataPaged = querySetPaged.get_page(page)
+            dataSerialized = VulnSerializer(dataPaged, many=True)
+            data = dict()
+            data["total"] = numObject
+            data['rows'] = dataSerialized.data
+            return Response({'status': 0, 'object': data})
+        else:
+            return Response({'status': '-1', 'message': 'fields are required',
+                             'detail': {"id": [{"message": "ID is required", "code": "required"}]}})

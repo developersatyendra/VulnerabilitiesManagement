@@ -8,9 +8,10 @@ urlpatterns = [
     path('<int:id>/', views.HostDetailView.as_view(), name='hostDetail'),
     path('<int:id>/detailed', views.HostDetailView.as_view(), name='hostDetail'),
     path('<int:id>/scantask', views.HostScanTaskView.as_view(), name='hostDetail'),
-    path('<int:id>/currentvuln', views.HostDetailView.as_view(), name='hostDetail'),
+    path('<int:id>/currentvuln', views.HostCurrentVulnView.as_view(), name='hostDetail'),
 
     # APIs
+    path('api/gethostname', apis.APIGetHostName.as_view(), name='APIgethostname'),
     path('api/gethostsvuln', apis.APIGetHostsVuln.as_view(), name='APIgethostsvuln'),
     path('api/gethosts', apis.APIGetHosts.as_view(), name='APIgethosts'),
     path('api/gethostbyid', apis.APIGetHostsByID.as_view(), name='APIgethostbyid'),

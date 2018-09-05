@@ -44,3 +44,14 @@ class HostScanTaskView(TemplateView):
             'sidebar': sidebarHtml,
         }
         return render(request, self.template, context)
+
+
+class HostCurrentVulnView(TemplateView):
+    template = 'hosts/host_currentvuln.html'
+
+    def get(self, request, *args, **kwargs):
+        sidebarHtml = RenderSideBar(request)
+        context = {
+            'sidebar': sidebarHtml,
+        }
+        return render(request, self.template, context)

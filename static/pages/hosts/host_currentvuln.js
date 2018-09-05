@@ -4,84 +4,49 @@ var id = url.split("/")[2];
 $(document).ready(
 
     //
-    // Declear serivces table
+    // Declear current host vuln table
     //
     $(function () {
-        $("#hostScanTask").bootstrapTable({
+        $("#hostCurrentVuln").bootstrapTable({
             columns:[[
                 {
                     field: 'state',
                     checkbox: true,
                     align: 'center',
-                    valign: 'middle',
-                    rowspan: 2
+                    valign: 'middle'
                 },
                 {
-                    title: "Scan Task",
+                    title: "Vulnerability",
                     field: "name",
                     align: "center",
                     valign: "middle",
                     formatter: HrefFormater,
-                    rowspan: 2,
                     sortable: true
                 },
                 {
-                    title: "Start Time",
-                    field: "startTime",
-                    align: "center",
-                    valign: "middle",
-                    formatter: FormattedDate,
-                    rowspan: 2,
-                    sortable: true
-                },
-                {
-                    title: "Finished Time",
-                    field: "endTime",
-                    align: "center",
-                    valign: "middle",
-                    formatter: FormattedDate,
-                    rowspan: 2,
-                    sortable: true
-                },
-                {
-                    title: "Processed",
-                    field: "isProcessed",
-                    align: "center",
-                    valign: "middle",
-                    formatter: BooleanFormatter,
-                    rowspan: 2,
-                    sortable: true
-                },
-                {
-                    title: "Host Vulnerabilities",
-                    align: "center",
-                    valign: "middle",
-                    colspan: 4
-                }],[
-                {
-                    title: "High",
-                    field: "high",
+                    title: "Level Risk",
+                    field: "levelRisk",
                     align: "center",
                     valign: "middle",
                     sortable: true
                 },
                 {
-                    title: "Medium",
-                    field: "med",
+                    title: "CVE",
+                    field: "cve",
                     align: "center",
                     valign: "middle",
                     sortable: true
                 },
                 {
-                    title: "Low",
-                    field: "low",
+                    title: "Service",
+                    field: "service.name",
                     align: "center",
                     valign: "middle",
                     sortable: true
                 },
                 {
-                    title: "Information",
-                    field: "info",
+                    title: "Description",
+                    field: "description",
                     align: "center",
                     valign: "middle",
                     sortable: true
@@ -102,7 +67,7 @@ $(document).ready(
 
 // Format href for bootstrap table
 function HrefFormater(value, row, index) {
-    return '<a href="' + '/scans/' +row.id + '"> ' + row.name +'</a>';
+    return '<a href="' + '/vuln/' +row.id + '"> ' + row.name +'</a>';
 }
 
 // Format Datetime for bootstrap table
@@ -156,7 +121,7 @@ function BooleanFormatter(value, row, index){
 function ajaxRequest(params) {
     $.ajax({
         type: "GET",
-        url: "/scans/api/getscansvulns",
+        url: "/vuln/api/getcurrenthostvuln",
         data: params.data,
         dataType: "json",
         success: function(data) {
@@ -178,7 +143,7 @@ function ajaxRequest(params) {
 //
 function queryParams(params) {
     // params.advFilter = "projectID";
-    params.hostID = id;
+    params.id = id;
     return(params);
     // return {advFilter: 'projectID', advFilterValue: id};
 }
