@@ -89,6 +89,7 @@ class APIGetProjects(APIView):
         data['rows'] = dataSerialized.data
         return Response({'status':0, 'object':data})
 
+
 ######################################################
 # APIGetProjectByID get project from id
 # return {'status': '-1'} if something wrong
@@ -113,6 +114,7 @@ class APIGetProjectByID(APIView):
             return Response({'status': '-1', 'message': 'fields are required',
                              'detail': {"id": [{"message": "ID is required", "code": "required"}]}})
 
+
 ######################################################
 # APIAddProject add new project
 # return {'status': '-1'} if id not found
@@ -121,7 +123,6 @@ class APIGetProjectByID(APIView):
 
 class APIAddProject(APIView):
     def post(self, request):
-        print(request.POST)
         projectForm = ProjectForm(request.POST)
         if projectForm.is_valid():
             vulnObj = projectForm.save(commit=False)

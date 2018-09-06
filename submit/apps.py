@@ -1,20 +1,23 @@
 from django.apps import AppConfig
 from django.apps.registry import apps
 import threading
-
+import sys
+import time
 
 class SubmitConfig(AppConfig):
     name = 'submit'
 
     def ready(self):
-        thread = threading.Thread(target=WaitForDjangoReady)
-        thread.daemon = True
-        thread.start()
+        if 'runserver' in sys.argv:
+            thread = threading.Thread(target=WaitForDjangoReady)
+            thread.daemon = True
+            thread.start()
+
 
 def WaitForDjangoReady():
     while not apps.ready:
-        pass
+        time.sleep(1)
     print("Django is ready")
-    from .submitprocessor import MgntThreadingSubmitProcess
+    from .apis import MgntThreadingSubmitProcess
 
     MgntThreadingSubmitProcess()

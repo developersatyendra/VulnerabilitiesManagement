@@ -7,14 +7,6 @@ from hosts.models import HostModel
 from vulnerabilities.models import VulnerabilityModel
 
 
-class ScanInfoModel(models.Model):
-    hostScanned = models.ForeignKey(to=HostModel, on_delete=models.CASCADE, related_name="ScanInfoHost")
-    vulnFound = models.ManyToManyField(VulnerabilityModel, blank=True, related_name="ScanInfoVuln")
-
-    def __str__(self):
-        return self.hostScanned.hostName
-
-
 class ScanTaskModel(models.Model):
     name = models.CharField(max_length=128, verbose_name='Name of Scanning Task', unique=True)
     isProcessed = models.BooleanField(verbose_name='If this task is processed', default=True)
@@ -27,9 +19,15 @@ class ScanTaskModel(models.Model):
     dateCreated = models.DateTimeField(auto_now_add=True)
     dateUpdate = models.DateTimeField(auto_now=True)
     scanProject = models.ForeignKey(to=ScanProjectModel, on_delete=models.CASCADE)
-    scanInfo = models.ManyToManyField(ScanInfoModel, blank=True, related_name="ScanTaskScanInfo")
 
     def __str__(self):
         return self.name
 
 
+class ScanInfoModel(models.Model):
+    hostScanned = models.ForeignKey(to=HostModel, on_delete=models.CASCADE, related_name="ScanInfoHost")
+    vulnFound = models.ManyToManyField(VulnerabilityModel, blank=True, related_name="ScanInfoVuln")
+    scanTask = models.ForeignKey(to=ScanTaskModel, on_delete=models.CASCADE, related_name="ScanInfoScanTask")
+
+    def __str__(self):
+        return self.hostScanned.hostName

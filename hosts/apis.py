@@ -29,16 +29,20 @@ LEVEL_INFO = 0
 
 class APIGetHostName(APIView):
     def get(self, request):
-        try:
-            id = int(request.GET.get('id'))
-        except (ValueError, TypeError):
-            return Response({'status': '-1', 'message': 'Value error',
-                             'detail': {"id": [{"message": "ID is not integer", "code": "value error"}]}})
-        try:
-            name = HostModel.objects.get(pk=id).hostName
-        except HostModel.DoesNotExist:
-            return Response({'status': '-1', 'message': 'Host does not exist'})
-        return Response({'status': 0, 'object':name})
+        if request.GET.get('id'):
+            try:
+                id = int(request.GET.get('id'))
+            except (ValueError, TypeError):
+                return Response({'status': '-1', 'message': 'Value error',
+                                 'detail': {"id": [{"message": "ID is not integer", "code": "value error"}]}})
+            try:
+                name = HostModel.objects.get(pk=id).hostName
+            except HostModel.DoesNotExist:
+                return Response({'status': '-1', 'message': 'Host does not exist'})
+            return Response({'status': 0, 'object':name})
+        else:
+            return Response({'status': '-1', 'message': 'fields are required',
+                             'detail': {"id": [{"message": "ID is required", "code": "required"}]}})
 
 
 # APIGetHostsVuln get host with vuln from these params:
@@ -55,10 +59,10 @@ class APIGetHostName(APIView):
 class APIGetHostsVuln(APIView):
     def get(self, request):
         hostQuery = HostModel.objects.all()
-        print(hostQuery.count())
+
         ######################################################
         # Adv Filter
-        #
+
         # Filter by serviceID
         if request.GET.get('serviceID'):
             try:
@@ -81,7 +85,7 @@ class APIGetHostsVuln(APIView):
                 scanID = int(request.GET.get('scanID'))
             except ValueError:
                 return Response({'status': -1, 'message': "scanID is not integer"})
-            hostQuery = hostQuery.filter(ScanInfoHost__ScanTaskScanInfo__id=scanID)
+            hostQuery = hostQuery.filter(ScanInfoHost__scanTask__id=scanID)
 
         # Filter by project
         if request.GET.get('projectID'):
@@ -89,7 +93,7 @@ class APIGetHostsVuln(APIView):
                 projectID = int(request.GET.get('projectID'))
             except ValueError:
                 return Response({'status': -1, 'message': "projectID is not integer"})
-            hostQuery = hostQuery.filter(ScanInfoHost__ScanTaskScanInfo__scanProject=projectID)
+            hostQuery = hostQuery.filter(ScanInfoHost__scanTask__scanProject__id=projectID)
 
         hostQuery = hostQuery.distinct()
         hostQuery = hostQuery.annotate(
@@ -97,22 +101,21 @@ class APIGetHostsVuln(APIView):
                 med=Count('ScanInfoHost__vulnFound', filter=(Q(ScanInfoHost__vulnFound__levelRisk__gte=LEVEL_MED)&Q(ScanInfoHost__vulnFound__levelRisk__lt=LEVEL_HIGH)),distinct=True),
                 low=Count('ScanInfoHost__vulnFound', filter=Q(ScanInfoHost__vulnFound__levelRisk__gt=LEVEL_INFO)&Q(ScanInfoHost__vulnFound__levelRisk__lt=LEVEL_MED), distinct=True),
                 info=Count('ScanInfoHost__vulnFound', filter=Q(ScanInfoHost__vulnFound__levelRisk=LEVEL_INFO), distinct=True),
-                idScan=F('ScanInfoHost__ScanTaskScanInfo__id'),
-                scanName=F('ScanInfoHost__ScanTaskScanInfo__name'),
-                startTime=F('ScanInfoHost__ScanTaskScanInfo__startTime'))
+                idScan=F('ScanInfoHost__scanTask__id'),
+                scanName=F('ScanInfoHost__scanTask__name'),
+                startTime=F('ScanInfoHost__scanTask__startTime'))
 
         # Filter by search keyword
         if request.GET.get('searchText'):
             search = request.GET.get('searchText')
             query = Q(ipAddr__icontains=search)\
                     | Q(hostName__icontains=search)\
-                    | Q(osName__icontains=search) \
-                    | Q(osVersion__icontains=search) \
-                    | Q(description__icontains=search) \
+                    | Q(high__icontains=search) \
+                    | Q(med__icontains=search) \
+                    | Q(low__icontains=search) \
                     | Q(scanName__icontains=search)
 
             hostQuery = hostQuery.filter(query)
-        print(hostQuery.count())
         # get total
         numObject = hostQuery.count()
         # Get sort order
@@ -186,8 +189,8 @@ class APIGetHosts(APIView):
             scanTask = scanTask.filter(id=scanID)
 
         # Get ScanInfo
-        scanInfoID = scanTask.values_list('scanInfo', flat=True).distinct()
-        scanInfo = ScanInfoModel.objects.filter(id__in=scanInfoID)
+        scanInfoIDs = scanTask.values_list('ScanInfoScanTask', flat=True).distinct()
+        scanInfo = ScanInfoModel.objects.filter(id__in=scanInfoIDs)
 
         # Filter by vulnID
         if request.GET.get('vulnID'):
@@ -216,7 +219,7 @@ class APIGetHosts(APIView):
                     | Q(osName__icontains=search) \
                     | Q(osVersion__icontains=search) \
                     | Q(description__icontains=search)
-            querySet = host.filter(query)
+            host = host.filter(query)
 
         # get total
         numObject = host.count()

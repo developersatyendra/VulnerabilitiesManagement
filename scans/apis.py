@@ -31,16 +31,20 @@ LEVEL_INFO = 0
 
 class APIGetScanName(APIView):
     def get(self, request):
-        try:
-            id = int(request.GET.get('id'))
-        except (ValueError, TypeError):
-            return Response({'status': '-1', 'message': 'Value error',
-                             'detail': {"id": [{"message": "ID is not integer", "code": "value error"}]}})
-        try:
-            name = ScanTaskModel.objects.get(pk=id).name
-        except ScanTaskModel.DoesNotExist:
-            return Response({'status': '-1', 'message': 'Scan does not exist'})
-        return Response({'status': 0, 'object':name})
+        if request.GET.get('id'):
+            try:
+                id = int(request.GET.get('id'))
+            except (ValueError, TypeError):
+                return Response({'status': '-1', 'message': 'Value error',
+                                 'detail': {"id": [{"message": "ID is not integer", "code": "value error"}]}})
+            try:
+                name = ScanTaskModel.objects.get(pk=id).name
+            except ScanTaskModel.DoesNotExist:
+                return Response({'status': '-1', 'message': 'Scan does not exist'})
+            return Response({'status': 0, 'object':name})
+        else:
+            return Response({'status': '-1', 'message': 'fields are required',
+                             'detail': {"id": [{"message": "ID is required", "code": "required"}]}})
 
 
 ######################################################
@@ -76,7 +80,7 @@ class APIGetScansVuln(APIView):
                 hostID = int(request.GET.get('hostID'))
             except ValueError:
                 return Response({'status': -1, 'message': "hostID is not integer"})
-            scanTask = scanTask.filter(scanInfo__hostScanned__id=hostID)
+            scanTask = scanTask.filter(ScanInfoScanTask__hostScanned__id=hostID)
 
         # Filter by vuln
         if request.GET.get('vulnID'):
@@ -84,14 +88,14 @@ class APIGetScansVuln(APIView):
                 vulnID = int(request.GET.get('vulnID'))
             except ValueError:
                 return Response({'status': -1, 'message': "vulnID is not integer"})
-            scanTask = scanTask.filter(scanInfo__vulnFound__id=vulnID)
+            scanTask = scanTask.filter(ScanInfoScanTask__vulnFound__id=vulnID)
 
         scanTask =  scanTask.annotate(
-                high=Count('scanInfo__vulnFound', filter=Q(scanInfo__vulnFound__levelRisk__gte=LEVEL_HIGH), distinct=True),
-                med=Count('scanInfo__vulnFound', filter=(Q(scanInfo__vulnFound__levelRisk__gte=LEVEL_MED)&Q(scanInfo__vulnFound__levelRisk__lt=LEVEL_HIGH)),distinct=True),
-                low=Count('scanInfo__vulnFound', filter=Q(scanInfo__vulnFound__levelRisk__gt=LEVEL_INFO)&Q(scanInfo__vulnFound__levelRisk__lt=LEVEL_MED), distinct=True),
-                info=Count('scanInfo__vulnFound', filter=Q(scanInfo__vulnFound__levelRisk=LEVEL_INFO), distinct=True),
-                numHost=Count('scanInfo', distinct=True))
+                high=Count('scanInfo__vulnFound', filter=Q(ScanInfoScanTask__vulnFound__levelRisk__gte=LEVEL_HIGH), distinct=True),
+                med=Count('scanInfo__vulnFound', filter=(Q(ScanInfoScanTask__vulnFound__levelRisk__gte=LEVEL_MED) & Q(scanInfo__vulnFound__levelRisk__lt=LEVEL_HIGH)), distinct=True),
+                low=Count('scanInfo__vulnFound', filter=Q(ScanInfoScanTask__vulnFound__levelRisk__gt=LEVEL_INFO) & Q(scanInfo__vulnFound__levelRisk__lt=LEVEL_MED), distinct=True),
+                info=Count('scanInfo__vulnFound', filter=Q(ScanInfoScanTask__vulnFound__levelRisk=LEVEL_INFO), distinct=True),
+                numHost=Count('ScanInfoScanTask', distinct=True))
 
         ######################################################
         # Filter by day range
@@ -192,7 +196,7 @@ class APIGetScans(APIView):
                 hostID = int(request.GET.get('hostID'))
             except ValueError:
                 return Response({'status': -1, 'message': "hostID is not integer"})
-            scanTask = scanTask.filter(scanInfo__hostScanned__id=hostID)
+            scanTask = scanTask.filter(ScanInfoScanTask__hostScanned__id=hostID)
 
         # Filter by vuln
         if request.GET.get('vulnID'):
@@ -200,7 +204,7 @@ class APIGetScans(APIView):
                 vulnID = int(request.GET.get('vulnID'))
             except ValueError:
                 return Response({'status': -1, 'message': "vulnID is not integer"})
-            scanTask = scanTask.filter(scanInfo__vulnFound__id=vulnID)
+            scanTask = scanTask.filter(ScanInfoScanTask__vulnFound__id=vulnID)
         ######################################################
         # Filter by day range
         #
@@ -219,7 +223,9 @@ class APIGetScans(APIView):
             search = request.GET.get('searchText')
             searchQuery = Q(name__icontains=search) | \
                     Q(startTime__icontains=search) | \
-                    Q(endTime__icontains=search)
+                    Q(endTime__icontains=search) | \
+                    Q(description__icontains=search) | \
+                    Q(scanProject__name__icontains=search)
             scanTask = scanTask.filter(searchQuery)
 
         # Set filter to get distinct entry only
@@ -328,7 +334,6 @@ class APIDeleteScan(APIView):
             successOnDelete = 0
             try:
                 ids = scanForm.data['id'].split(',')
-                idLength = len(ids)
             except MultiValueDictKeyError:
                 return Response({'status': '-1', 'message': 'Fields are required',
                                  'detail': {"id": [{"message": "ID is required", "code": "required"}]}})
@@ -339,11 +344,11 @@ class APIDeleteScan(APIView):
                     pass
                 else:
                     try:
-                        retVuln = ScanTaskModel.objects.get(pk=id)
+                        scanTask = ScanTaskModel.objects.get(pk=id)
                     except ScanTaskModel.DoesNotExist:
                         pass
                     else:
-                        retVuln.delete()
+                        scanTask.delete()
                         successOnDelete = successOnDelete + 1
             if successOnDelete==1:
                 return Response(
@@ -387,6 +392,7 @@ class APIUpdateScan(APIView):
 # return {'notification': 'error_msg'} if id not found
 # return Scan object if it's success
 #
+
 class APIGetScanAttachment(APIView):
     def get(self, request):
         if request.GET.get('id'):
@@ -411,6 +417,7 @@ class APIGetScanAttachment(APIView):
 # return {'notification': 'error_msg'} if id not found
 # return Scan object if it's success
 #
+
 class APIAddAttachment(APIView):
     parser_classes = (MultiPartParser, FormParser, FileUploadParser,)
 

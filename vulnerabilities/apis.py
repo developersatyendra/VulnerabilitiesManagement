@@ -20,19 +20,23 @@ NUM_ENTRY_DEFAULT = 50
 
 class APIGetVulnName(APIView):
     def get(self, request):
-        try:
-            id = int(request.GET.get('id'))
-        except (ValueError, TypeError):
-            return Response({'status': '-1', 'message': 'Value error',
-                             'detail': {"id": [{"message": "ID is not integer", "code": "value error"}]}})
-        try:
-            name = VulnerabilityModel.objects.get(pk=id).name
-        except VulnerabilityModel.DoesNotExist:
-            return Response({'status': '-1', 'message': 'Vuln does not exist'})
-        return Response({'status': 0, 'object':name})
+        if request.GET.get('id'):
+            try:
+                id = int(request.GET.get('id'))
+            except (ValueError, TypeError):
+                return Response({'status': '-1', 'message': 'Value error',
+                                 'detail': {"id": [{"message": "ID is not integer", "code": "value error"}]}})
+            try:
+                name = VulnerabilityModel.objects.get(pk=id).name
+            except VulnerabilityModel.DoesNotExist:
+                return Response({'status': '-1', 'message': 'Vuln does not exist'})
+            return Response({'status': 0, 'object': name})
+        else:
+            return Response({'status': '-1', 'message': 'fields are required',
+                             'detail': {"id": [{"message": "ID is required", "code": "required"}]}})
 
 
-#
+######################################################
 # APIGetVulns get vulns from these params:
 #   searchText: Search content
 #   sortName: Name of column is applied sort
@@ -80,7 +84,7 @@ class APIGetVulns(APIView):
                 projectID = int(request.GET.get('projectID'))
             except ValueError:
                 return Response({'status': -1, 'message': "projectID is not integer"})
-            querySet = querySet.filter(ScanInfoVuln__ScanTaskScanInfo__scanProject=projectID)
+            querySet = querySet.filter(ScanInfoVuln__scanTask__scanProject=projectID)
 
         # Filter by scanTask
         if request.GET.get('scanID'):
@@ -88,7 +92,7 @@ class APIGetVulns(APIView):
                 scanID = int(request.GET.get('scanID'))
             except ValueError:
                 return Response({'status': -1, 'message': "scanID is not integer"})
-            querySet = querySet.filter(ScanInfoVuln__ScanTaskScanInfo__id=scanID)
+            querySet = querySet.filter(ScanInfoVuln__scanTask__id=scanID)
 
         # Filter by host
         if request.GET.get('hostID'):
@@ -260,8 +264,8 @@ class APIGetCurrentHostVuln(APIView):
             except ValueError:
                 return Response({'status': '-1', 'message': 'Value error',
                                  'detail': {"id": [{"message": "ID is not integer", "code": "value error"}]}})
-            scanTask = ScanTaskModel.objects.filter(scanInfo__hostScanned=id).order_by('-startTime')[0]
-            scanInfo = scanTask.scanInfo.get(hostScanned=id)
+            scanTask = ScanTaskModel.objects.filter(ScanInfoScanTask__hostScanned=id).order_by('-startTime')[0]
+            scanInfo = scanTask.ScanInfoScanTask.get(hostScanned=id)
             vulns = scanInfo.vulnFound.all()
             if request.GET.get('search'):
                 search = request.GET.get('search')
