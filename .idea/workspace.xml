@@ -2,43 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7e1e5878-3e63-44a6-b2e6-eb13b43afe37" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/static/pages/hosts/host_runningservice.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/pages/services/service_relevantvuln.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/pages/services/service_runonhost.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/hosts/host_runningservice.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/services/service_runonhost.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hosts/apis.py" beforeDir="false" afterPath="$PROJECT_DIR$/hosts/apis.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hosts/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/hosts/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hosts/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/hosts/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects/apis.py" beforeDir="false" afterPath="$PROJECT_DIR$/projects/apis.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scans/apis.py" beforeDir="false" afterPath="$PROJECT_DIR$/scans/apis.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/apis.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/apis.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/pages/hosts/host_currentvuln.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/pages/hosts/host_currentvuln.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/pages/hosts/host_scantask.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/pages/hosts/host_scantask.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/pages/hosts/hosts.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/pages/hosts/hosts.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/pages/js/service_detailed.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/pages/services/service_detailed.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/pages/js/services.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/pages/services/services.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/pages/projects/project_scantasks.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/pages/projects/project_scantasks.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/pages/projects/projects.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/pages/projects/projects.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/pages/scans/scans.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/pages/scans/scans.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/pages/scans/scans_hosts.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/pages/scans/scans_hosts.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/pages/submit/submit.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/pages/submit/submit.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/pages/vulns/vuln_hostinvolved.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/pages/vulns/vuln_hostinvolved.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/submit/apis.py" beforeDir="false" afterPath="$PROJECT_DIR$/submit/apis.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/submit/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/submit/apps.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/submit/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/submit/forms.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/hosts/host_currentvuln.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/hosts/host_currentvuln.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/hosts/host_detailed.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/hosts/host_detailed.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/hosts/host_scantask.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/hosts/host_scantask.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/scans/scan_hosts.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/scans/scan_hosts.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/service_detailed.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/services/service_detailed.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/services.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/services/services.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/submit/submit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/submit/submit.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/vulns/vuln_hostinvolved.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/vulns/vuln_hostinvolved.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vulnerabilities/apis.py" beforeDir="false" afterPath="$PROJECT_DIR$/vulnerabilities/apis.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/dashboard.html" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -96,18 +60,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/services/views.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="490">
-              <caret line="44" lean-forward="true" selection-start-line="44" selection-end-line="44" />
-              <folding>
-                <element signature="e#0#35#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="urls.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/services/urls.py">
           <provider selected="true" editor-type-id="text-editor">
@@ -141,17 +93,44 @@
       <file leaf-file-name="submit.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/submit/submit.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="235">
-              <caret line="118" column="105" selection-start-line="118" selection-start-column="90" selection-end-line="118" selection-end-column="105" />
+            <state relative-caret-position="728">
+              <caret line="126" column="45" lean-forward="true" selection-start-line="126" selection-start-column="45" selection-end-line="126" selection-end-column="45" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="submit.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="scans.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/static/pages/scans/scans.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="119">
+              <caret line="351" lean-forward="true" selection-start-line="351" selection-end-line="385" selection-end-column="1" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="submit.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/static/pages/submit/submit.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
-              <caret line="102" column="7" lean-forward="true" selection-start-line="102" selection-start-column="7" selection-end-line="102" selection-end-column="7" />
+            <state relative-caret-position="569">
+              <caret line="241" lean-forward="true" selection-start-line="241" selection-end-line="241" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="dashboard.html" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/templates/dashboard.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="239">
+              <caret line="459" column="74" selection-start-line="459" selection-start-column="74" selection-end-line="459" selection-end-column="74" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/dashboard/views.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="748">
+              <caret line="46" column="4" selection-start-line="46" selection-start-column="4" selection-end-line="46" selection-end-column="4" />
             </state>
           </provider>
         </entry>
@@ -187,8 +166,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>fileAtt</find>
-      <find>btnDownloadAtt</find>
       <find>navbar-brand</find>
       <find>warningOnDeleteModal</find>
       <find>log</find>
@@ -196,7 +173,6 @@
       <find>hostinfo</find>
       <find>vulninfo</find>
       <find>cancel</find>
-      <find>DateTimeFormater</find>
       <find>flagDataStored</find>
       <find>$('#saveInfoBtn').attr('disabled', true);</find>
       <find>saveInfoBtn</find>
@@ -217,6 +193,9 @@
       <find>id_fileAttachment</find>
       <find>uploadAttBtn</find>
       <find>on(&quot;</find>
+      <find>DateTimeFormater</find>
+      <find>canvas</find>
+      <find>osStat</find>
     </findStrings>
     <replaceStrings>
       <replace>querySet</replace>
@@ -237,9 +216,9 @@
       <replace>minutes</replace>
       <replace>seconds</replace>
       <replace>getFormattedDate</replace>
-      <replace>FormattedDate</replace>
       <replace>input</replace>
       <replace>submitQueue.submitObj</replace>
+      <replace>FormattedDate</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -248,7 +227,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/templates/vulns/vuln_detailed.html" />
         <option value="$PROJECT_DIR$/static/pages/vulns/vuln_detailed.js" />
         <option value="$PROJECT_DIR$/templates/hosts/hosts.html" />
         <option value="$PROJECT_DIR$/static/pages/hosts/host_detailed.js" />
@@ -299,6 +277,7 @@
         <option value="$PROJECT_DIR$/templates/services/service_runonhost.html" />
         <option value="$PROJECT_DIR$/templates/submit/submit.html" />
         <option value="$PROJECT_DIR$/static/pages/submit/submit.js" />
+        <option value="$PROJECT_DIR$/templates/dashboard.html" />
       </list>
     </option>
   </component>
@@ -348,6 +327,11 @@
             <path>
               <item name="VulnerablititesManagement" type="b2602c69:ProjectViewProjectNode" />
               <item name="VulnerablititesManagement" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="VulnerablititesManagement" type="b2602c69:ProjectViewProjectNode" />
+              <item name="VulnerablititesManagement" type="462c0819:PsiDirectoryNode" />
+              <item name="dashboard" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="VulnerablititesManagement" type="b2602c69:ProjectViewProjectNode" />
@@ -524,7 +508,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1616" height="886" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
@@ -611,13 +594,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/submit/serializers.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="14" selection-start-line="14" selection-end-line="14" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/submit/urls.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="170">
@@ -657,13 +633,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="17">
           <caret line="19" selection-start-line="19" selection-end-line="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/dashboard/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="55">
-          <caret line="46" column="4" selection-start-line="46" selection-start-column="4" selection-end-line="46" selection-end-column="4" />
         </state>
       </provider>
     </entry>
@@ -744,13 +713,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1122">
           <caret line="246" column="48" selection-start-line="246" selection-start-column="48" selection-end-line="246" selection-end-column="48" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/pages/scans/scans.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="60" column="14" selection-start-line="60" selection-start-column="14" selection-end-line="60" selection-end-column="14" />
         </state>
       </provider>
     </entry>
@@ -971,15 +933,36 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/templates/submit/submit.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="235">
-          <caret line="118" column="105" selection-start-line="118" selection-start-column="90" selection-end-line="118" selection-end-column="105" />
+        <state relative-caret-position="728">
+          <caret line="126" column="45" lean-forward="true" selection-start-line="126" selection-start-column="45" selection-end-line="126" selection-end-column="45" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/static/pages/scans/scans.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="351" lean-forward="true" selection-start-line="351" selection-end-line="385" selection-end-column="1" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/static/pages/submit/submit.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="102" column="7" lean-forward="true" selection-start-line="102" selection-start-column="7" selection-end-line="102" selection-end-column="7" />
+        <state relative-caret-position="569">
+          <caret line="241" lean-forward="true" selection-start-line="241" selection-end-line="241" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dashboard/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="748">
+          <caret line="46" column="4" selection-start-line="46" selection-start-column="4" selection-end-line="46" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/dashboard.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="239">
+          <caret line="459" column="74" selection-start-line="459" selection-start-column="74" selection-end-line="459" selection-end-column="74" />
         </state>
       </provider>
     </entry>
