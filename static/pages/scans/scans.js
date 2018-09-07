@@ -59,11 +59,9 @@ $(document).ready(
                   sortable: true
                 }
             ],
-            // url: "/scans/api/getscans",
-            // method: "get",
             ajax: ajaxRequest,
-            idField: "id",
             queryParamsType: "",
+            idField: "id",
             striped: true,
             pagination: true,
             sidePagination: "server",

@@ -5,6 +5,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from django.contrib.auth.models import User
 from hosts.models import HostModel
+from vulnerabilities.models import VulnerabilityModel
 from .models import ServiceModel
 from .serializers import ServiceSerializer
 from .forms import ServiceForm, ServiceIDForm
@@ -21,36 +22,43 @@ NUM_ENTRY_DEFAULT = 50
 #   sortOrder: sort entry by order 'asc' or 'desc'
 #   pageSize: number of entry per page
 #   pageNumber: page number of curent view
-#   advFilter: "hostID"
-#   advFilterValue: Value to be used to filter
+#   hostID: host to be used to filter
+#   vulnID: vuln to be used to filter
 
 class APIGetServices(APIView):
     def get(self, request):
-        numObject = ServiceModel.objects.all().count()
+        # Advanced Filter
+        if request.GET.get('hostID'):
+            try:
+                hostID = int(request.GET.get('hostID'))
+            except ValueError:
+                return Response({'status': -1, 'message': "hostID is not integer"})
+            try:
+                serviceObjs = HostModel.objects.get(pk=hostID).services.all()
+            except HostModel.DoesNotExist:
+                return Response({'status': -1, 'message': "Host is not existed"})
+        elif request.GET.get('vulnID'):
+            try:
+                vulnID = int(request.GET.get('vulnID'))
+            except ValueError:
+                return Response({'status': -1, 'message': "vulnID is not integer"})
+            try:
+                serviceObjs = VulnerabilityModel.objects.get(pk=vulnID).service
+            except VulnerabilityModel.DoesNotExist:
+                return Response({'status': -1, 'message': "Vulnerability is not existed"})
+            serviceSerializer = ServiceSerializer(serviceObjs, many=False)
+            return Response({'status': 0, 'object': serviceSerializer.data})
+        else:
+            serviceObjs = ServiceModel.objects.all()
 
         # Filter by search keyword
         if request.GET.get('searchText'):
             search = request.GET.get('searchText')
             query = Q(name__icontains=search) | Q(port__icontains=search) | Q(description__icontains=search)
-            querySet = ServiceModel.objects.filter(query)
-        else:
-            querySet = ServiceModel.objects.all()
-
-        # Adv Filter
-        if request.GET.get('advFilter') and request.GET.get('advFilterValue'):
-            advFilter = request.GET.get('advFilter')
-            advFilterValue = request.GET.get('advFilterValue')
-
-            # if advFilter is hostID
-            queryAdv = None
-            if advFilter == 'hostID':
-                serviceIDs = HostModel.objects.get(pk=advFilterValue).services.values_list('id', flat=True)
-                queryAdv = Q(id__in=serviceIDs)
-                querySet = querySet.filter(queryAdv)
-
+            serviceObjs = serviceObjs.filter(query)
 
         # get total
-        numObject = querySet.count()
+        numObject = serviceObjs.count()
 
         # Get sort order
         if request.GET.get('sortOrder') == 'asc':
@@ -63,7 +71,7 @@ class APIGetServices(APIView):
             sortString = sortString + request.GET.get('sortName')
         else:
             sortString = sortString + 'id'
-        querySet = querySet.order_by(sortString)
+        querySet = serviceObjs.order_by(sortString)
 
         # Get Page Number
         if request.GET.get('pageNumber'):

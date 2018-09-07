@@ -1,11 +1,12 @@
+var url = window.location.pathname;
+var id = url.split("/")[url.split("/").length -2];
 var rowIDSelected = null;
 $(document).ready(
-
     //
-    // Declear serivces table
+    // Decleare vulnerability table
     //
     $(function () {
-        $("#hosttable").bootstrapTable({
+        $("#relevantvulntable").bootstrapTable({
             columns:[
                 {
                     field: 'state',
@@ -14,23 +15,30 @@ $(document).ready(
                     valign: 'middle'
                 },
                 {
-                    title: "Hostname",
-                    field: "hostName",
+                    title: "Vulnerability",
+                    field: "name",
                     align: "center",
+                    valign: "middle",
                     formatter: HrefFormater,
-                    valign: "middle",
                     sortable: true
                 },
                 {
-                    title: "IP Address",
-                    field: "ipAddr",
+                    title: "Level Risk",
+                    field: "levelRisk",
                     align: "center",
                     valign: "middle",
                     sortable: true
                 },
                 {
-                    title: "OS Name",
-                    field: "osName",
+                    title: "CVE",
+                    field: "cve",
+                    align: "center",
+                    valign: "middle",
+                    sortable: true
+                },
+                {
+                    title: "Service",
+                    field: "service.name",
                     align: "center",
                     valign: "middle",
                     sortable: true
@@ -43,9 +51,12 @@ $(document).ready(
                     sortable: true
                 }
             ],
+            // url: "/vuln/api/getvulns",
+            // method: "get",
             ajax: ajaxRequest,
-            queryParamsType: "",
             idField: "id",
+            queryParams: queryParams,
+            queryParamsType: "",
             striped: true,
             pagination: true,
             sidePagination: "server",
@@ -54,78 +65,79 @@ $(document).ready(
         })
     }),
 
+
     //
-    // Edit host
+    // Edit vuln
     //
-    $("#editHostPostForm").submit(function(e){
-        var data = $('#editHostPostForm').serializeArray();
+    $("#editVulnPostForm").submit(function(e){
+        var data = $('#editVulnPostForm').serializeArray();
         data.push({name: "id", value: rowIDSelected});
         data = $.param(data);
-        $.post("./api/updatehost", data, function(data){
+        $.post("./api/updatevuln", data, function(data){
             var notification = $("#retMsgEdit");
             var closebtn = '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>';
             notification.removeClass("hidden");
             if(data.status != 0){
-                notification.html("Error: "+data.message + '. '+data.detail.ipAddr[0]);
+                notification.html("Error: "+data.message + '. '+data.detail.name[0]);
                 notification.removeClass("alert-info");
                 notification.addClass("alert-danger");
             }
             else{
-                notification.html("The host is edited.");
+                notification.html("The vulnerability is edited.");
                 notification.removeClass("alert-danger");
                 notification.addClass("alert-info");
 
-                // Disable Save Edit Button
-                $('#saveEditBtn').attr('disabled', true);
+                // Disable Save button
+                $("#saveEditBtn").attr('disabled', true);
             }
             notification.append(closebtn);
-            $("#hosttable").bootstrapTable('refresh');
+            $("#vulntable").bootstrapTable('refresh');
         });
         e.preventDefault();
     }),
-    $("#editHostModal").on("hidden.bs.modal", function () {
+    $("#editVulnModal").on("hidden.bs.modal", function () {
         $("#retMsgEdit").addClass("hidden");
     }),
 
     //
-    // Add New Service
+    // Add New vuln
     //
-    $("#addHostPostForm").submit(function(e){
-        $.post("./api/addhost", $(this).serialize(), function(data){
+    $("#addVulnPostForm").submit(function(e){
+        $.post("./api/addvuln", $(this).serialize(), function(data){
             var notification = $("#retMsgAdd");
             var closebtn = '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>';
             notification.removeClass("hidden");
             if(data.status != 0){
-                notification.html("Error: "+data.message + '. '+data.detail.ipAddr[0]);
+                notification.html("Error: "+data.message + '. '+data.detail.name[0]);
                 notification.removeClass("alert-info");
                 notification.addClass("alert-danger");
             }
             else{
-                notification.html("New Host is added.");
+                notification.html("New vulnerability is added.");
                 notification.removeClass("alert-danger");
                 notification.addClass("alert-info");
 
-                // Disable Save Add button
-                $('#saveAddBtn').attr('disabled', true);
+                // Disable Save button
+                $("#saveAddBtn").attr('disabled', true);
             }
             notification.append(closebtn);
-            $("#hosttable").bootstrapTable('refresh');
+            $("#vulntable").bootstrapTable('refresh');
         });
         e.preventDefault();
     }),
-    $("#addHostModal").on("hidden.bs.modal", function () {
+    $("#addVulnModal").on("hidden.bs.modal", function () {
         $("#retMsgAdd").addClass("hidden");
     }),
 
     //
-    // Confirm delete Host
+    // Confirm delete vuln
     //
     $("#confirmDelete").click(function () {
         // Get csrf_token
         var csrf_token = $('meta[name="csrf-token"]').attr('content');
 
-        // Create array contains Host ids
-        var dataTable = $("#hosttable").bootstrapTable('getSelections');
+        // Create array contains vuln ids
+        var dataTable = $("#vulntable").bootstrapTable('getSelections');
             var ids = new Array();
             for(i=0; i < dataTable.length; i++){
                 ids.push(dataTable[i].id);
@@ -134,11 +146,11 @@ $(document).ready(
         var data = [];
         data.push({name: "id", value: ids});
         data.push({name: "csrfmiddlewaretoken", value: csrf_token});
-        $.post('./api/deletehost', $.param(data),
+        $.post('./api/deletevuln', $.param(data),
              function(returnedData){
                 if(returnedData.status == 0){
                     $('#warningOnDelete').modal('hide');
-                    $("#hosttable").bootstrapTable('refresh');
+                    $("#vulntable").bootstrapTable('refresh');
 
                     $('#msgInfo').text(returnedData.message);
                     $('#infoModal').modal('show');
@@ -148,44 +160,47 @@ $(document).ready(
     }),
 
     //
-    // show delete Host warning
+    // show delete vuln warning
     //
     $("#delete").click(function () {
-        var data = $("#hosttable").bootstrapTable('getSelections');
+        var data = $("#vulntable").bootstrapTable('getSelections');
         if(data.length > 0){
             if(data.length == 1){
-                $('#msgOnDelete').text("Are you sure to delete " + data.length + " selected Host?");
+                $('#msgOnDelete').text("Are you sure to delete " + data.length + " selected vulnerability?");
             }
             else{
-                $('#msgOnDelete').text("Are you sure to delete " + data.length + " selected Hosts?");
+                $('#msgOnDelete').text("Are you sure to delete " + data.length + " selected vulnerabilities?");
             }
             $('#warningOnDelete').modal('show')
         }
     }),
-
-        //
+    //
     // Fill in edit form when edit btn is clicked
     //
     $("#edit").click(function () {
-        var data = $("#hosttable").bootstrapTable('getSelections');
-        if (data.length == 1) {
-            $('#id_hostName_edit').val(data[0].hostName);
-            $('#id_ipAddr_edit').val(data[0].ipAddr);
-            $('#id_osName_edit').val(data[0].osName);
-            $('#id_osVersion_edit').val(data[0].osVersion);
+        var data = $("#vulntable").bootstrapTable('getSelections');
+        if(data.length > 1){
+            $('#msgInfo').text("Please choose only one row for editing.");
+            $('#infoModal').modal('show');
+        }
+        else if (data.length == 1) {
+            $('#id_name_edit').val(data[0].name);
+            $('#id_levelRisk_edit').val(data[0].levelRisk);
+            $('#id_cve_edit').val(data[0].cve);
+            $('#id_service_edit').val(data[0].service.id);
+            $('#id_observation_edit').val(data[0].observation);
+            $('#id_recommendation_edit').val(data[0].recommendation);
             $('#id_description_edit').val(data[0].description);
-            $('#editHostModal').modal('show');
+            $('#editVulnModal').modal('show');
             rowIDSelected = data[0].id;
 
-            // Disable Save Edit Button
-            $('#saveEditBtn').attr('disabled', true);
+            // Disable Save Edit
+            $("#saveEditBtn").attr('disabled', true);
         }
     }),
-    //
-    // Check how many row is selected to enable or disable edit and delete button
-    //
-    $("#hosttable").change(function () {
-        var data = $("#hosttable").bootstrapTable('getSelections');
+
+    $("#vulntable").change(function () {
+        var data = $("#vulntable").bootstrapTable('getSelections');
         var editBtn = $("#edit");
         var delBtn = $("#delete");
         if(data.length!=1){
@@ -215,19 +230,22 @@ $(document).ready(
     //
 
     // Add form
-    $('#addHostPostForm').change(function () {
+    $('#addVulnPostForm').change(function () {
         $('#saveAddBtn').attr('disabled', false);
     }),
-    $("#id_hostName").on("input", function () {
+    $("#id_name").on("input", function () {
         $("#saveAddBtn").attr('disabled', false);
     }),
-    $("#id_ipAddr").on("input", function () {
+    $("#id_levelRisk").on("input", function(){
         $("#saveAddBtn").attr('disabled', false);
     }),
-    $("#id_osName").on("input", function () {
+    $("#id_cve").on("input", function () {
         $("#saveAddBtn").attr('disabled', false);
     }),
-    $("#id_osVersion").on("input", function () {
+    $("#id_observation").on("input", function () {
+        $("#saveAddBtn").attr('disabled', false);
+    }),
+    $("#id_recommendation").on("input", function () {
         $("#saveAddBtn").attr('disabled', false);
     }),
     $("#id_description").on("input", function () {
@@ -235,30 +253,42 @@ $(document).ready(
     }),
 
     // Edit form
-    $('#editHostModal').change(function () {
+    $('#editVulnPostForm').change(function () {
         $('#saveEditBtn').attr('disabled', false);
     }),
-    $("#id_hostName_edit").on("input", function () {
+    $("#id_name_edit").on("input", function () {
+        $('#saveEditBtn').attr('disabled', false);
+    }),
+    $("#id_levelRisk_edit").on("input", function(){
         $("#saveEditBtn").attr('disabled', false);
     }),
-    $("#id_ipAddr_edit").on("input", function () {
-        $("#saveEditBtn").attr('disabled', false);
+    $("#id_cve_edit").on("input", function () {
+        $('#saveEditBtn').attr('disabled', false);
     }),
-    $("#id_osName_edit").on("input", function () {
-        $("#saveEditBtn").attr('disabled', false);
+    $("#id_observation_edit").on("input", function () {
+        $('#saveEditBtn').attr('disabled', false);
     }),
-    $("#id_osVersion_edit").on("input", function () {
-        $("#saveEditBtn").attr('disabled', false);
+    $("#id_recommendation_edit").on("input", function () {
+        $('#saveEditBtn').attr('disabled', false);
     }),
     $("#id_description_edit").on("input", function () {
-        $("#saveEditBtn").attr('disabled', false);
+        $('#saveEditBtn').attr('disabled', false);
     })
-
 );
 
 // Format Href for bootstrap table
 function HrefFormater(value, row, index) {
-    return '<a href="./' + row.id + '"> ' + row.hostName +'</a>';
+    return '<a href="/vuln/' + row.id + '"> ' + row.name +'</a>';
+}
+
+//////////////////////////////////////////
+// Custom params for bootstrap table
+//
+function queryParams(params) {
+    // params.advFilter = "projectID";
+    params.serviceID = id;
+    return(params);
+    // return {advFilter: 'projectID', advFilterValue: id};
 }
 
 //////////////////////////////////////////
@@ -267,7 +297,7 @@ function HrefFormater(value, row, index) {
 function ajaxRequest(params) {
     $.ajax({
         type: "GET",
-        url: "/hosts/api/gethosts",
+        url: "/vuln/api/getvulns",
         data: params.data,
         dataType: "json",
         success: function(data) {

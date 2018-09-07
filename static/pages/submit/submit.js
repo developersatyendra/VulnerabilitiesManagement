@@ -25,7 +25,7 @@ $(document).ready(
                     field: "dateCreated",
                     align: "center",
                     valign: "middle",
-                    formatter: DateTimeFormater,
+                    formatter: FormattedDate,
                     sortable: true
                 },
                 {
@@ -58,55 +58,65 @@ $(document).ready(
                 //     sortable: true
                 // }
             ],
-            url: "/submit/api/getsubmits",
-            method: "get",
+            // url: "/submit/api/getsubmits",
+            // method: "get",
             idField: "id",
-            queryParamsType: "",
+            ajax: ajaxRequest,
             striped: true,
             pagination: true,
             sidePagination: "server",
             pageList: [5, 10, 20, 50, 100, 200, 'All'],
             search: true,
         })
+
     }),
 
-    // //
-    // // Edit service
-    // //
-    // $('#servicetable').on('click-row.bs.table',function (e, row, element, field) {
-    //     $('#id_name_edit').val(row.name);
-    //     $('#id_port_edit').val(row.port);
-    //     $('#id_description_edit').val(row.description);
-    //     $('#editServiceModal').modal('show');
-    //     rowIDSelected = row.id;
-    // }),
-    // $("#editServicePostForm").submit(function(e){
-    //     var data = $('#editServicePostForm').serializeArray();
-    //     data.push({name: "id", value: rowIDSelected});
-    //     data = $.param(data);
-    //     $.post("./api/updateservice", data, function(data){
-    //         var notification = $("#retMsgEdit");
-    //         var closebtn = '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>';
-    //         notification.removeClass("hidden");
-    //         if(data.notification != null){
-    //             notification.html(data.notification);
-    //         }
-    //         else{
-    //             notification.html("The service is edited.");
-    //             notification.removeClass("alert-danger");
-    //             notification.addClass("alert-info");
-    //         }
-    //         notification.append(closebtn);
-    //         $("#submittable").bootstrapTable('refresh');
-    //     });
-    //     e.preventDefault();
-    // }),
-    // $("#editServiceModal").on("hidden.bs.modal", function () {
-    //     $("#retMsgEdit").addClass("hidden");
-    // }),
+    //
+    // Click Browse button
+    //
+    $('#btnBrowse').click(function () {
+        $('#id_fileSubmitted').trigger('click');
+    }),
 
     //
-    // Add New Service
+    // Click Browse Textbox
+    //
+    $('#fileUpload').click(function () {
+        $('#id_fileSubmitted').trigger('click');
+    }),
+
+    //////////////////////////////////////////
+    // Show file path on text input
+    //
+    $("#id_fileSubmitted").change(function (e) {
+            $("#fileUpload").val(GetFileName($(this).val()));
+        }
+    ),
+
+    //
+    // Click cancel button
+    //
+    $("#cancelSubmitBtn").click(function () {
+        $("#fileUpload").val("");
+        $('#id_description').val("");
+        $('#saveSubmitBtn').attr('disabled', true);
+    }),
+    //
+    // Description on type
+    //
+    $('#id_description').on("input", function () {
+        $('#saveSubmitBtn').attr('disabled', false);
+    }),
+
+    //
+    // From add submit changes
+    //
+    $("#addSubmitPostForm").change(function () {
+        $('#saveSubmitBtn').attr('disabled', false);
+    }),
+
+    //
+    // Add New Submit
     //
     $("#addSubmitPostForm").submit(function(e){
         var formData = new FormData(this);
@@ -117,9 +127,9 @@ $(document).ready(
             success: function (data) {
                 var body = $("#retInfoBody");
                 var title = $("#retInfoTitle");
-                if(data.notification != null){
+                if(data.status < 0){
                     title.text("Error");
-                    body.text(data.notification);
+                    body.text(data.message);
                 }
                 else{
                     $("#submittable").bootstrapTable('refresh');
@@ -128,6 +138,7 @@ $(document).ready(
                 }
                 $("#retInfoModal").modal('show');
                 $("#servicetable").bootstrapTable('refresh');
+                $('#saveSubmitBtn').attr('disabled', true);
             },
             cache: false,
             contentType: false,
@@ -155,10 +166,19 @@ $(document).ready(
         data.push({name: "csrfmiddlewaretoken", value: csrf_token});
         $.post('./api/deletesubmit', $.param(data),
              function(returnedData){
-                if(returnedData.retVal > 0){
+                var body = $("#retInfoBody");
+                var title = $("#retInfoTitle");
+                if(returnedData.status == 0){
                     $('#warningOnDelete').modal('hide');
                     $("#submittable").bootstrapTable('refresh');
+                    title.text("Information");
                 }
+                else{
+                    title.text("Error");
+                }
+                body.text(returnedData.message);
+                $("#retInfoModal").modal('show');
+
         }, 'json');
         $('#warningOnDelete').modal('hide')
     }),
@@ -181,9 +201,39 @@ $(document).ready(
 );
 
 // Format Datetime for bootstrap table
-function DateTimeFormater(value, row, index) {
-    date_t = new Date(value);
-    return date_t.toLocaleString();
+function FormattedDate(input) {
+    date = new Date(input);
+    // Get year
+    var year = date.getFullYear();
+
+    // Get month
+    var month = (1 + date.getMonth()).toString();
+    month = month.length > 1 ? month : '0' + month;
+
+    // Get day
+    var day = date.getDate().toString();
+    day = day.length > 1 ? day : '0' + day;
+
+    // Get hours
+    var hours = date.getHours();
+
+    // AM PM
+    var ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours.toString();
+    hours = hours.length > 1 ? hours: '0' + hours;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+
+    // Get minutes
+    var minutes = date.getMinutes().toString();
+    minutes = minutes < 10 ? '0'+minutes : minutes;
+    minutes = minutes.length > 1 ? minutes: '0' + minutes;
+
+    // Get seconds
+    var seconds = date.getSeconds().toString();
+    seconds = seconds.length > 1 ? seconds: '0' + seconds;
+
+    return month + '/' + day + '/' + year + ' ' + hours + ':' + minutes +':'+seconds+ ' ' + ampm;
 }
 
 // Get File name from path for bootstrap table
@@ -192,3 +242,45 @@ function FilenameFormatter(value, row, index){
 
 }
 
+// Get file name from path
+function GetFileName(filepath) {
+    if(filepath!==null){
+        var fileNameIndex = filepath.lastIndexOf("/") + 1;
+        var fileNameIndexWindows = filepath.lastIndexOf("\\") + 1;
+        var filename = '';
+        if(fileNameIndex != 0){
+            filename =  filepath.substr(fileNameIndex);
+        }
+        else if(fileNameIndexWindows !=0){
+            filename =  filepath.substr(fileNameIndexWindows);
+        }
+        else {
+            return "";
+        }
+        return filename;
+    }
+    return "";
+}
+
+//////////////////////////////////////////
+// Ajax get data to table
+//
+function ajaxRequest(params) {
+    $.ajax({
+        type: "GET",
+        url: "/submit/api/getsubmits",
+        data: params.data,
+        dataType: "json",
+        success: function(data) {
+            if(data.status == 0){
+                params.success({
+                    "rows": data.object.rows,
+                    "total": data.object.total
+                })
+            }
+        },
+       error: function (er) {
+            params.error(er);
+        }
+    });
+}

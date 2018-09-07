@@ -43,7 +43,7 @@ class APIGetProjectName(APIView):
 class APIGetProjects(APIView):
     def get(self, request):
         # Filter by search keyword
-        if request.GET.get('searchText'):
+        if request.GET.get('search'):
             search = request.GET.get('searchText')
             # Query on Projects Model
             query = Q(name__icontains=search) |\
@@ -87,7 +87,7 @@ class APIGetProjects(APIView):
         data = dict()
         data["total"] = numObject
         data['rows'] = dataSerialized.data
-        return Response({'status':0, 'object':data})
+        return Response({'status': 0, 'object': data})
 
 
 ######################################################

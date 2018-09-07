@@ -250,11 +250,11 @@ class APIUpdateVuln(APIView):
 
 #
 # APIGetCurrentHostVuln get existing vulns on specific host:
-#   searchText: Search content
-#   sortName: Name of column is applied sort
-#   sortOrder: sort entry by order 'asc' or 'desc'
-#   pageSize: number of entry per page
-#   pageNumber: page number of curent view
+#   search: Search content
+#   sort: Name of column is applied sort
+#   order: sort entry by order 'asc' or 'desc'
+#   offset: number of entry per page
+#   limit: page number of curent view
 
 class APIGetCurrentHostVuln(APIView):
     def get(self, request):
@@ -267,8 +267,8 @@ class APIGetCurrentHostVuln(APIView):
             scanTask = ScanTaskModel.objects.filter(ScanInfoScanTask__hostScanned=id).order_by('-startTime')[0]
             scanInfo = scanTask.ScanInfoScanTask.get(hostScanned=id)
             vulns = scanInfo.vulnFound.all()
-            if request.GET.get('search'):
-                search = request.GET.get('search')
+            if request.GET.get('searchText'):
+                search = request.GET.get('searchText')
                 queryVulnModel = Q(description__icontains=search) \
                                  | Q(name__icontains=search) \
                                  | Q(observation__icontains=search) \
@@ -282,14 +282,14 @@ class APIGetCurrentHostVuln(APIView):
             # get total
             numObject = vulns.count()
             # Get sort order
-            if request.GET.get('order') == 'asc':
+            if request.GET.get('sortOrder') == 'asc':
                 sortString = ''
             else:
                 sortString = '-'
 
             # Get sort filed
-            if request.GET.get('sort'):
-                sortString = sortString + request.GET.get('sort')
+            if request.GET.get('sortName'):
+                sortString = sortString + request.GET.get('sortName')
             else:
                 sortString = sortString + 'id'
             sortString = sortString.replace('.', '__')

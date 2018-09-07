@@ -6,6 +6,9 @@ app_name='services'
 urlpatterns = [
     path('', views.ServicesView.as_view(), name='services'),
     path('<int:id>/', views.ServiceDetailView.as_view(), name='serviceDetail'),
+    path('<int:id>/detailed', views.ServiceDetailView.as_view(), name='serviceDetail'),
+    path('<int:id>/relevantvuln', views.ServiceRelevantVulnView.as_view(), name='serviceRelevantVulnDetail'),
+    path('<int:id>/runningonhost', views.ServiceRunOnHostView.as_view(), name='serviceRunningOnHost'),
 
     # APIs
     path('api/getservices', apis.APIGetServices.as_view(), name='APIgetservices'),

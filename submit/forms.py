@@ -44,7 +44,7 @@ class SubmitAddForm(forms.ModelForm):
         model = SubmitModel
         exclude = ('owner', 'status')
         widgets = {
-            'fileSubmitted': forms.FileInput(),#attrs={'style':"display: none;"}),
+            'fileSubmitted': forms.FileInput(attrs={'style': "display: none;"}),#attrs={'style':"display: none;"}),
             'scanProject':forms.Select(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Descriptions', 'rows':'5'}),
         }

@@ -7,11 +7,11 @@ import time
 class SubmitConfig(AppConfig):
     name = 'submit'
 
-    def ready(self):
-        if 'runserver' in sys.argv:
-            thread = threading.Thread(target=WaitForDjangoReady)
-            thread.daemon = True
-            thread.start()
+    # def ready(self):
+        # if 'runserver' in sys.argv:
+        #     thread = threading.Thread(target=WaitForDjangoReady)
+        #     thread.daemon = True
+        #     thread.start()
 
 
 def WaitForDjangoReady():

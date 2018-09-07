@@ -55,3 +55,14 @@ class HostCurrentVulnView(TemplateView):
             'sidebar': sidebarHtml,
         }
         return render(request, self.template, context)
+
+
+class HostRunningServiceView(TemplateView):
+    template = 'hosts/host_runningservice.html'
+
+    def get(self, request, *args, **kwargs):
+        sidebarHtml = RenderSideBar(request)
+        context = {
+            'sidebar': sidebarHtml,
+        }
+        return render(request, self.template, context)

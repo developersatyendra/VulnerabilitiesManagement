@@ -5,7 +5,7 @@ from .forms import ServiceForm
 
 
 class ServicesView(TemplateView):
-    template = 'services.html'
+    template = 'services/services.html'
 
     def get(self, request, *args, **kwargs):
         form = ServiceForm()
@@ -20,7 +20,7 @@ class ServicesView(TemplateView):
 
 
 class ServiceDetailView(TemplateView):
-    template = 'service_detailed.html'
+    template = 'services/service_detailed.html'
 
     def get(self, request, *args, **kwargs):
         form = ServiceForm()
@@ -28,5 +28,27 @@ class ServiceDetailView(TemplateView):
         context = {
             'sidebar': sidebarHtml,
             'form': form,
+        }
+        return render(request, self.template, context)
+
+
+class ServiceRelevantVulnView(TemplateView):
+    template = 'services/service_relevantvuln.html'
+
+    def get(self, request, *args, **kwargs):
+        sidebarHtml = RenderSideBar(request)
+        context = {
+            'sidebar': sidebarHtml,
+        }
+        return render(request, self.template, context)
+
+
+class ServiceRunOnHostView(TemplateView):
+    template = 'services/service_runonhost.html'
+
+    def get(self, request, *args, **kwargs):
+        sidebarHtml = RenderSideBar(request)
+        context = {
+            'sidebar': sidebarHtml,
         }
         return render(request, self.template, context)

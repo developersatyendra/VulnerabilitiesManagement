@@ -4,11 +4,11 @@ var id = url.split("/")[2];
 $(document).ready(
 
     //
-    // Declear current host vuln table
+    // Declear serivces table
     //
     $(function () {
-        $("#hostCurrentVuln").bootstrapTable({
-            columns:[[
+        $("#hostRunningService").bootstrapTable({
+            columns:[
                 {
                     field: 'state',
                     checkbox: true,
@@ -16,7 +16,7 @@ $(document).ready(
                     valign: 'middle'
                 },
                 {
-                    title: "Vulnerability",
+                    title: "Service Name",
                     field: "name",
                     align: "center",
                     valign: "middle",
@@ -24,24 +24,18 @@ $(document).ready(
                     sortable: true
                 },
                 {
-                    title: "Level Risk",
-                    field: "levelRisk",
+                    title: "Port",
+                    field: "port",
                     align: "center",
                     valign: "middle",
                     sortable: true
                 },
                 {
-                    title: "CVE",
-                    field: "cve",
+                    title: "Date Added",
+                    field: "dateCreated",
                     align: "center",
                     valign: "middle",
-                    sortable: true
-                },
-                {
-                    title: "Service",
-                    field: "service.name",
-                    align: "center",
-                    valign: "middle",
+                    formatter: FormattedDate,
                     sortable: true
                 },
                 {
@@ -51,7 +45,9 @@ $(document).ready(
                     valign: "middle",
                     sortable: true
                 }
-            ]],
+            ],
+            // url: "/services/api/getservices",
+            // method: "get",
             ajax: ajaxRequest,
             idField: "id",
             queryParams: queryParams,
@@ -68,7 +64,7 @@ $(document).ready(
 
 // Format href for bootstrap table
 function HrefFormater(value, row, index) {
-    return '<a href="' + '/vuln/' +row.id + '"> ' + row.name +'</a>';
+    return '<a href="' + '/services/' +row.id + '"> ' + row.name +'</a>';
 }
 
 // Format Datetime for bootstrap table
@@ -107,14 +103,6 @@ function FormattedDate(input) {
     return month + '/' + day + '/' + year + ' ' + hours + ':' + minutes +':'+seconds+ ' ' + ampm;
 }
 
-// Boolean Formatter for Tables
-function BooleanFormatter(value, row, index){
-    if(value){
-        return '<b><i class="fa fa-check" aria-hidden="true"></i></b>';
-    }
-    else
-        return '<b><i class="fa fa-remove" aria-hidden="true"></i></i></b>';
-}
 
 //////////////////////////////////////////
 // Ajax get data to table
@@ -122,18 +110,18 @@ function BooleanFormatter(value, row, index){
 function ajaxRequest(params) {
     $.ajax({
         type: "GET",
-        url: "/vuln/api/getcurrenthostvuln",
+        url: "/services/api/getservices",
         data: params.data,
         dataType: "json",
-        success: function(data) {
-            if(data.status == 0){
+        success: function (data) {
+            if (data.status == 0) {
                 params.success({
                     "rows": data.object.rows,
                     "total": data.object.total
                 })
             }
         },
-       error: function (er) {
+        error: function (er) {
             params.error(er);
         }
     });
@@ -144,10 +132,11 @@ function ajaxRequest(params) {
 //
 function queryParams(params) {
     // params.advFilter = "projectID";
-    params.id = id;
+    params.hostID = id;
     return(params);
     // return {advFilter: 'projectID', advFilterValue: id};
 }
+
 
 //////////////////////////////////////////
 // Custom params for bootstrap table

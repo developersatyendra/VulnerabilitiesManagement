@@ -91,10 +91,10 @@ class APIGetScansVuln(APIView):
             scanTask = scanTask.filter(ScanInfoScanTask__vulnFound__id=vulnID)
 
         scanTask =  scanTask.annotate(
-                high=Count('scanInfo__vulnFound', filter=Q(ScanInfoScanTask__vulnFound__levelRisk__gte=LEVEL_HIGH), distinct=True),
-                med=Count('scanInfo__vulnFound', filter=(Q(ScanInfoScanTask__vulnFound__levelRisk__gte=LEVEL_MED) & Q(scanInfo__vulnFound__levelRisk__lt=LEVEL_HIGH)), distinct=True),
-                low=Count('scanInfo__vulnFound', filter=Q(ScanInfoScanTask__vulnFound__levelRisk__gt=LEVEL_INFO) & Q(scanInfo__vulnFound__levelRisk__lt=LEVEL_MED), distinct=True),
-                info=Count('scanInfo__vulnFound', filter=Q(ScanInfoScanTask__vulnFound__levelRisk=LEVEL_INFO), distinct=True),
+                high=Count('ScanInfoScanTask__vulnFound', filter=Q(ScanInfoScanTask__vulnFound__levelRisk__gte=LEVEL_HIGH), distinct=True),
+                med=Count('ScanInfoScanTask__vulnFound', filter=(Q(ScanInfoScanTask__vulnFound__levelRisk__gte=LEVEL_MED) & Q(ScanInfoScanTask__vulnFound__levelRisk__lt=LEVEL_HIGH)), distinct=True),
+                low=Count('ScanInfoScanTask__vulnFound', filter=Q(ScanInfoScanTask__vulnFound__levelRisk__gt=LEVEL_INFO) & Q(ScanInfoScanTask__vulnFound__levelRisk__lt=LEVEL_MED), distinct=True),
+                info=Count('ScanInfoScanTask__vulnFound', filter=Q(ScanInfoScanTask__vulnFound__levelRisk=LEVEL_INFO), distinct=True),
                 numHost=Count('ScanInfoScanTask', distinct=True))
 
         ######################################################
@@ -110,8 +110,8 @@ class APIGetScansVuln(APIView):
         ######################################################
         # Filter by search keyword
         #
-        if request.GET.get('search'):
-            search = request.GET.get('search')
+        if request.GET.get('searchText'):
+            search = request.GET.get('searchText')
             query = Q(name__icontains=search) | \
                     Q(startTime__icontains=search) | \
                     Q(endTime__icontains=search)
@@ -124,14 +124,14 @@ class APIGetScansVuln(APIView):
         numObject = scanTask.count()
 
         # Get sort order
-        if request.GET.get('order') == 'asc':
+        if request.GET.get('sortOrder') == 'asc':
             sortString = ''
         else:
             sortString = '-'
 
         # Get sort filed
-        if request.GET.get('sort'):
-            sortString = sortString + request.GET.get('sort')
+        if request.GET.get('sortName'):
+            sortString = sortString + request.GET.get('sortName')
         else:
             sortString = sortString + 'id'
         sortString = sortString.replace('.', '__')

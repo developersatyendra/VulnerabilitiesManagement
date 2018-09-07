@@ -45,11 +45,9 @@ $(document).ready(
                     sortable: true
                 }
             ],
-            // url: "/projects/api/getprojects",
-            // method: "get",
             ajax: ajaxRequest,
-            idField: "id",
             queryParamsType: "",
+            idField: "id",
             striped: true,
             pagination: true,
             sidePagination: "server",

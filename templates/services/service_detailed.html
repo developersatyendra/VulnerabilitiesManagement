@@ -2,28 +2,28 @@
 
 {% block css %}
     {% load staticfiles %}
-    <title>Scans management - Hosts</title>
+    <title>Scans management - Services</title>
 
     <!-- Bootstrap Core CSS -->
-    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css'%}" rel="stylesheet">
 
     <!-- MetisMenu CSS -->
-    <link href="{% static 'vendor/metisMenu/metisMenu.min.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/metisMenu/metisMenu.min.css'%}" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="{% static 'dist/css/sb-admin-2.css' %}" rel="stylesheet">
+    <link href="{% static 'dist/css/sb-admin-2.css'%}" rel="stylesheet">
 
     <!-- Morris Charts CSS -->
-    <link href="{% static 'vendor/morrisjs/morris.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/morrisjs/morris.css'%}" rel="stylesheet">
 
     <!-- DataTables CSS -->
-    <link href="{% static 'vendor/datatables-plugins/datatables.css' %}" rel="stylesheet">
+{#    <link href="{% static 'vendor/datatables-plugins/dataTables.css' %}" rel="stylesheet">#}
 
     <!-- DataTables Responsive CSS -->
-    <link href=" {% static 'vendor/datatables-responsive/dataTables.responsive.css' %}" rel="stylesheet">
+    <link href=" {% static 'vendor/datatables-responsive/dataTables.responsive.css'%}" rel="stylesheet">
 
     <!--Datatable-checkboxes-->
-    <link href="{% static  'vendor/datatables-plugins/DataTables-checkboxes/css/dataTables.checkboxes.css' %}" rel="stylesheet">
+    <link href="{% static  'vendor/datatables-plugins/DataTables-checkboxes/css/dataTables.checkboxes.css'%}" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="{% static 'vendor/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
@@ -59,7 +59,7 @@
     <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">Hosts</h1>
+                    <h1 class="page-header">Services</h1>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
@@ -68,25 +68,24 @@
                 <div class="col-lg-12">
                     <ul class="breadcrumb">
                         <li><a href="/">Home</a></li>
-                        <li><a href="/hosts">Hosts</a></li>
-                        <li class="active" id="brHost"></li>
+                        <li><a href="/services">Services</a></li>
+                        <li class="active" id="brService"></li>
                     </ul>
                 </div>
                 <div class="col-lg-12">
                     <div class="divnav">
                         <ul class="nav nav-tabs">
                             <li><a href="#"><i class="fa fa-line-chart fa-fw"></i> Statistics</a></li>
-                            <li><a href="./scantask"><i class="fa fa-search fa-fw"></i> Scan Tasks</a></li>
-                            <li><a href="./currentvuln"><i class="fa fa-exclamation-triangle fa-fw"></i> Current Vulnerabilities</a></li>
-                            <li><a href="./runningservice"><i class="fa fa-cogs fa-fw"></i> Running Services</a></li>
-                            <li class="active"><a href="#"><i class="fa fa-info fa-fw"></i> Host Information</a></li>
+                            <li><a href="./runningonhost"><i class="fa fa-desktop fa-fw"></i> Running On Hosts</a></li>
+                            <li><a href="./relevantvuln"><i class="fa fa-exclamation-triangle fa-fw"></i> Relevant Vulnerabilities</a></li>
+                            <li class="active"><a href="#"><i class="fa fa-info fa-fw"></i> Service Information</a></li>
                         </ul>
                     </div>
                 </div>
                <div class="col-lg-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <i class="fa fa-info-circle fa-info fa-fw" aria-hidden="true"></i> Host Information
+                            <i class="fa fa-info-circle fa-info fa-fw" aria-hidden="true"></i> Service Information
                             <div class="pull-right">
                                 <div class="dropdown">
                                     <button class="btn btn-default dropdown-toggle btn-xs" type="button" data-toggle="dropdown">
@@ -94,15 +93,15 @@
                                         <span class="caret"></span>
                                     </button>
                                     <ul class="dropdown-menu pull-right">
-                                        <li id="edit"><a href="#" ><i class="fa fa-pencil fa-fw"></i> Edit Host</a></li>
-                                        <li id="delete"><a href="#" ><i class="fa fa-trash-o fa-fw"></i> Delete Host</a></li>
+                                        <li id="edit"><a href="#" ><i class="fa fa-pencil fa-fw"></i> Edit Service</a></li>
+                                        <li id="delete"><a href="#" ><i class="fa fa-trash-o fa-fw"></i> Delete Service</a></li>
                                     </ul>
                                 </div>
                             </div>
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body" >
-                            <form method="post" id="editHostPostForm">
+                            <form method="post" id="editServicePostForm">
                                 {% csrf_token %}
                                 <input type="hidden" name="id" id="id_id">
                                 <div class="row">
@@ -128,28 +127,14 @@
                                 <div class="row">
                                     <div class="col-lg-6">
                                         <div class="form-group">
-                                            <label>Hostname *</label>
-                                            {{ form.hostName }}
+                                            <label>Service Name *</label>
+                                            {{ form.name }}
                                         </div>
                                     </div>
                                     <div class="col-lg-6">
                                         <div class="form-group">
-                                            <label>IP Address *</label>
-                                            {{ form.ipAddr }}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="form-group">
-                                            <label>OS Name</label>
-                                            {{ form.osName }}
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="form-group">
-                                            <label>OS Version</label>
-                                            {{ form.osVersion }}
+                                            <label>Port *</label>
+                                            {{ form.port }}
                                         </div>
                                     </div>
                                 </div>
@@ -161,7 +146,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row hidden" id="hostInfoBtn">
+                                <div class="row hidden" id="serviceInfoBtn">
                                     <div class="col-lg-12">
                                         <div class="text-center">
                                             <button type="button" class="btn btn-default" id="cancelUpdateBtn">Cancel</button>
@@ -177,8 +162,24 @@
                 </div>
             </div>
             <!-- /.row -->
-
-            <!-- Modal Warning on Deleting Hosts -->
+            <!-- Modal information -->
+            <div class="modal" id="infoModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                            <h4 class="modal-title" id="titleInfo">About</h4>
+                        </div>
+                        <div class="modal-body"  id="msgInfo">
+                            <p>Message information</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal Warning on Deleting Services -->
             <div class="modal" id="warningOnDeleteModal" tabindex="-1" role="dialog">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -198,23 +199,6 @@
                     </div>
                 </div>
             </div>
-            <!-- Modal information -->
-            <div class="modal" id="infoModal" tabindex="-1" role="dialog">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                            <h4 class="modal-title" id="titleInfo">About</h4>
-                        </div>
-                        <div class="modal-body"  id="msgInfo">
-                            <p>Message information</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
         <!-- /#page-wrapper -->
     <meta name="csrf-token" content="{{ csrf_token }}">
@@ -222,28 +206,28 @@
 
 {% block js %}
     <!-- jQuery -->
-    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'vendor/jquery/jquery.min.js'%}"></script>
 
     <!-- Bootstrap Core JavaScript -->
-    <script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.min.js'%}"></script>
 
     <!-- Metis Menu Plugin JavaScript -->
-    <script src="{% static 'vendor/metisMenu/metisMenu.min.js' %}"></script>
+    <script src="{% static 'vendor/metisMenu/metisMenu.min.js'%}"></script>
 
     <!-- DataTables JavaScript -->
-    <script src="{% static 'vendor/datatables/js/jquery.dataTables.min.js' %}"></script>
-    <script src="{% static  'vendor/datatables/js/dataTables.bootstrap.min.js' %}"></script>
-    <script src="{% static 'vendor/datatables-responsive/dataTables.responsive.js' %}"></script>
-    <script src="{% static 'vendor/datatables-plugins/DataTables-checkboxes/js/dataTables.checkboxes.js' %}"></script>
+{#    <script src="{% static 'vendor/datatables/js/jquery.dataTables.min.js' %}"></script>#}
+{#    <script src="{% static  'vendor/datatables/js/dataTables.bootstrap.min.js'%}"></script>#}
+{#    <script src="{% static 'vendor/datatables-responsive/dataTables.responsive.js' %}"></script>#}
+{#    <script src="{% static 'vendor/datatables-plugins/DataTables-checkboxes/js/dataTables.checkboxes.js' %}"></script>#}
 
     <!-- Custom Theme JavaScript -->
-    <script src="{% static 'dist/js/sb-admin-2.js' %}"></script>
+    <script src="{% static 'dist/js/sb-admin-2.js'%}"></script>
 
     <!-- Bootstrap-table JavaScript -->
-    <script src="{% static 'vendor/bootstrap-table/js/bootstrap-table.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap-table/js/bootstrap-table.min.js'%}"></script>
 
-    <!-- Host JavaScript -->
-    <script src="{% static 'pages/hosts/host_detailed.js' %}"></script>
+    <!-- Service JavaScript -->
+    <script src="{% static 'pages/services/service_detailed.js'%}"></script>
 
 {% endblock %}
 

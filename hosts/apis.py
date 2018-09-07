@@ -50,7 +50,7 @@ class APIGetHostName(APIView):
 #   sortName: Name of column is applied sort
 #   sortOrder: sort entry by order 'asc' or 'desc'
 #   pageSize: number of entry per page
-#   pageNumber: page number of current view
+#   pageNumber: page number of curent view
 #   projectID: project to be used to filter
 #   scanID: ScanTask to be used to filter
 #   vulnID: Vuln to be used to filter
@@ -159,7 +159,7 @@ class APIGetHostsVuln(APIView):
 #   sortName: Name of column is applied sort
 #   sortOrder: sort entry by order 'asc' or 'desc'
 #   pageSize: number of entry per page
-#   pageNumber: page number of current view
+#   pageNumber: page number of curent view
 #   projectID: project to be used to filter
 #   scanID: ScanTask to be used to filter
 #   vulnID: Vuln to be used to filter

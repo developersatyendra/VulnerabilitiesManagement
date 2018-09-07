@@ -31,7 +31,7 @@ NUM_ENTRY_DEFAULT = 50
 HOSTDATA = "1\\XML\\en\\Host_Data.xml"
 RISKDATA = "1\\XML\\en\\Risk_Data.xml"
 
-NUM_WORKER = 3
+NUM_WORKER = 2
 SUBMIT_OBJ_QUEUE = Queue()
 
 FLG_STOP = False
@@ -59,8 +59,8 @@ class SubmitQueueElement:
 class APIGetSubmits(APIView):
     def get(self, request):
         # Filter by search keyword
-        if request.GET.get('searchText'):
-            search = request.GET.get('searchText')
+        if request.GET.get('search'):
+            search = request.GET.get('search')
             # Query on ScanModel
             queryScanModel = Q(name__icontains=search)
             scanTaskPK = ScanTaskModel.objects.filter(queryScanModel).values_list('pk', flat=True)
@@ -76,27 +76,27 @@ class APIGetSubmits(APIView):
             querySet = SubmitModel.objects.all()
         numObject = querySet.count()
         # Get sort order
-        if request.GET.get('sortOrder') == 'asc':
+        if request.GET.get('order') == 'asc':
             sortString = ''
         else:
             sortString = '-'
 
         # Get sort filed
-        if request.GET.get('sortName'):
-            sortString = sortString + request.GET.get('sortName')
+        if request.GET.get('sort'):
+            sortString = sortString + request.GET.get('sort')
         else:
             sortString = sortString + 'id'
         sortString = sortString.replace('.', '__')
         querySet = querySet.order_by(sortString)
         # Get Page Number
-        if request.GET.get('pageNumber'):
-            page = request.GET.get('pageNumber')
+        if request.GET.get('offset'):
+            page = request.GET.get('offset')
         else:
             page = PAGE_DEFAULT
 
         # Get Page Size
-        if request.GET.get('pageSize'):
-            numEntry = request.GET.get('pageSize')
+        if request.GET.get('limit'):
+            numEntry = request.GET.get('limit')
             # IF Page size is 'ALL'
             if numEntry.lower() == 'all' or numEntry == -1:
                 numEntry = numObject
@@ -108,7 +108,7 @@ class APIGetSubmits(APIView):
         data = dict()
         data["total"] = numObject
         data['rows'] = dataSerialized.data
-        return Response(data)
+        return Response({'status': '0', 'object': data})
 
 
 # APIAddSubmit add new Submit
@@ -127,13 +127,11 @@ class APIAddSubmit(APIView):
             submitObj.status = 'Uploaded'
             submitObj.save()
             submitQueueElement = SubmitQueueElement(submitObj=submitObj, overwrite=False)
-            print(submitQueueElement)
             SUBMIT_OBJ_QUEUE.put(submitQueueElement)
             dataSerialized = SubmitSerializer(submitObj, many=False)
-            return Response(dataSerialized.data)
+            return Response({'status': '0', 'object': dataSerialized.data})
         else:
-            print(submitForm.errors.as_json())
-            return Response(submitForm.errors.as_json())
+            return Response({'status': '-1', 'message': 'Form is invalid', 'detail': submitForm.errors})
 
 
 #
@@ -145,7 +143,6 @@ class APIAddSubmit(APIView):
 class APIDeleteSubmit(APIView):
 
     def post(self, request):
-        print('aaa')
         submitForm = SubmitIDForm(request.POST)
         if submitForm.is_valid():
             successOnDelete = 0
@@ -166,9 +163,14 @@ class APIDeleteSubmit(APIView):
                             pass
                         retVuln.delete()
                         successOnDelete = successOnDelete + 1
-            return Response({'retVal': successOnDelete})
+            if successOnDelete==1:
+                return Response(
+                    {'status': '0', 'message': '1 submit file is successfully deleted.', 'numDeleted': successOnDelete})
+            else:
+                return Response(
+                            {'status': '0', 'message': '{} submit files are successfully deleted.'.format(successOnDelete), 'numDeleted': successOnDelete})
         else:
-            return Response({'retVal': '-1'})
+            return Response({'status': '-1', 'message': 'Form is invalid', 'detail': {submitForm.errors}})
 
 
 #
@@ -186,6 +188,10 @@ def ProcessFoundStoneZipXML(submitQueueElement):
         zipFile = zipfile.ZipFile(submitQueueElement.submitObj.fileSubmitted.path, 'r')
     except OSError:
         submitQueueElement.submitObj.status = 'Error - Zip file not found'
+        submitQueueElement.submitObj.save()
+        return -1
+    except zipfile.BadZipFile:
+        submitQueueElement.submitObj.status = 'Submit is not Zip File'
         submitQueueElement.submitObj.save()
         return -1
     tempdir = tempfile.mkdtemp()
@@ -337,11 +343,11 @@ def GetResourceFromQueue(stopEvent):
 
 
 def MgntThreadingSubmitProcess():
-    # Whet Web App Startup. Put all Submit Objects were not processed to Queue
-    # submitQuery = SubmitModel.objects.filter(status='Uploaded')
-    # for submitObj in submitQuery:
-    #     objectQueue = SubmitQueueElement(submitObj=submitObj, overwrite=True)
-    #     SUBMIT_OBJ_QUEUE.put(objectQueue)
+    # When Web App Startup. Put all Submit Objects were not processed to Queue
+    submitQuery = SubmitModel.objects.filter(Q(status='Uploaded')| Q(status='Processing'))
+    for submitObj in submitQuery:
+        objectQueue = SubmitQueueElement(submitObj=submitObj, overwrite=True)
+        SUBMIT_OBJ_QUEUE.put(objectQueue)
     print('[-] Started Management Thread Submit Processor')
     stop = threading.Event()
     threads = []

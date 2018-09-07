@@ -90,6 +90,7 @@ $(document).ready(
             ajax: ajaxRequest,
             idField: "id",
             queryParams: queryParams,
+            queryParamsType: "",
             striped: true,
             pagination: true,
             sidePagination: "server",
