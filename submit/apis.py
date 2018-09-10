@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.core.paginator import Paginator
 from .serializers import SubmitSerializer
-from .forms import SubmitAddForm, SubmitForm, SubmitIDForm
+from .forms import SubmitAddForm, SubmitIDForm
 from rest_framework.parsers import MultiPartParser, FormParser, FileUploadParser
 from django.db.utils import IntegrityError
 
@@ -20,19 +20,17 @@ from services.models import ServiceModel
 from vulnerabilities.models import VulnerabilityModel
 import dateutil.parser as DateParser
 from django.contrib.auth.models import User
-from queue import Queue
-import threading
 from .models import SubmitModel
-import time
+from .tasks import ProcessSubmitFileTask
+
 
 PAGE_DEFAULT = 1
 NUM_ENTRY_DEFAULT = 50
 
+
 HOSTDATA = "1\\XML\\en\\Host_Data.xml"
 RISKDATA = "1\\XML\\en\\Risk_Data.xml"
 
-NUM_WORKER = 2
-SUBMIT_OBJ_QUEUE = Queue()
 
 FLG_STOP = False
 FLG_RESET = False
@@ -126,8 +124,7 @@ class APIAddSubmit(APIView):
             submitObj.submitter = User.objects.get(pk=1)
             submitObj.status = 'Uploaded'
             submitObj.save()
-            submitQueueElement = SubmitQueueElement(submitObj=submitObj, overwrite=False)
-            SUBMIT_OBJ_QUEUE.put(submitQueueElement)
+            ProcessSubmitFileTask.delay(id=submitObj.id, overwrite=False)
             dataSerialized = SubmitSerializer(submitObj, many=False)
             return Response({'status': '0', 'object': dataSerialized.data})
         else:
@@ -329,53 +326,3 @@ def ProcessFoundStoneXML(hostdata, riskdata, submitQueueElement):
     submitObj.status = "Processed"
     submitObj.save()
     return scantaskObj
-
-
-def GetResourceFromQueue(stopEvent):
-    print('     [+] Started worker {}'.format(threading.current_thread()))
-    while not stopEvent.isSet():
-        if not SUBMIT_OBJ_QUEUE.empty():
-            submitQueueElement = SUBMIT_OBJ_QUEUE.get()
-            print("Process ()".format(submitQueueElement.submitObj.fileSubmitted))
-            ProcessFoundStoneZipXML(submitQueueElement)
-        else:
-            time.sleep(2)
-
-
-def MgntThreadingSubmitProcess():
-    # When Web App Startup. Put all Submit Objects were not processed to Queue
-    submitQuery = SubmitModel.objects.filter(Q(status='Uploaded')| Q(status='Processing'))
-    for submitObj in submitQuery:
-        objectQueue = SubmitQueueElement(submitObj=submitObj, overwrite=True)
-        SUBMIT_OBJ_QUEUE.put(objectQueue)
-    print('[-] Started Management Thread Submit Processor')
-    stop = threading.Event()
-    threads = []
-    for worker in range(NUM_WORKER):
-        thread = threading.Thread(target=GetResourceFromQueue, args=[stop, ])
-        thread.daemon = True
-        thread.start()
-        threads.append(thread)
-
-    print("Start All Thread")
-    while True:
-        # Stop All Thread
-        if FLG_RESET or FLG_STOP:
-            stop.set()
-            # Wait for all thread is Stop
-            while True:
-                isAliveAll = False
-                for thread_t in threads:
-                    isAliveAll = isAliveAll | thread_t.isAlive()
-                if not isAliveAll:
-                    break
-            stop.clear()
-        # Start Thread Again
-        if FLG_RESET:
-            for thread_t in threads:
-                thread_t.start()
-
-        # Exit Function
-        if FLG_STOP:
-            break
-

@@ -62,6 +62,7 @@ $(document).ready(
             // method: "get",
             idField: "id",
             ajax: ajaxRequest,
+            queryParamsType: "",
             striped: true,
             pagination: true,
             sidePagination: "server",
