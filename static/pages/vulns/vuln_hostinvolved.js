@@ -10,12 +10,14 @@ $(document).ready(
             columns:[
                 {
                     field: 'state',
+                    width: '3%',
                     checkbox: true,
                     align: 'center',
                     valign: 'middle'
                 },
                 {
                     title: "Hostname",
+                    width: '30%',
                     field: "hostName",
                     align: "center",
                     formatter: HostHrefFormater,
@@ -24,6 +26,7 @@ $(document).ready(
                 },
                 {
                     title: "IP Address",
+                    width: '15%',
                     field: "ipAddr",
                     align: "center",
                     valign: "middle",
@@ -31,6 +34,7 @@ $(document).ready(
                 },
                 {
                     title: "Scan Name",
+                    width: '30%',
                     field: "scanName",
                     align: "center",
                     formatter: ScanHrefFormater,
@@ -39,6 +43,7 @@ $(document).ready(
                 },
                 {
                     title: "Start Time",
+                    width: '22%',
                     field: "startTime",
                     align: "center",
                     formatter: FormattedDate,

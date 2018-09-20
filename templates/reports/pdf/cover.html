@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Title</title>
+        <link rel="stylesheet" href="file:///{{ css }}">
+    </head>
+    <body>
+        <br><br><br><br><br><br><br><br><br><br><br><br>
+        <div class="text-center">
+            <img src="{{ img_logo }}">
+        </div>
+        <br>
+        <h2 class="text-center">
+            {{ report_name }}
+        </h2>
+        <div class="container justify-content-center">
+            <div class="row justify-content-center">
+                <div class="col-4 center text-left">Submit by:</div>
+                <div class="col-4 center text-left">{{ username }}</div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-4 center text-left">Generated Time:</div>
+                <div class="col-4 center text-left">{{ time_generate }}</div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-4 center text-left">Hostname:</div>
+                <div class="col-4 center text-left">{{ host.hostName }}</div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-4 center text-left">IP Address:</div>
+                <div class="col-4 center text-left">{{ host.ipAddr }}</div>
+            </div>
+        </div>
+    </body>
+</html>

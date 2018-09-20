@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="file:///{{ css }}">
+    <style>
+        .row {
+            padding-top: 1px;
+        }
+    </style>
+    <title>Title</title>
+</head>
+<body>
+    <div>
+        <h3>
+            Vulnerabilities
+            <hr class="hr-primary" />
+        </h3>
+        <br>
+        <h4>
+            Scan History
+        </h4>
+        <div class="row justify-content-center" >
+            <div class="col-12 text-left"><b>Scan History:</b></div>
+        </div>
+        <div>
+            <table class="table" style="max-width: 200mm;">
+                <thead class="text-center">
+                    <tr>
+                        <th rowspan="2">Scan Task</th>
+                        <th rowspan="2">Start Time</th>
+                        <th rowspan="2">Finished Time</th>
+                        <th colspan="4">Vulnerabilities</th>
+                    </tr>
+                    <tr>
+                        <th>High</th>
+                        <th>Med</th>
+                        <th>Low</th>
+                        <th>Info</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for scantask in scantasks %}
+                        <tr>
+                            <td>{{ scantask.name }}</td>
+                            <td>{{ scantask.startTime }}</td>
+                            <td>{{ scantask.endTime }}</td>
+                            <td>{{ scantask.high }}</td>
+                            <td>{{ scantask.med }}</td>
+                            <td>{{ scantask.low }}</td>
+                            <td>{{ scantask.info }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div>
+        <br><br>
+        <h4>
+            Current Vulnerabilities In Detail
+        </h4>
+        {% for vuln in vulns %}
+            {% if forloop.counter0 == 0 %}
+                <br>
+            {% else %}
+                <br><br>
+            {% endif %}
+            <div class="container">
+                <div class="row"><h5>{{ vuln.name }}</h5></div>
+                <div class="row">
+                    <div class="col-6 text-left"><b>Vulnerbility:</b></div>
+                    <div class="col-6 text-left">{{ vuln.name }}</div>
+                </div>
+                <div class="row">
+                    <div class="col-6 text-left"><b>Level Risk:</b></div>
+                    <div class="col-6 text-left">{{ vuln.levelRisk }}</div>
+                </div>
+                <div class="row justify-content-center" >
+                    <div class="col-2 text-left"><b>Service:</b></div>
+                    <div class="col-4 text-left">{{ vuln.service.name }}</div>
+                    <div class="col-2 text-left"><b>CVE:</b></div>
+                    <div class="col-4 text-left">{{ vuln.cve }}</div>
+                </div>
+                <br>
+                <div class="row justify-content-center" >
+                    <div class="col-12 text-justify"><b>Observation:</b><br>
+                        {{ vuln.observation }}
+                    </div>
+                </div>
+                <br>
+                <div class="row justify-content-center" >
+                    <div class="col-12 text-justify"><b>Recommendation:</b><br>
+                        {{ vuln.recommendation }}
+                    </div>
+                </div>
+                <br>
+                <div class="row justify-content-center" >
+                    <div class="col-12 text-justify"><b>Description:</b><br>
+                        {{ vuln.description }}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

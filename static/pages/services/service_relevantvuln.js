@@ -10,12 +10,14 @@ $(document).ready(
             columns:[
                 {
                     field: 'state',
+                    width: '3%',
                     checkbox: true,
                     align: 'center',
                     valign: 'middle'
                 },
                 {
                     title: "Vulnerability",
+                    width: '27%',
                     field: "name",
                     align: "center",
                     valign: "middle",
@@ -24,6 +26,7 @@ $(document).ready(
                 },
                 {
                     title: "Level Risk",
+                    width: '5%',
                     field: "levelRisk",
                     align: "center",
                     valign: "middle",
@@ -31,6 +34,7 @@ $(document).ready(
                 },
                 {
                     title: "CVE",
+                    width: '10%',
                     field: "cve",
                     align: "center",
                     valign: "middle",
@@ -38,6 +42,7 @@ $(document).ready(
                 },
                 {
                     title: "Service",
+                    width: '10%',
                     field: "service.name",
                     align: "center",
                     valign: "middle",
@@ -45,6 +50,7 @@ $(document).ready(
                 },
                 {
                     title: "Description",
+                    width: '45%',
                     field: "description",
                     align: "center",
                     valign: "middle",

@@ -12,33 +12,7 @@ import tempfile
 from os import path
 from .ultil import ConvertHTMLToPDF
 
-
-class ReportsView(TemplateView):
-    def get(self, request, *args, **kwargs):
-        pass
-        # """
-        #     Convert HTML URIs to absolute system paths so xhtml2pdf can access those
-        #     resources
-        #     """
-        # # use short variable names
-        # sUrl = settings.STATIC_URL  # Typically /static/
-        # sRoot = settings.STATIC_ROOT  # Typically /home/userX/project_static/
-        # mUrl = settings.MEDIA_URL  # Typically /static/media/
-        # mRoot = settings.MEDIA_ROOT  # Typically /home/userX/project_static/media/
-        #
-        # sidebarHtml = RenderSideBar(request)
-        # context = {'logo_img': '/media/img/reports/logo.png'}
-        # pdf = render_to_pdf('reports/report.html', context)
-        # return HttpResponse(pdf, content_type='application/pdf')
-        # # return render(request, 'reports/report.html', context)
-
-
-class ReportDetailView(TemplateView):
-    def get(self, request, *args, **kwargs):
-        pass
-
-
-class ReportTestHTML(TemplateView):
+def PDFHostReport(TemplateView):
     template = 'reports/pdf/cover.html'
     # css = path.join(r'D:\pythonProject\ReportPDF', r'bootstrap.min.css')
     css = path.join(getattr(settings, 'BASE_DIR'), r'static\vendor\bootstrap\css\bootstrap4.min.css')
@@ -80,5 +54,3 @@ class ReportTestHTML(TemplateView):
         ConvertHTMLToPDF([hostinfoFilePath],coverFilePath)
 
         return render(request, self.template, context)
-
-

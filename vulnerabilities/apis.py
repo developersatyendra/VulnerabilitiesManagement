@@ -115,10 +115,12 @@ class APIGetVulns(APIView):
         # Get sort filed
         if request.GET.get('sortName'):
             sortString = sortString + request.GET.get('sortName')
+            sortString = sortString.replace('.', '__')
+            sortString = [sortString]
         else:
-            sortString = sortString + 'id'
-        sortString = sortString.replace('.', '__')
-        querySet = querySet.order_by(sortString)
+            sortString = ['-levelRisk', 'name']
+
+        querySet = querySet.order_by(*sortString)
         # Get Page Number
         if request.GET.get('pageNumber'):
             page = request.GET.get('pageNumber')

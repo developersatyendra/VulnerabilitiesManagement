@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="file:///{{ css }}">
+    <style>
+        .row {
+            padding-top: 1px;
+        }
+    </style>
+    <title>Title</title>
+</head>
+<body>
+    <div>
+        <h3>
+            Host Detailed Information
+            <hr class="hr-primary" />
+        </h3>
+        <br><br><br><br>
+        <h4>Information</h4>
+        <div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-6 text-left"><b>Submit by:</b></div>
+                    <div class="col-6 text-left">{{ host.createBy.username }}</div>
+                </div>
+                <div class="row">
+                    <div class="col-6 text-left"><b>Created Date:</b></div>
+                    <div class="col-6 text-left">{{ host.dateCreated }}</div>
+                </div>
+                <div class="row">
+                    <div class="col-6 text-left"><b>Updated Date:</b></div>
+                    <div class="col-6 text-left">{{ host.dateUpdate }}</div>
+                </div>
+                <div class="row justify-content-center" >
+                    <div class="col-2 text-left"><b>Hostname:</b></div>
+                    <div class="col-4 text-left">{{ host.hostName }}</div>
+                    <div class="col-2 text-left"><b>Ip Address:</b></div>
+                    <div class="col-4 text-left">{{ host.ipAddr }}</div>
+                </div>
+                <div class="row justify-content-center" >
+                    <div class="col-2 text-left"><b>OS:</b></div>
+                    <div class="col-4 text-left">
+                        {% if host.osName %}
+                            {{ host.osName }}
+                        {% else %}
+                            NA#
+                        {% endif %}
+                    </div>
+                    <div class="col-2 text-left"><b>Version:</b></div>
+                    <div class="col-4 text-left">
+                        {% if host.osVersion %}
+                            {{ host.osVersion }}
+                        {% else %}
+                            NA#
+                        {% endif %}
+                    </div>
+                </div>
+                <br><br>
+                <div class="row justify-content-center" >
+                    <div class="col-12 text-justify"><b>Description:</b><br>
+                        {% if host.description %}
+                            {{ host.description }}
+                        {% else %}
+                            NA#
+                        {% endif %}
+                    </div>
+                </div>
+                <br><br>
+            </div>
+        </div>
+        <div>
+            <h4>Running Service</h4>
+            <table class="table" style="max-width: 200mm;">
+            <thead>
+                <tr>
+                    <th>Service</th>
+                    <th>Network Port</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for service in services %}
+                    <tr>
+                        <td>{{ service.name }}</td>
+                        <td>{{ service.port }}</td>
+                        <td>{{ service.description }}</td>
+                    </tr>
+                {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

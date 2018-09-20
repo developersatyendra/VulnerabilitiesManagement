@@ -127,10 +127,11 @@ class APIGetHostsVuln(APIView):
         # Get sort filed
         if request.GET.get('sortName'):
             sortString = sortString + request.GET.get('sortName')
+            sortString = sortString.replace('.', '__')
+            sortString = [sortString]
         else:
-            sortString = sortString + 'id'
-        querySet = hostQuery.order_by(sortString)
-
+            sortString = ['-high', '-med', '-low', '-info', 'hostName']
+        querySet = hostQuery.order_by(*sortString)
         # Get Page Number
         if request.GET.get('pageNumber'):
             page = request.GET.get('pageNumber')

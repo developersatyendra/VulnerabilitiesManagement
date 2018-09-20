@@ -10,12 +10,14 @@ $(document).ready(
             columns:[
                 {
                     field: 'state',
+                    width: '3%',
                     checkbox: true,
                     align: 'center',
                     valign: 'middle'
                 },
                 {
                     title: "Hostname",
+                    width: '20%',
                     field: "hostName",
                     align: "center",
                     formatter: HrefFormater,
@@ -24,6 +26,7 @@ $(document).ready(
                 },
                 {
                     title: "IP Address",
+                    width: '15%',
                     field: "ipAddr",
                     align: "center",
                     valign: "middle",
@@ -31,6 +34,7 @@ $(document).ready(
                 },
                 {
                     title: "OS Name",
+                    width: '30%',
                     field: "osName",
                     align: "center",
                     valign: "middle",
@@ -38,6 +42,7 @@ $(document).ready(
                 },
                 {
                     title: "Description",
+                    width: '42%',
                     field: "description",
                     align: "center",
                     valign: "middle",
