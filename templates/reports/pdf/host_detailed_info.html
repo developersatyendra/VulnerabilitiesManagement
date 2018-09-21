@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="file:///{{ css }}">
     <style>
+
+        tr{page-break-inside: avoid}
         .row {
             padding-top: 1px;
         }
@@ -87,6 +89,7 @@
                         <td>{{ service.description }}</td>
                     </tr>
                 {% endfor %}
+            </tbody>
         </div>
     </div>
 </body>
