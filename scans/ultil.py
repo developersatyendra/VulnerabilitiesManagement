@@ -60,11 +60,18 @@ def GetScansVuln(*args, **kwargs):
         scanTask = scanTask.filter(ScanInfoScanTask__vulnFound__id=vulnID)
 
     scanTask =  scanTask.annotate(
-            high=Count('ScanInfoScanTask__vulnFound', filter=Q(ScanInfoScanTask__vulnFound__levelRisk__gte=LEVEL_HIGH), distinct=True),
-            med=Count('ScanInfoScanTask__vulnFound', filter=(Q(ScanInfoScanTask__vulnFound__levelRisk__gte=LEVEL_MED) & Q(ScanInfoScanTask__vulnFound__levelRisk__lt=LEVEL_HIGH)), distinct=True),
-            low=Count('ScanInfoScanTask__vulnFound', filter=Q(ScanInfoScanTask__vulnFound__levelRisk__gt=LEVEL_INFO) & Q(ScanInfoScanTask__vulnFound__levelRisk__lt=LEVEL_MED), distinct=True),
-            info=Count('ScanInfoScanTask__vulnFound', filter=Q(ScanInfoScanTask__vulnFound__levelRisk=LEVEL_INFO), distinct=True),
-            numHost=Count('ScanInfoScanTask', distinct=True))
+            # high=Count('ScanInfoScanTask__vulnFound', filter=Q(ScanInfoScanTask__vulnFound__levelRisk__gte=LEVEL_HIGH), distinct=True),
+            # med=Count('ScanInfoScanTask__vulnFound', filter=(Q(ScanInfoScanTask__vulnFound__levelRisk__gte=LEVEL_MED) & Q(ScanInfoScanTask__vulnFound__levelRisk__lt=LEVEL_HIGH)), distinct=True),
+            # low=Count('ScanInfoScanTask__vulnFound', filter=Q(ScanInfoScanTask__vulnFound__levelRisk__gt=LEVEL_INFO) & Q(ScanInfoScanTask__vulnFound__levelRisk__lt=LEVEL_MED), distinct=True),
+            # info=Count('ScanInfoScanTask__vulnFound', filter=Q(ScanInfoScanTask__vulnFound__levelRisk=LEVEL_INFO), distinct=True),
+            # numHost=Count('ScanInfoScanTask', distinct=True))
+        high = Count('ScanInfoScanTask__vulnFound', filter=Q(ScanInfoScanTask__vulnFound__levelRisk__gte=LEVEL_HIGH)),
+        med = Count('ScanInfoScanTask__vulnFound', filter=(Q(ScanInfoScanTask__vulnFound__levelRisk__gte=LEVEL_MED) & Q(
+            ScanInfoScanTask__vulnFound__levelRisk__lt=LEVEL_HIGH))),
+        low = Count('ScanInfoScanTask__vulnFound', filter=Q(ScanInfoScanTask__vulnFound__levelRisk__gt=LEVEL_INFO) & Q(
+            ScanInfoScanTask__vulnFound__levelRisk__lt=LEVEL_MED)),
+        info = Count('ScanInfoScanTask__vulnFound', filter=Q(ScanInfoScanTask__vulnFound__levelRisk=LEVEL_INFO)),
+        numHost = Count('ScanInfoScanTask', distinct=True))
 
     ######################################################
     # Filter by day range

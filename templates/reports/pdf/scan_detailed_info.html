@@ -1,0 +1,74 @@
+{% autoescape off %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+        {% for file_css in css %}
+            <link rel="stylesheet" href="file:///{{ file_css }}">
+        {% endfor %}
+    <style>
+
+        tr{page-break-inside: avoid}
+        .row {
+            padding-top: 1px;
+        }
+    </style>
+    <title>Title</title>
+</head>
+<body>
+    <div>
+        <h3>
+            Scan Task Detailed Information
+            <hr class="hr-primary" />
+        </h3>
+        <br><br><br><br>
+        <h4>Information</h4>
+        <div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-6 text-left"><b>Scan Task:</b></div>
+                    <div class="col-6 text-left">{{ scan.name }}</div>
+                </div>
+                <div class="row">
+                    <div class="col-6 text-left"><b>Create by:</b></div>
+                    <div class="col-6 text-left">{{ scan.submitter.username }}</div>
+                </div>
+                <div class="row">
+                    <div class="col-2 text-left"><b>Project:</b></div>
+                    <div class="col-4 text-left">{{ scan.scanProject }}</div>
+                    <div class="col-2 text-left"><b>Processed:</b></div>
+                    {% if scan.processed %}
+                        <div class="col-4 text-left"> Yes</div>
+                    {% else %}
+                        <div class="col-4 text-left">No</div>
+                    {% endif %}
+                </div>
+                <div class="row">
+                    <div class="col-2 text-left"><b>Start Time:</b></div>
+                    <div class="col-4 text-left">{{ scan.startTime }}</div>
+                    <div class="col-2 text-left"><b>Finished Time:</b></div>
+                    <div class="col-4 text-left">{{ scan.endTime }}</div>
+                </div>
+                <div class="row">
+                    <div class="col-2 text-left"><b>Created Date:</b></div>
+                    <div class="col-4 text-left">{{ scan.dateCreated }}</div>
+                    <div class="col-2 text-left"><b>Updated Date:</b></div>
+                    <div class="col-4 text-left">{{ scan.dateUpdate }}</div>
+                </div>
+                <br><br>
+                <div class="row justify-content-center" >
+                    <div class="col-12 text-justify"><b>Description:</b><br>
+                        {% if host.description %}
+                            {{ scan.description }}
+                        {% else %}
+                            NA#
+                        {% endif %}
+                    </div>
+                </div>
+                <br><br>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+{% endautoescape %}

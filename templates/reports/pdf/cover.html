@@ -3,7 +3,9 @@
     <head>
         <meta charset="UTF-8">
         <title>Title</title>
-        <link rel="stylesheet" href="file:///{{ css }}">
+            {% for file_css in css %}
+                <link rel="stylesheet" href="file:///{{ file_css }}">
+            {% endfor %}
     </head>
     <body>
         <br><br><br><br><br><br><br><br><br><br><br><br>
@@ -15,6 +17,28 @@
             {{ report_name }}
         </h2>
         <div class="container justify-content-center">
+            {% if host %}
+                <div class="row justify-content-center">
+                    <div class="col-4 center text-left">Hostname:</div>
+                    <div class="col-4 center text-left">{{ host.hostName }}</div>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-4 center text-left">IP Address:</div>
+                    <div class="col-4 center text-left">{{ host.ipAddr }}</div>
+                </div>
+            {% endif %}
+            {% if scan %}
+                <div class="row justify-content-center">
+                    <div class="col-4 center text-left">Scan:</div>
+                    <div class="col-4 center text-left">{{ scan.name }}</div>
+                </div>
+            {% endif %}
+            {% if project %}
+                <div class="row justify-content-center">
+                    <div class="col-4 center text-left">Project:</div>
+                    <div class="col-4 center text-left">{{ project.name }}</div>
+                </div>
+            {% endif %}
             <div class="row justify-content-center">
                 <div class="col-4 center text-left">Submit by:</div>
                 <div class="col-4 center text-left">{{ username }}</div>
@@ -22,14 +46,6 @@
             <div class="row justify-content-center">
                 <div class="col-4 center text-left">Generated Time:</div>
                 <div class="col-4 center text-left">{{ time_generate }}</div>
-            </div>
-            <div class="row justify-content-center">
-                <div class="col-4 center text-left">Hostname:</div>
-                <div class="col-4 center text-left">{{ host.hostName }}</div>
-            </div>
-            <div class="row justify-content-center">
-                <div class="col-4 center text-left">IP Address:</div>
-                <div class="col-4 center text-left">{{ host.ipAddr }}</div>
             </div>
         </div>
     </body>

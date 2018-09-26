@@ -12,7 +12,8 @@ BAR_WIDTH = 0.4
 # PIE Constant
 PIE_EXPLODE = 0.05
 # Red, Yellow, Green, Blue
-COLORS = ['#d9534f', '#f0ad4e', '#5cb85c', '#337ab7', '#ff9999', '#66b3ff', '#99ff99', '#ffcc99']
+COLORS = ['#bf0404', '#df7416', '#fdfc25', '#4B98FF', '#ff9999', '#66b3ff', '#99ff99', '#ffcc99',]
+COLORS_GRADIENT = ['#4B98FF', '#3F80D6', '#366EB8', '#2D5C99', '#28528A', '#24497A', '#214370', '#172F4F', '#12253D', '#0D1B2E', '#08111C', '#04090F', '#03060A']
 
 
 # Render Bar Char
@@ -35,47 +36,55 @@ def RenderBarChart(data=[], labels=[], labely='', labelx=''):
         horizonStep = 10
 
     yInt = range(0, int(math.ceil(max(data) / 10.0)) * 10 + 1, horizonStep)
+    fig, ax = pyplot.subplots()
     pyplot.yticks(yInt)
 
     # Add more horizontal dash lines
     for i in yInt:
-        pyplot.axhline(y=i, linestyle='--', dashes=(2, 1), linewidth=0.5, alpha=0.4, color='black')
+        ax.axhline(y=i, linestyle='--', dashes=(2, 1), linewidth=0.5, alpha=0.4, color='black', zorder=0)
 
     # Render bar chart
     y_pos = numpy.arange(len(labels))
 
-    pyplot.bar(y_pos, data, BAR_WIDTH, color=COLORS, alpha=OPACITY, edgecolor=COLORS, linewidth=LINE_WIDTH)
-    pyplot.xticks(y_pos, tags)
+    ax.bar(y_pos, data, BAR_WIDTH, color=COLORS, alpha=OPACITY, edgecolor=COLORS, linewidth=LINE_WIDTH, zorder=3)
+    pyplot.xticks(y_pos, labels)
     pyplot.xlabel(labelx)
     pyplot.ylabel(labely)
+    fig.set_size_inches(6, 4)
+    pyplot.tight_layout()
     pyplot.savefig(image, format='png', bbox_inches='tight')
     pyplot.clf()
+    pyplot.close(fig)
     return '<img src="data:image/png;base64,{}"/>'.format(base64.b64encode(image.getvalue()).decode())
 
 
 # Render Donut Chart
-def RenderDonutChart(data=[], labels=[]):
+def RenderDonutChart(data=[], labels=[], size=100):
     sumData = sum(data)
     for index, data_t in enumerate(data):
         labels[index] = '{0:.1f}'.format(data_t*100./sumData) + '% ' +labels[index]
     image = BytesIO()
     fig, ax = pyplot.subplots(figsize=(6, 3), subplot_kw=dict(aspect="equal"))
-    wedges, texts = ax.pie(data, wedgeprops=dict(width=0.5), startangle=-40, pctdistance=0.84, colors=COLORS)
+    wedges, texts = ax.pie(data, wedgeprops=dict(width=0.5), startangle=-120, pctdistance=0.84, colors=COLORS_GRADIENT)
     kw = dict(xycoords='data', textcoords='data', arrowprops=dict(arrowstyle="-"), zorder=0, va="center")
 
     for i, p in enumerate(wedges):
         ang = (p.theta2 - p.theta1)/2. + p.theta1
+        if p.theta2-p.theta1 < 3:
+            continue
         y = numpy.sin(numpy.deg2rad(ang))
         x = numpy.cos(numpy.deg2rad(ang))
         horizontalalignment = {-1: "right", 1: "left"}[int(numpy.sign(x))]
         connectionstyle = "angle,angleA=0,angleB={}".format(ang)
         kw["arrowprops"].update({"connectionstyle": connectionstyle})
-        ax.annotate(labels[i], xy=(x, y), xytext=(1.35*numpy.sign(x), 1.4*y), horizontalalignment=horizontalalignment, **kw, fontsize=9)
+        ax.annotate(labels[i], xy=(x, y), xytext=(1.15*numpy.sign(x), 1.5*y), horizontalalignment=horizontalalignment, fontsize=9, **kw)
 
     fig.set_size_inches(6, 4)
-    pyplot.savefig(image, box_inches='tight', pad_inches=0)
+    pyplot.tight_layout()
+    pyplot.savefig(image, box_inches='tight', pad_inches=0.0)
     pyplot.clf()
-    return '<img src="data:image/png;base64, {}">'.format(base64.b64encode(image.getvalue()).decode())
+    pyplot.close(fig)
+    return '<img style="width: {}%" src="data:image/png;base64, {}">'.format(size ,base64.b64encode(image.getvalue()).decode())
 
 
 # Render Stack Bar Chart
@@ -96,6 +105,7 @@ def RenderStackBarChart(data, labels=[], labely='', labelx='', xticks=[]):
     # Total each column
     sumValue = None
 
+    fig, ax = pyplot.subplots()
     # Process all bars in data set
     for index, data_t in enumerate(data):
         if index == 0:
@@ -109,29 +119,35 @@ def RenderStackBarChart(data, labels=[], labely='', labelx='', xticks=[]):
             else:
                 bottom = numpy.array(data[i])
         if len(bottom) !=0:
-            p1 = pyplot.bar(ind, data_t, BAR_WIDTH, bottom=bottom, color=COLORS[index], alpha=OPACITY)
+            p1 = ax.bar(ind, data_t, BAR_WIDTH, bottom=bottom, color=COLORS[3-index], alpha=OPACITY, zorder=3)
         else:
-            p1 = pyplot.bar(ind, data_t, BAR_WIDTH, color=COLORS[index], alpha=OPACITY)
+            p1 = ax.bar(ind, data_t, BAR_WIDTH, color=COLORS[3-index], alpha=OPACITY, zorder=3)
         titleLegend.append(p1)
-    if max(sumValue) < 30:
+
+    # Reverse
+    titleLegend = titleLegend[::-1]
+    if max(sumValue) < 20:
         horizonStep = 2
-    elif 30 <= max(sumValue) <50:
+    elif max(sumValue) <40:
         horizonStep = 5
-    else:
+    elif max(sumValue) <100:
         horizonStep = 10
-
-
+    else:
+        horizonStep = 50
     # Add more horizontal dash lines
-    for i in range(0, max(sumValue), horizonStep):
-        pyplot.axhline(y=i, linestyle='--', dashes=(2, 1), linewidth=0.5, alpha=0.4, color='black')
+    for i in range(0, max(sumValue) + horizonStep, horizonStep):
+        ax.axhline(y=i, linestyle='--', dashes=(2, 1), linewidth=0.5, alpha=0.4, color='black', zorder=0)
 
+    ax.set_xlim(-0.47, len(data[0]) - 1 + 0.47)
     pyplot.ylabel(labely)
     pyplot.xlabel(labelx)
-    pyplot.xticks(ind, xticks)
-    pyplot.yticks(numpy.arange(0, max(sumValue), horizonStep))
+    pyplot.xticks(ind, xticks, rotation=60, fontsize=8)
+    pyplot.yticks(numpy.arange(0, max(sumValue) + horizonStep + 1, horizonStep))
     pyplot.legend(titleLegend, labels, loc='upper right', bbox_to_anchor=(1, 1))
-    pyplot.savefig(image, box_inches='tight', pad_inches=0)
+    pyplot.tight_layout()
+    pyplot.savefig(image)
     pyplot.clf()
+    pyplot.close(fig)
     return '<img src="data:image/png;base64, {}">'.format(base64.b64encode(image.getvalue()).decode())
 
 

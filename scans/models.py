@@ -18,7 +18,7 @@ class ScanTaskModel(models.Model):
     scanBy = models.ForeignKey(User, on_delete=models.CASCADE, related_name='scanBy', blank=True)
     dateCreated = models.DateTimeField(auto_now_add=True)
     dateUpdate = models.DateTimeField(auto_now=True)
-    scanProject = models.ForeignKey(to=ScanProjectModel, on_delete=models.CASCADE)
+    scanProject = models.ForeignKey(to=ScanProjectModel, on_delete=models.CASCADE, related_name="ScanProjectScanTask")
 
     def __str__(self):
         return self.name

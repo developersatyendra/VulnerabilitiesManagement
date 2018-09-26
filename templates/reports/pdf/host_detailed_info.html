@@ -1,8 +1,11 @@
+{% autoescape off %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="file:///{{ css }}">
+        {% for file_css in css %}
+            <link rel="stylesheet" href="file:///{{ file_css }}">
+        {% endfor %}
     <style>
 
         tr{page-break-inside: avoid}
@@ -73,24 +76,27 @@
         </div>
         <div>
             <h4>Running Service</h4>
-            <table class="table" style="max-width: 200mm;">
-            <thead>
-                <tr>
-                    <th>Service</th>
-                    <th>Network Port</th>
-                    <th>Description</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for service in services %}
+            <table class="table table-bordered" style="max-width: 200mm;">
+                <thead>
                     <tr>
-                        <td>{{ service.name }}</td>
-                        <td>{{ service.port }}</td>
-                        <td>{{ service.description }}</td>
+                        <th>Service</th>
+                        <th>Network Port</th>
+                        <th>Description</th>
                     </tr>
-                {% endfor %}
-            </tbody>
+                </thead>
+                <tbody>
+                    {% for service in services %}
+                        <tr>
+                            <td>{{ service.name }}</td>
+                            <td>{{ service.port }}</td>
+                            <td>{{ service.description }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
+        <div class="text-center" ><b>Table 1:</b> Running Services of Host</div>
     </div>
 </body>
 </html>
+{% endautoescape %}

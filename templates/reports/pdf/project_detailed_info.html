@@ -1,0 +1,67 @@
+{% autoescape off %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+        {% for file_css in css %}
+            <link rel="stylesheet" href="file:///{{ file_css }}">
+        {% endfor %}
+    <style>
+
+        tr{page-break-inside: avoid}
+        .row {
+            padding-top: 1px;
+        }
+    </style>
+    <title>Title</title>
+</head>
+<body>
+    <div>
+        <h3>
+            Project Detailed Information
+            <hr class="hr-primary" />
+        </h3>
+        <br><br><br><br>
+        <h4>Information</h4>
+        <div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-6 text-left"><b>Project:</b></div>
+                    <div class="col-6 text-left">{{ project.name }}</div>
+                </div>
+                <div class="row">
+                    <div class="col-6 text-left"><b>Create by:</b></div>
+                    <div class="col-6 text-left">{{ project.createBy.username }}</div>
+                </div>
+                <div class="row">
+                    <div class="col-6 text-left"><b>Created Date:</b></div>
+                    <div class="col-6 text-left">{{ project.createDate }}</div>
+                </div>
+                <div class="row">
+                    <div class="col-6 text-left"><b>Updated Date:</b></div>
+                    <div class="col-6 text-left">{{ project.updateDate }}</div>
+                </div>
+{#                <div class="row justify-content-center" >#}
+{#                    <div class="col-2 text-left"><b>Created Date:</b></div>#}
+{#                    <div class="col-4 text-left">{{ project.dateCreated }}</div>#}
+{#                    <div class="col-2 text-left"><b>Updated Date:</b></div>#}
+{#                    <div class="col-4 text-left">{{ project.dateUpdate }}</div>#}
+{#                </div>#}
+
+                <br><br>
+                <div class="row justify-content-center" >
+                    <div class="col-12 text-justify"><b>Description:</b><br>
+                        {% if project.description %}
+                            {{ project.description }}
+                        {% else %}
+                            NA#
+                        {% endif %}
+                    </div>
+                </div>
+                <br><br>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+{% endautoescape %}

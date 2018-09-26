@@ -9,7 +9,7 @@ from scans.models import ScanTaskModel
 
 PAGE_DEFAULT = 1
 NUM_ENTRY_DEFAULT = 50
-LINUX_OS = ['ubuntu', 'kali', 'fedora', 'redhat', 'rhel', 'oracle', 'gento', 'mint']
+LINUX_OS = ['ubuntu', 'kali', 'fedora', 'redhat', 'rhel', 'oracle', 'gento', 'mint', 'linux']
 UNIX_OS = ['aix']
 
 ######################################################

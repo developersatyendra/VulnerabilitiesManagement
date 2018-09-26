@@ -1,4 +1,5 @@
 {% autoescape off %}
+    {% load get_element %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,46 +28,58 @@
             <h4>
                 Overview
             </h4>
-            <p>In this section, this report contains overview information that includes statistics by running services (in <a href="#graph-1">graph-1</a>) and current categorized vulnerabilities (in <a href="#graph-2">graph-2</a>) into groups:</p>
+            <p>In this section, this report contains overview information that includes statistics by services (in <a href="#graph1">graph-1</a>), OS (in <a href="#graph2">graph-2</a>) and current categorized vulnerabilities (in <a href="#graph3">graph-3</a>) into groups:</p>
             <ul>
                 <li><b>High Risk</b> - Exploitation of the vulnerability discovered on the system can directly lead to an attacker gaining privileged access (e.g. administrator, root) to the machine over a remote connection.</li>
                 <li><b>Medium Risk</b> - The vulnerability discovered on the system can directly lead to an attacker gaining non-privileged access (e.g. standard user) to the machine over a remote connection.</li>
                 <li><b>Low Risk</b> - The vulnerability discovered on the system provides enticement data to the attacker that may be used to launch a more informed attack against the target environment. In addition, the vulnerability may indirectly lead to an attacker gaining some form of access to the machine over a remote connection.</li>
                 <li><b>Informational Risk</b> - A finding on the system that provides data to an attacker that is of lesser value to an attacker than the enticement data provided by a low risk vulnerability.</li>
             </ul>
-            <div class="row justify-content-center" name="graph-1">
-                {{ graph_serivce }}
+            <div class="row justify-content-center">
+                <div class="col-6 justify-content-center" name="graph1">
+                    {{ graph_serivce }}
+                </div>
+                <div class="col-6 justify-content-center" name="graph2">
+                    {{ graph_OS }}
+                </div>
             </div>
-            <div class="text-center" ><b>Graph 1:</b> Vulnerabilities statistic by services</div>
-            <div class="row justify-content-center" name="graph-2">
+            <div class="row justify-content-center">
+                <div class="col-6 justify-content-center">
+                    <div class="text-center" ><b>Graph 1:</b> Vulnerabilities statistic by services</div>
+                </div>
+                <div class="col-6 justify-content-center">
+                    <div class="text-center" ><b>Graph 2:</b> Vulnerabilities statistic by OS</div>
+                </div>
+            </div>
+            <br>
+            <div class="row justify-content-center" name="graph3">
                 {{ graph_vuln }}
             </div>
-            <div class="text-center" ><b>Graph 2:</b> Current Vulnerabilities of Host</div>
+            <div class="text-center" ><b>Graph 3:</b> Vulnerabilities statistic</div>
             <br>
         </div>
         {# Section 2 #}
         <div style="page-break-after: avoid; page-break-before: always">
             <div>
                 <h4>
-                    Scan History
+                    Vulnerabilities in Scan Task
                 </h4>
-                <p>In this section, the report contains scan history of host. It includes scan frequency and brief information of involved scan tasks.</p>
+                <p>In this section, the report contains scan brief information of vulnerabilities that were discovered by this scan task.</p>
                 <div class="row justify-content-center" >
-                    {{ graph_scan_history }}
+                    {{ graph_scan_result }}
                 </div>
             </div>
-            <div class="text-center" ><b>Graph 3:</b> Scan History Statistic of Host</div>
+            <div class="text-center" ><b>Graph 4:</b> Vulnerabilities of scanned hosts</div>
             <div style="page-break-inside: avoid">
                 <div class="row justify-content-center" >
-                    <div class="col-12 text-left"><b>Scan History:</b></div>
+                    <div class="col-12 text-left"><b>Scan Result:</b></div>
                 </div>
                 <div>
                     <table class="table table-bordered" style="max-width: 200mm;">
                         <thead class="text-center">
                             <tr>
-                                <th rowspan="2">Scan Task</th>
-                                <th rowspan="2">Start Time</th>
-                                <th rowspan="2">Finished Time</th>
+                                <th rowspan="2">Hostname</th>
+                                <th rowspan="2">Ip Address</th>
                                 <th colspan="4">Vulnerabilities</th>
                             </tr>
                             <tr>
@@ -77,28 +90,64 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for scantask in scantasks %}
+                            {% for hostvuln in hostvulns %}
                                 <tr>
-                                    <td>{{ scantask.name }}</td>
-                                    <td>{{ scantask.startTime }}</td>
-                                    <td>{{ scantask.endTime }}</td>
-                                    <td>{{ scantask.high }}</td>
-                                    <td>{{ scantask.med }}</td>
-                                    <td>{{ scantask.low }}</td>
-                                    <td>{{ scantask.info }}</td>
+                                    <td><a href="#host-{{ hostvuln.id }}">{{ hostvuln.hostName }}</a></td>
+                                    <td>{{ hostvuln.ipAddr }}</td>
+                                    <td>{{ hostvuln.high }}</td>
+                                    <td>{{ hostvuln.med }}</td>
+                                    <td>{{ hostvuln.low }}</td>
+                                    <td>{{ hostvuln.info }}</td>
                                 </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
             </div>
-            <div class="text-center" ><b>Table 2:</b> Scan History of Host</div>
+            <div class="text-center" ><b>Table 1:</b> Vulnerabilities in Scan Task</div>
         </div>
         <br><br>
         {# Section 3 #}
+        <div style="page-break-after: avoid; page-break-before: always">
+            <div>
+                <h4>
+                    Vulnerabilities by Host
+                </h4>
+                <p>In this section, Discovered Vulnerabilities are grouped by host.</p>
+            </div>
+
+            {% for host in hosts %}
+                <div style="page-break-inside: avoid">
+                    <br>
+                    <h5 name="host-{{ host.id }}">{{ host.hostName }} - {{ host.ipAddr }}</h5>
+                    <div>
+                        <table class="table table-bordered" style="max-width: 200mm;">
+                            <thead class="text-center">
+                                <tr>
+                                    <th width="70%">Vulnerabilities</th>
+                                    <th width="15%">Service</th>
+                                    <th width="15%">Level Risk</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for vuln in vulnByHost|get_index:forloop.counter0 %}
+                                    <tr>
+                                        <td width="70%"><a href="#vuln-{{ vuln.id }}">{{ vuln.name }}</a></td>
+                                        <td width="15%">{{ vuln.service.name }}</td>
+                                        <td width="15%">{{ vuln.levelRisk }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <br><br>
+        {# Section 4 #}
         <div style="page-break-before: always">
             <h4>
-                Current Vulnerabilities In Detail
+                Vulnerabilities In Detail
             </h4>
             {% for vuln in vulns %}
                 {% if forloop.counter0 == 0 %}
@@ -107,7 +156,7 @@
                     <br><br>
                 {% endif %}
                 <div class="container" style="page-break-inside: avoid">
-                    <div class="row"><h5>{{ vuln.name }}</h5></div>
+                    <div class="row"><h5 name="vuln-{{ vuln.id }}">{{ vuln.name }}</h5></div>
                     <div class="row">
                         <div class="col-6 text-left"><b>Vulnerbility:</b></div>
                         <div class="col-6 text-left">{{ vuln.name }}</div>
