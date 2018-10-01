@@ -14,7 +14,7 @@ class HostNameSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = HostModel
-        fields = ('id', 'hostName')
+        fields = ('id', 'hostName', 'ipAddr')
 
 
 class HostVulnSerializer(serializers.ModelSerializer):

@@ -141,8 +141,8 @@ function FillInfo(input) {
                 $('#id_name').val(data.object.name);
                 $('#id_id').val(data.object.id);
                 $('#id_createBy').val(data.object.username);
-                $("#id_dateCreated").val(FormattedDate(data.object.createDate));
-                $("#id_dateUpdate").val(FormattedDate(data.object.updateDate));
+                $("#id_dateCreated").val(FormattedDate(data.object.dateCreated));
+                $("#id_dateUpdate").val(FormattedDate(data.object.dateUpdate));
                 $("#id_description").val(data.object.description);
                 deferred.resolve(data);
             }
@@ -156,8 +156,8 @@ function FillInfo(input) {
         $('#id_name').val(input.object.name);
         $('#id_id').val(input.object.id);
         $('#id_createBy').val(input.object.username);
-        $("#id_dateCreated").val(FormattedDate(input.object.createDate));
-        $("#id_dateUpdate").val(FormattedDate(input.object.updateDate));
+        $("#id_dateCreated").val(FormattedDate(input.object.dateCreated));
+        $("#id_dateUpdate").val(FormattedDate(input.object.dateUpdate));
         $("#id_description").val(input.object.description);
         deferred.resolve(input);
     }

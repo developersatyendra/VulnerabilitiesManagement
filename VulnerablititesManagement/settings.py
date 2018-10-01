@@ -62,6 +62,12 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'VulnerablititesManagement.urls'
 
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    )
+}
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -139,6 +145,35 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-
+#################################################
 # Celery Broker
 CELERY_BROKER_URL = 'amqp://localhost'
+
+
+
+#################################################
+# Risk Level Definition
+# High is >= LEVEL_HIGH
+LEVEL_HIGH = 7
+
+# Med is >= LEVEL_MED AND < LEVEL_HIGH
+LEVEL_MED = 4
+
+# Low is > LEVEL_INFO AND < LEVEL_MED
+# Info is = LEVEL_INFO
+LEVEL_INFO = 0
+
+
+#################################################
+# REPORT configurations
+
+# Path to save Generated reports
+PATH_GEN_REPORT = os.path.join(MEDIA_ROOT, 'reports')
+PATH_WKHTMLTOPDF = r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
+
+REPORT_CSS = [
+    os.path.join(BASE_DIR, r'static\vendor\bootstrap\css\bootstrap4.min.css'),
+    os.path.join(BASE_DIR, r'static\vendor\font-awesome\css\font-awesome.css'),
+]
+
+REPORT_LOGO = os.path.join(MEDIA_ROOT, r'img\reports\logo.png')

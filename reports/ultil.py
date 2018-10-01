@@ -1,5 +1,7 @@
-from django.db.models import Q, Count, F
+from django.db.models import F, Q, Count
+from django.conf import settings
 from django.contrib.auth.models import User
+from django.core.files.base import ContentFile
 from datetime import datetime
 from django.template.loader import get_template
 from django.conf import settings
@@ -15,19 +17,24 @@ from hosts.ultil import GetHostsVuln
 from vulnerabilities.ultil import *
 from .graphs import *
 
+
+PATH_GEN_REPORT = getattr(settings, 'PATH_GEN_REPORT')
+
+
 # High is >= LEVEL_HIGH
-LEVEL_HIGH = 7
+LEVEL_HIGH = getattr(settings, 'LEVEL_HIGH', 7)
 
 # Med is >= LEVEL_MED AND < LEVEL_HIGH
-LEVEL_MED = 4
+LEVEL_MED = getattr(settings, 'LEVEL_MED', 4)
 
 # Low is > LEVEL_INFO AND < LEVEL_MED
 # Info is = LEVEL_INFO
-LEVEL_INFO = 0
+LEVEL_INFO = getattr(settings, 'LEVEL_INFO', 0)
+
 
 # Global Const for PDF coverter
 MARGIN = '0.6in'
-PATH_WKHTMLTOPDF = r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
+PATH_WKHTMLTOPDF = getattr(settings, 'PATH_WKHTMLTOPDF', r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe')
 
 # HTML Template
 TEMPLATES = {
@@ -42,12 +49,12 @@ TEMPLATES = {
     'project_detail_info': 'reports/pdf/project_detailed_info.html',
     'project_vulns': 'reports/pdf/project_vulns.html',
 }
-
-CSS = [
+REPORT_CSS_DEFAULT = [
         path.join(getattr(settings, 'BASE_DIR'), r'static\vendor\bootstrap\css\bootstrap4.min.css'),
         path.join(getattr(settings, 'BASE_DIR'), r'static\vendor\font-awesome\css\font-awesome.css'),
 ]
-LOGO = path.join(getattr(settings, 'BASE_DIR'), r'media\img\reports\logo.png')
+REPORT_CSS = getattr(settings, 'REPORT_CSS', REPORT_CSS_DEFAULT)
+REPORT_LOGO = getattr(settings, 'REPORT_LOGO')
 
 
 def ConvertHTMLToPDF(htmlPaths, coverPath):
@@ -69,31 +76,40 @@ def ConvertHTMLToPDF(htmlPaths, coverPath):
         'toc-header-text': 'Table Of Contents'
     }
     if coverPath:
-        return pdfkit.from_file(htmlPaths, 'D:/output.pdf', configuration=config, cover=coverPath, toc=toc, cover_first=True, options=options)
+        try:
+            content = pdfkit.from_file(htmlPaths, False, configuration=config, cover=coverPath, toc=toc, cover_first=True, options=options)
+        except IOError as errorMsg:
+            return {'status': -1, 'message': errorMsg}
+        return {'status': 0, 'object': content}
     else:
-        return pdfkit.from_file(htmlPaths, 'D:/output.pdf', configuration=config, toc=toc, cover_first=True, options=options)
+        try:
+            content = pdfkit.from_file(htmlPaths, False, configuration=config, toc=toc, cover_first=True, options=options)
+        except IOError as errorMsg:
+            return {'status': -1, 'message': errorMsg}
+        return {'status': 0, 'object': content}
 
 
-def PDFHostReport(hostID, reportID):
+def PDFHostReport(report):
+
     # Create temporary dir
     tempdir = tempfile.mkdtemp()
 
     try:
-        host = HostModel.objects.get(pk=hostID)
+        host = report.host
 
     # In case Host with ID does not exist
     except HostModel.DoesNotExist:
         shutil.rmtree(tempdir)
-        return -1
+        return {'status': -1, 'message': 'Host Does Not Exist'}
 
     #######################################
     # Render Cover page
 
     htmlTemplate = get_template(TEMPLATES['cover'])
-    username = User.objects.get(pk=1).username
+    username = report.createBy.username
     context = {
-        'css': CSS,
-        'img_logo': LOGO,
+        'css': REPORT_CSS,
+        'img_logo': REPORT_LOGO,
         'username': username,
         'report_name': 'Host Vulnerabilities Report',
         'time_generate': datetime.now(),
@@ -111,7 +127,7 @@ def PDFHostReport(hostID, reportID):
     htmlTemplate = get_template(TEMPLATES['host_detail_info'])
     services = host.services.all()
     context = {
-        'css': CSS,
+        'css': REPORT_CSS,
         'host': host,
         'services': services,
     }
@@ -126,11 +142,11 @@ def PDFHostReport(hostID, reportID):
 
     htmlTemplate = get_template(TEMPLATES['host_vulns'])
 
-    scanVuln = GetScansVuln(hostID=hostID)['object']
-    vulns = GetCurrentHostVuln(hostID=hostID)['object']
+    scanVuln = GetScansVuln(hostID=host.id)['object']
+    vulns = GetCurrentHostVuln(hostID=host.id)['object']
 
     # Get statistic vuln by service
-    statVulnHostSrv = VulnStatisticByService(hostID=hostID)
+    statVulnHostSrv = VulnStatisticByService(hostID=host.id)
     serviceName = []
     serviceVuln = []
     result = sorted(statVulnHostSrv.items(), key=lambda t: t[1], reverse=True)
@@ -142,7 +158,7 @@ def PDFHostReport(hostID, reportID):
     # categorize vulns by group high, med, low, info
     categorizeVuln = []
     categorizeVuln.append(vulns.filter(Q(levelRisk__gte=LEVEL_HIGH)).count())
-    categorizeVuln.append(vulns.filter(Q(levelRisk__gte=LEVEL_MED)&Q(levelRisk__lt=LEVEL_HIGH)).count())
+    categorizeVuln.append(vulns.filter(Q(levelRisk__gte=LEVEL_MED) & Q(levelRisk__lt=LEVEL_HIGH)).count())
     categorizeVuln.append(vulns.filter(Q(levelRisk__gt=LEVEL_INFO) & Q(levelRisk__lt=LEVEL_MED)).count())
     categorizeVuln.append(vulns.filter(Q(levelRisk=LEVEL_INFO)).count())
     graph_vuln = RenderBarChart(categorizeVuln, ['High', 'Med', 'Low', 'Info'], 'Vulnerabilities')
@@ -168,7 +184,7 @@ def PDFHostReport(hostID, reportID):
     graph_scan_history = RenderStackBarChart(vulnData, labels=['High', 'Medium', 'Low', 'Info'], xticks=scanname, labely='Vulnerabilities')
     # Fill values to template
     context = {
-        'css': CSS,
+        'css': REPORT_CSS,
         'scantasks': scanVuln,
         'graph_vuln': graph_vuln,
         'graph_serivce': graph_serivce,
@@ -180,32 +196,38 @@ def PDFHostReport(hostID, reportID):
     File = open(hostvulnsFilePath, 'wb')
     File.write(html.encode())
     File.close()
+    reportPath = path.join(PATH_GEN_REPORT, report.name + '.pdf')
+    retval = ConvertHTMLToPDF([hostinfoFilePath, hostvulnsFilePath], coverFilePath)
+    shutil.rmtree(tempdir)
+    if retval['status'] == -1:
+        return retval
+    else:
+        # Assign file path of report
+        report.fileReport.save(reportPath, ContentFile(retval['object']))
+        report.save()
+    return {'status': 0, 'object': report}
 
-    ConvertHTMLToPDF([hostinfoFilePath, hostvulnsFilePath], coverFilePath)
 
-    return 0
-
-
-def PDFScanReport(scanID, reportID):
+def PDFScanReport(report):
     # Create temporary dir
     tempdir = tempfile.mkdtemp()
 
     try:
-        scan = ScanTaskModel.objects.get(pk=scanID)
+        scan = report.scanTask
 
     # In case Host with ID does not exist
     except ScanTaskModel.DoesNotExist:
         shutil.rmtree(tempdir)
-        return -1
+        return {'status': -1, 'message': 'Scan Task Does Not Exist'}
 
     #######################################
     # Render Cover page
 
     htmlTemplate = get_template(TEMPLATES['cover'])
-    username = User.objects.get(pk=1).username
+    username = report.createBy.username
     context = {
-        'css': CSS,
-        'img_logo': LOGO,
+        'css': REPORT_CSS,
+        'img_logo': REPORT_LOGO,
         'username': username,
         'report_name': 'Scan Task Vulnerabilities Report',
         'time_generate': datetime.now(),
@@ -222,7 +244,7 @@ def PDFScanReport(scanID, reportID):
 
     htmlTemplate = get_template(TEMPLATES['scan_detail_info'])
     context = {
-        'css': CSS,
+        'css': REPORT_CSS,
         'scan': scan,
     }
     html = htmlTemplate.render(context)
@@ -299,7 +321,7 @@ def PDFScanReport(scanID, reportID):
         vuln_t.append(GetVulns(hostID=host.id, scanID=scan.id, sortName='levelRisk', sortOrder='desc')['object'])
     # Fill values to template
     context = {
-        'css': CSS,                                     # CSS - Bootstrap
+        'css': REPORT_CSS,                              # CSS - Bootstrap
         'graph_OS': graph_os,                           # img base64 - Graph Vuln by OS
         'graph_serivce': graph_serivce,                 # img base64 - Graph Vuln by services
         'graph_vuln': graph_vuln,                       # img base64 - Graph Total Vuln of Scan
@@ -314,32 +336,38 @@ def PDFScanReport(scanID, reportID):
     File = open(scanvulnsFilePath, 'wb')
     File.write(html.encode())
     File.close()
+    reportPath = path.join(PATH_GEN_REPORT, report.name + '.pdf')
+    retval = ConvertHTMLToPDF([scaninfoFilePath, scanvulnsFilePath], coverFilePath)
+    shutil.rmtree(tempdir)
+    if retval['status'] == -1:
+        return retval
+    else:
+        # Assign file path of report
+        report.fileReport.save(reportPath, ContentFile(retval['object']))
+        report.save()
+    return {'status': 0, 'object': report}
 
-    ConvertHTMLToPDF([scaninfoFilePath, scanvulnsFilePath], coverFilePath)
 
-    return 0
-
-
-def PDFProjectReport(projectID, reportID):
+def PDFProjectReport(report):
     # Create temporary dir
     tempdir = tempfile.mkdtemp()
 
     try:
-        project = ScanProjectModel.objects.get(pk=projectID)
+        project = report.scanProject
 
     # In case Host with ID does not exist
     except ScanProjectModel.DoesNotExist:
         shutil.rmtree(tempdir)
-        return -1
+        return {'status': -1, 'message': 'Project Does Not Exist'}
 
     #######################################
     # Render Cover page
 
     htmlTemplate = get_template(TEMPLATES['cover'])
-    username = User.objects.get(pk=1).username
+    username = report.createBy.username
     context = {
-        'css': CSS,
-        'img_logo': LOGO,
+        'css': REPORT_CSS,
+        'img_logo': REPORT_LOGO,
         'username': username,
         'report_name': 'Project Vulnerabilities Report',
         'time_generate': datetime.now(),
@@ -356,7 +384,7 @@ def PDFProjectReport(projectID, reportID):
 
     htmlTemplate = get_template(TEMPLATES['project_detail_info'])
     context = {
-        'css': CSS,
+        'css': REPORT_CSS,
         'project': project,
     }
     html = htmlTemplate.render(context)
@@ -449,7 +477,7 @@ def PDFProjectReport(projectID, reportID):
 
     # Fill values to template
     context = {
-        'css': CSS,                                      # CSS - Bootstrap
+        'css': REPORT_CSS,                               # CSS - Bootstrap
         'graph_OS': graph_os,                            # img base64 - Graph Vuln by OS
         'graph_serivce': graph_serivce,                  # img base64 - Graph Vuln by services
         'graph_vuln': graph_vuln,                        # img base64 - Graph Total Vuln of Scan
@@ -463,7 +491,13 @@ def PDFProjectReport(projectID, reportID):
     File = open(projectvulnsFilePath, 'wb')
     File.write(html.encode())
     File.close()
-
-    ConvertHTMLToPDF([projectinfoFilePath, projectvulnsFilePath], coverFilePath)
-
-    return 0
+    reportPath = path.join(PATH_GEN_REPORT, report.name+'.pdf')
+    retval = ConvertHTMLToPDF([projectinfoFilePath, projectvulnsFilePath], coverFilePath)
+    shutil.rmtree(tempdir)
+    if retval['status'] == -1:
+        return retval
+    else:
+        # Assign file path of report
+        report.fileReport.save(reportPath, ContentFile(retval['object']))
+        report.save()
+    return {'status': 0, 'object': report}

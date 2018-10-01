@@ -1,34 +1,23 @@
 from django import forms
 from .models import ReportModel
+from hosts.models import HostModel
 
 
 class ReportForm(forms.ModelForm):
+    host = forms.ModelChoiceField(HostModel.objects.order_by('hostName'),widget = forms.Select(attrs={'class': 'form-control'}))
     class Meta:
         model = ReportModel
         exclude = ('createBy',)
-
-class ProjectForm(forms.ModelForm):
-    class Meta:
-        model = ScanProjectModel
-        exclude = ('createBy',)
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Name'}),
-            'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Descriptions', 'rows':'5'}),
+            'scanProject': forms.Select(attrs={'class': 'form-control'}),
+            'scanTask': forms.Select(attrs={'class': 'form-control'}),
+            'host': forms.Select(attrs={'class': 'form-control'}),
+            'format': forms.Select(attrs={'class': 'form-control'}),
         }
 
-    def __init__(self, *args, **kwargs):
-        if 'id' in kwargs:
-            id = kwargs['id']
-            del kwargs['id']
-            super().__init__(*args, **kwargs)
-            for field in self.fields:
-                fieldID = 'id_' + field + '_' + id
-                self.fields[field].widget.attrs['id'] = fieldID
-        else:
-            super().__init__(*args, **kwargs)
 
-
-class ProjectIDForm(forms.ModelForm):
+class ReportIDForm(forms.ModelForm):
     class Meta:
-        model = ScanProjectModel
+        model = ReportModel
         fields= ['id']

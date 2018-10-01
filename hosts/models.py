@@ -15,7 +15,7 @@ class HostModel(models.Model):
     services = models.ManyToManyField(ServiceModel)
 
     def __str__(self):
-        return self.hostName
+        return self.hostName + ' - ' + self.ipAddr
 
     def __unicode__(self):
-        return self.hostName
+        return self.hostName + ' - ' + self.ipAddr

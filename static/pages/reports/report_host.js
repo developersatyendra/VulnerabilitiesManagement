@@ -1,11 +1,21 @@
+// MODE CONST
+const MODE_PROJECT = 0;
+const MODE_SCANTASK = 1;
+const MODE_HOST = 2;
+
+// STATUS CONST
+const STATE_REQUESTED = 0;
+const STATE_PROCESSING = 1;
+const STATE_PROCESSED = 2;
+const STATE_ERROR = 3;
 var rowIDSelected = null;
 $(document).ready(
 
-    ////////////////////////////////////////////
-    // Decleare project table
+    //
+    // Declare serivces table
     //
     $(function () {
-        $("#projectstable").bootstrapTable({
+        $("#reporttable").bootstrapTable({
             columns:[
                 {
                     field: 'state',
@@ -14,15 +24,14 @@ $(document).ready(
                     valign: 'middle'
                 },
                 {
-                    title: "Project Name",
+                    title: "Report Name",
                     field: "name",
                     align: "center",
                     valign: "middle",
-                    formatter: HrefFormater,
                     sortable: true
                 },
                 {
-                    title: "Create Date",
+                    title: "Date Generated",
                     field: "dateCreated",
                     align: "center",
                     valign: "middle",
@@ -30,24 +39,36 @@ $(document).ready(
                     sortable: true
                 },
                 {
-                    title: "Update Date",
-                    field: "dateUpdate",
+                    title: "Status",
+                    field: "status",
                     align: "center",
                     valign: "middle",
-                    formatter: FormattedDate,
+                    formatter: StatusFormater,
                     sortable: true
                 },
                 {
-                    title: "Description",
+                    title: "Hostname",
+                    field: "host.hostName",
+                    align: "center",
+                    valign: "middle",
+                    formatter: HostnameIPFormater,
+                    sortable: true
+                },
+                {
+                    title: "Report File",
                     field: "description",
                     align: "center",
                     valign: "middle",
-                    sortable: true
+                    formatter: DownloadFormater,
+                    sortable: false
                 }
             ],
+            // url: "/services/api/getservices",
+            // method: "get",
             ajax: ajaxRequest,
-            queryParamsType: "",
             idField: "id",
+            queryParams: queryParams,
+            queryParamsType: "",
             striped: true,
             pagination: true,
             sidePagination: "server",
@@ -56,31 +77,24 @@ $(document).ready(
         })
     }),
 
-    //////////////////////////////////////////
-    // Edit project
     //
-    $("#editProjectPostForm").submit(function(e){
-        var data = $('#editProjectPostForm').serializeArray();
+    // Edit service
+    //,
+    $("#editServicePostForm").submit(function(e){
+        var data = $('#editServicePostForm').serializeArray();
         data.push({name: "id", value: rowIDSelected});
         data = $.param(data);
-        $.post("./api/updateproject", data, function(data){
+        $.post("./api/updateservice", data, function(data){
             var notification = $("#retMsgEdit");
             var closebtn = '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>';
             notification.removeClass("hidden");
             if(data.status != 0){
-                var errStr = "Error: "+data.message;
-                if(typeof data.detail.name !='undefined'){
-                    errStr = errStr + ". Name: " + data.detail.name[0];
-                }
-                if(typeof data.detail.id !='undefined'){
-                    errStr = errStr + ". ID: " + data.detail.id[0];
-                }
-                notification.html(errStr);
+                notification.html("Error: "+data.message + '. '+data.detail.__all__[0]);
                 notification.removeClass("alert-info");
                 notification.addClass("alert-danger");
             }
             else{
-                notification.html("The project is updated.");
+                notification.html("The service is edited.");
                 notification.removeClass("alert-danger");
                 notification.addClass("alert-info");
 
@@ -88,36 +102,31 @@ $(document).ready(
                 $("#saveEditBtn").attr('disabled', true);
             }
             notification.append(closebtn);
-            $("#projectstable").bootstrapTable('refresh');
+            $("#servicetable").bootstrapTable('refresh');
         });
         e.preventDefault();
     }),
-    $("#editProjectModal").on("hidden.bs.modal", function () {
+    $("#editServiceModal").on("hidden.bs.modal", function () {
         $("#retMsgEdit").addClass("hidden");
     }),
 
-    //////////////////////////////////////////
-    // Add New project
     //
-    $("#addProjectPostForm").submit(function(e){
-        $.post("./api/addproject", $(this).serialize(), function(data){
+    // Add New Report
+    //
+    $("#addReportPostForm").submit(function(e){
+        $("<input>").attr("type", "hidden").attr("name","mode").val(MODE_HOST).appendTo('#addReportPostForm');
+        console.log($(this).serialize());
+        $.post("./api/addreport", $(this).serialize(), function(data){
             var notification = $("#retMsgAdd");
             var closebtn = '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>';
             notification.removeClass("hidden");
             if(data.status != 0){
-                var errStr = "Error: "+data.message;
-                if(typeof data.detail.name !='undefined'){
-                errStr = errStr + ". Name: " + data.detail.name[0] +'.';
-                }
-                if(typeof data.detail.id !='undefined'){
-                    errStr = errStr + ". ID: " + data.detail.id[0] +'.';
-                }
-                notification.html(errStr);
+                notification.html("Error: "+data.message + '.');
                 notification.removeClass("alert-info");
                 notification.addClass("alert-danger");
             }
             else{
-                notification.html("New project is added.");
+                notification.html("New report request is added.");
                 notification.removeClass("alert-danger");
                 notification.addClass("alert-info");
 
@@ -125,23 +134,23 @@ $(document).ready(
                 $("#saveAddBtn").attr('disabled', true);
             }
             notification.append(closebtn);
-            $("#projectstable").bootstrapTable('refresh');
+            $("#reporttable").bootstrapTable('refresh');
         });
         e.preventDefault();
     }),
-    $("#addProjectModal").on("hidden.bs.modal", function () {
+    $("#addServiceModal").on("hidden.bs.modal", function () {
         $("#retMsgAdd").addClass("hidden");
     }),
 
-    //////////////////////////////////////////
-    // Delete scan tasks
+    //
+    // Confirm delete service
     //
     $("#confirmDelete").click(function () {
         // Get csrf_token
         var csrf_token = $('meta[name="csrf-token"]').attr('content');
 
-        // Create array contains vuln ids
-        var dataTable = $("#projectstable").bootstrapTable('getSelections');
+        // Create array contains service ids
+        var dataTable = $("#servicetable").bootstrapTable('getSelections');
             var ids = new Array();
             for(i=0; i < dataTable.length; i++){
                 ids.push(dataTable[i].id);
@@ -150,11 +159,11 @@ $(document).ready(
         var data = [];
         data.push({name: "id", value: ids});
         data.push({name: "csrfmiddlewaretoken", value: csrf_token});
-        $.post('./api/deleteproject', $.param(data),
+        $.post('./api/deleteservice', $.param(data),
              function(returnedData){
                 if(returnedData.status == 0){
                     $('#warningOnDelete').modal('hide');
-                    $("#projectstable").bootstrapTable('refresh');
+                    $("#servicetable").bootstrapTable('refresh');
 
                     $('#msgInfo').text(returnedData.message);
                     $('#infoModal').modal('show');
@@ -163,47 +172,46 @@ $(document).ready(
         $('#warningOnDelete').modal('hide')
     }),
 
-    //////////////////////////////////////////
-    // show delete scan tasks warning
+    //
+    // show delete service warning
     //
     $("#delete").click(function () {
-        var data = $("#projectstable").bootstrapTable('getSelections');
+        var data = $("#reporttable").bootstrapTable('getSelections');
         if(data.length > 0){
             if(data.length == 1){
-                $('#msgOnDelete').text("Are you sure to delete " + data.length + " selected project?");
+                $('#msgOnDelete').text("Are you sure to delete " + data.length + " selected service?");
             }
             else{
-                $('#msgOnDelete').text("Are you sure to delete " + data.length + " selected projects?");
+                $('#msgOnDelete').text("Are you sure to delete " + data.length + " selected services?");
             }
             $('#warningOnDelete').modal('show')
         }
     }),
-
-    //////////////////////////////////////////
-    // Fill in edit form when edit btn is clicked
+    // //
+    // // Fill in edit form when edit btn is clicked
+    // //
+    // $("#edit").click(function () {
+    //     var data = $("#servicetable").bootstrapTable('getSelections');
+    //     if(data.length > 1){
+    //         $('#msgInfo').text("Please choose only one row for editing.");
+    //         $('#infoModal').modal('show');
+    //     }
+    //     else if (data.length == 1) {
+    //         $('#id_name_edit').val(data[0].name);
+    //         $('#id_port_edit').val(data[0].port);
+    //         $('#id_description_edit').val(data[0].description);
+    //         $('#editServiceModal').modal('show');
+    //         rowIDSelected = data[0].id;
     //
-    $("#edit").click(function () {
-        // Disable edit save button
-        $('#saveEditBtn').attr('disabled', true);
-
-        var data = $("#projectstable").bootstrapTable('getSelections');
-        if(data.length > 1){
-            $('#msgInfo').text("Please choose only one row for editing.");
-            $('#infoModal').modal('show');
-        }
-        else if (data.length == 1) {
-            $('#id_name_edit').val(data[0].name);
-            $('#id_description_edit').val(data[0].description);
-            $('#editProjectModal').modal('show');
-            rowIDSelected = data[0].id;
-        }
-    }),
-
-    //////////////////////////////////////////
-    // Detect changes on Select row to enable or disable Delete/ Edit button
+    //         // Dissable Save Edit Button
+    //         $("#saveEditBtn").attr('disabled', true);
+    //     }
+    // }),
     //
-    $("#projectstable").change(function () {
-        var data = $("#projectstable").bootstrapTable('getSelections');
+    // Check how many row is selected to enable or disable edit and delete button
+    //
+    $("#reporttable").change(function () {
+        var data = $("#reporttable").bootstrapTable('getSelections');
         var editBtn = $("#edit");
         var delBtn = $("#delete");
         if(data.length!=1){
@@ -233,38 +241,35 @@ $(document).ready(
     //
 
     // Add form
-    $('#addProjectPostForm').change(function () {
+    $('#addReportPostForm').change(function () {
         $('#saveAddBtn').attr('disabled', false);
     }),
     $("#id_name").on("input", function () {
         $("#saveAddBtn").attr('disabled', false);
     }),
-    $("#id_description").on("input", function () {
+    $("#id_host").on("input", function () {
+        $("#saveAddBtn").attr('disabled', false);
+    }),
+    $("#id_format").on("input", function () {
         $("#saveAddBtn").attr('disabled', false);
     }),
 
-    //Edit form
-    $('#editProjectPostForm').change(function () {
-        $('#saveEditBtn').attr('disabled', false);
-    }),
-    $("#id_name_edit").on("input", function () {
-        $("#saveEditBtn").attr('disabled', false);
-    }),
-    $("#id_description_edit").on("input", function () {
-        $("#saveEditBtn").attr('disabled', false);
-    })
+    // // Edit form
+    // $('#editServicePostForm').change(function () {
+    //     $('#saveEditBtn').attr('disabled', false);
+    // }),
+    // $("#id_name_edit").on("input", function () {
+    //     $("#saveEditBtn").attr('disabled', false);
+    // }),
+    // $("#id_port_edit").on("input", function () {
+    //     $("#saveEditBtn").attr('disabled', false);
+    // }),
+    // $("#id_description_edit").on("input", function () {
+    //     $("#saveEditBtn").attr('disabled', false);
+    // })
 );
 
-//////////////////////////////////////////
-// Format href for bootstrap table
-//
-function HrefFormater(value, row, index) {
-    return '<a href="' + row.id + '"> ' + row.name +'</a>';
-}
-
-//////////////////////////////////////////
 // Format Datetime for bootstrap table
-//
 function FormattedDate(input) {
     date = new Date(input);
     // Get year
@@ -300,24 +305,74 @@ function FormattedDate(input) {
     return month + '/' + day + '/' + year + ' ' + hours + ':' + minutes +':'+seconds+ ' ' + ampm;
 }
 
+// Format Href for bootstrap table
+function HrefFormater(value, row, index) {
+    return '<a href="' + row.id + '"> ' + row.name +'</a>';
+}
+
+// Format hostname+ip for bootstrap table
+function HostnameIPFormater(value, row, index) {
+    try {
+        var ipAddr = row.host.ipAddr;
+    }
+    catch (e) {
+        return value;
+    }
+    return value + ' - ' + ipAddr;
+}
+
+//
+function DownloadFormater(value, row, index) {
+    if(row.status == STATE_PROCESSED){
+        return '<a href="/reports/api/getreportfile?id=' + row.id + '"><i class="fa fa-download fa-fw"></i> Download</a>';
+    }
+    else
+        return "-";
+}
+// Format Status for bootstrap table
+function StatusFormater(value, row, index) {
+    switch (value){
+        case STATE_PROCESSED:
+            return "Processed";
+        case STATE_ERROR:
+            return "Error";
+        case STATE_PROCESSING:
+            return "Processing";
+        case STATE_REQUESTED:
+            return "Requested";
+        default:
+            return "#NA";
+    }
+}
+
+//////////////////////////////////////////
+// Custom params for bootstrap table
+//
+function queryParams(params) {
+    // params.advFilter = "projectID";
+    params.mode = MODE_HOST;
+    return(params);
+    // return {advFilter: 'projectID', advFilterValue: id};
+}
+
 //////////////////////////////////////////
 // Ajax get data to table
 //
 function ajaxRequest(params) {
     $.ajax({
         type: "GET",
-        url: "/projects/api/getprojects",
+        url: "/reports/api/getreports",
         data: params.data,
         dataType: "json",
-        success: function(data) {
-            if(data.status == 0){
+        success: function (data) {
+            if (data.status == 0) {
                 params.success({
                     "rows": data.object.rows,
                     "total": data.object.total
                 })
             }
         },
-       error: function (er) {
+        error: function (er) {
             params.error(er);
         }
     });

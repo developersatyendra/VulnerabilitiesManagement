@@ -11,26 +11,42 @@ from services.models import ServiceModel
 import tempfile
 from os import path
 from .ultil import ConvertHTMLToPDF
+from .forms import ReportForm
 
 
-class ReportsView(TemplateView):
+class ReportHostView(TemplateView):
+    template = 'reports/report_host.html'
+
     def get(self, request, *args, **kwargs):
-        pass
-        # """
-        #     Convert HTML URIs to absolute system paths so xhtml2pdf can access those
-        #     resources
-        #     """
-        # # use short variable names
-        # sUrl = settings.STATIC_URL  # Typically /static/
-        # sRoot = settings.STATIC_ROOT  # Typically /home/userX/project_static/
-        # mUrl = settings.MEDIA_URL  # Typically /static/media/
-        # mRoot = settings.MEDIA_ROOT  # Typically /home/userX/project_static/media/
-        #
-        # sidebarHtml = RenderSideBar(request)
-        # context = {'logo_img': '/media/img/reports/logo.png'}
-        # pdf = render_to_pdf('reports/report.html', context)
-        # return HttpResponse(pdf, content_type='application/pdf')
-        # # return render(request, 'reports/report.html', context)
+        sidebarHtml = RenderSideBar(request)
+        form = ReportForm()
+        context = {
+            'form': form,
+            'sidebar': sidebarHtml,
+        }
+        return render(request, self.template, context)
+
+
+class ReportScanView(TemplateView):
+    template = 'reports/report_scan.html'
+
+    def get(self, request, *args, **kwargs):
+        sidebarHtml = RenderSideBar(request)
+        context = {
+            'sidebar': sidebarHtml,
+        }
+        return render(request, self.template, context)
+
+
+class ReportProjectView(TemplateView):
+    template = 'reports/report_project.html'
+
+    def get(self, request, *args, **kwargs):
+        sidebarHtml = RenderSideBar(request)
+        context = {
+            'sidebar': sidebarHtml,
+        }
+        return render(request, self.template, context)
 
 
 class ReportDetailView(TemplateView):

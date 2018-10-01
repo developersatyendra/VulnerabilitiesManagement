@@ -2,7 +2,7 @@ var rowIDSelected = null;
 $(document).ready(
 
     //
-    // Declear serivces table
+    // Declare serivces table
     //
     $(function () {
         $("#servicetable").bootstrapTable({
