@@ -259,13 +259,15 @@ $(document).ready(
         }
         else if (data.length == 1) {
             $('#id_name_edit').val(data[0].name);
-            $('#id_isProcessed_edit').val(data[0].isProcessed);
+            // $('#id_isProcessed_edit').val(data[0].isProcessed);
             var startTime = data[0].startTime;
             var endTime = data[0].endTime;
 
             $('#id_fileAttachment_edit').val(data[0].fileAttachment);
             $('#id_scanProject_edit').val(data[0].scanProject.id);
             $('#id_description_edit').val(data[0].description);
+            $('#id_isProcessed_edit').prop('checked', data[0].isProcessed);
+            // $('#id_isProcessed_edit').val(data[0].isProcessed);
             $('#editScanModal').modal('show');
             $("#dpEditStartTime").data("DateTimePicker").date(new Date(data[0].startTime));
             $("#dpEditEndTime").data("DateTimePicker").date(new Date(data[0].endTime));

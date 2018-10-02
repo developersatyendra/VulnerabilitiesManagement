@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from django.http import HttpResponse
 from .models import ReportModel
-from .forms import ReportForm
+from .forms import *
 from .serializers import ReportSerializer
 from .tasks import ProcessGenerateReportTask
 from django.db.models import Q, Count, F
@@ -132,18 +132,46 @@ class APIGetReportByID(APIView):
 class APIAddReport(APIView):
 
     def post(self, request):
-        reportForm = ReportForm(request.POST)
-        if reportForm.is_valid():
-            reportObj = reportForm.save(commit=False)
-            reportObj.createBy = User.objects.get(pk=1)
-            reportObj.status = ReportModel.STATE_REQUESTED
-            reportObj.save()
-            ProcessGenerateReportTask.delay(report=reportObj)
-            dataSerialized = ReportSerializer(reportObj, many=False)
-            return Response({'status': '0', 'object': dataSerialized.data})
+        mode = request.POST.get('mode')
+        print(mode)
+        if mode:
+            try:
+                mode = int(mode)
+            except ValueError:
+                error = {
+                    "mode": ["Mode has improper value"]
+                }
+                return Response({'status': '-1', 'message': 'Form is invalid', 'detail': error})
+
+            if mode == ReportModel.MODE_PROJECT:
+                reportForm = ReportFormProject(request.POST)
+
+            elif mode == ReportModel.MODE_SCANTASK:
+                reportForm = ReportFormScan(request.POST)
+
+            elif mode == ReportModel.MODE_HOST:
+                reportForm = ReportFormHost(request.POST)
+
+            else:
+                error = {
+                    "mode": ["Mode has improper value"]
+                }
+                return Response({'status': '-1', 'message': 'Form is invalid', 'detail': error})
+            if reportForm.is_valid():
+                reportObj = reportForm.save(commit=False)
+                reportObj.createBy = User.objects.get(pk=1)
+                reportObj.status = ReportModel.STATE_REQUESTED
+                reportObj.save()
+                ProcessGenerateReportTask.delay(report=reportObj)
+                dataSerialized = ReportSerializer(reportObj, many=False)
+                return Response({'status': '0', 'object': dataSerialized.data})
+            else:
+                print(reportForm.errors.as_data())
+                return Response({'status': '-1', 'message': 'Form is invalid', 'detail': reportForm.errors.as_data()})
         else:
-            print(reportForm.errors)
-            return Response({'status': '-1', 'message': 'Form is invalid', 'detail': reportForm.errors})
+            reportForm = ReportForm(request.POST)
+            print(reportForm.errors.as_data())
+            return Response({'status': '-1', 'message': 'Form is invalid', 'detail': reportForm.errors.as_data()})
 
 
 class APIDeleteReport(APIView):
@@ -151,18 +179,31 @@ class APIDeleteReport(APIView):
     def post(self, request):
         reportID = request.POST.get('id', None)
         if reportID:
-            try:
-                report = ReportModel.objects.get(pk=reportID)
-            except ReportModel.DoesNotExist:
-                return Response({'status': -1, 'message': 'Report does not exist'})
-            try:
-                remove(report.fileReport.path)
-            except OSError:
-                pass
-            name = report.name
-            report.delete()
-            return Response({'status': 0, 'message': "{} is successfully deleted".format(name)})
-        return Response({'status': 1, 'message': " Report not found"})
+            ids = reportID.split(',')
+            successOnDelete = 0
+            for id in ids:
+                try:
+                    id = int(id)
+                except ValueError:
+                    pass
+                try:
+                    report = ReportModel.objects.get(pk=id)
+                except ReportModel.DoesNotExist:
+                    pass
+                else:
+                    try:
+                        remove(report.fileReport.path)
+                    except (OSError, ValueError) as e:
+                        pass
+                    report.delete()
+                    successOnDelete += 1
+            if successOnDelete==1:
+                return Response(
+                    {'status': '0', 'message': '1 report is successfully deleted.', 'numDeleted': successOnDelete})
+            else:
+                return Response(
+                            {'status': '0', 'message': '{} reports are successfully deleted.'.format(successOnDelete), 'numDeleted': successOnDelete})
+        return Response({'status': 1, 'message': " Report ID is required"})
 
 
 class APIGetReportFile(APIView):

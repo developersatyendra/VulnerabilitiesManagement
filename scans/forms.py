@@ -23,7 +23,7 @@ class ScanForm(forms.ModelForm):
         exclude = ('scanBy', 'submitter')
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Name'}),
-            'isProcessed': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'isProcessed': forms.CheckboxInput(attrs={'class': 'form-check-input', 'value': 'True'}),
             'scanProject':forms.Select(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Descriptions', 'rows': '5'}),
             'fileAttachment': forms.FileInput(attrs={'style': "display: none;"}),
@@ -62,7 +62,7 @@ class ScanAddForm(forms.ModelForm):
         exclude = ('scanBy', 'submitter', 'fileAttachment')
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Name'}),
-            'isProcessed': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'isProcessed': forms.CheckboxInput(attrs={'class': 'form-check-input', 'value': 'True'}),
             'scanProject':forms.Select(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Descriptions', 'rows': '5'}),
         }

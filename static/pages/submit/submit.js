@@ -1,3 +1,8 @@
+const STATE_UPLOADED = 0;
+const STATE_PROCESSING = 1;
+const STATE_PROCESSED = 2;
+const STATE_DUPLICATED = 3;
+const STATE_ERROR = 4;
 var rowIDSelected = null;
 $(document).ready(
     //
@@ -33,6 +38,7 @@ $(document).ready(
                     field: "status",
                     align: "center",
                     valign: "middle",
+                    formatter: StatusFormater,
                     sortable: true
                 },
                 {
@@ -263,6 +269,23 @@ function GetFileName(filepath) {
     return "";
 }
 
+// Format Status for bootstrap table
+function StatusFormater(value, row, index) {
+    switch (value){
+        case STATE_DUPLICATED:
+            return '<i class="fa fa-clone fa-fw"></i>';
+        case STATE_PROCESSED:
+            return '<i class="fa fa-check fa-fw"></i>';
+        case STATE_ERROR:
+            return '<i class="fa fa-exclamation-triangle fa-fw"></i>';
+        case STATE_PROCESSING:
+            return '<i class="fa fa-cog fa-spin fa-fw"></i>';
+        case STATE_UPLOADED:
+            return '<i class="fa fa-upload fa-fw"></i>';
+        default:
+            return "#NA";
+    }
+}
 //////////////////////////////////////////
 // Ajax get data to table
 //

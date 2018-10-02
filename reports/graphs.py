@@ -60,10 +60,17 @@ def RenderBarChart(data=[], labels=[], labely='', labelx=''):
 
 # Render Donut Chart
 def RenderDonutChart(data=[], labels=[], size=100):
+    image = BytesIO()
     sumData = sum(data)
+    if sumData == 0:
+        pyplot.text(0.33, 0.5, "Graph has no data")
+        pyplot.savefig(image, box_inches='tight', pad_inches=0.0)
+        pyplot.clf()
+        return '<img style="width: {}%" src="data:image/png;base64, {}">'.format(size, base64.b64encode(
+            image.getvalue()).decode())
     for index, data_t in enumerate(data):
         labels[index] = '{0:.1f}'.format(data_t*100./sumData) + '% ' +labels[index]
-    image = BytesIO()
+
     fig, ax = pyplot.subplots(figsize=(6, 3), subplot_kw=dict(aspect="equal"))
     wedges, texts = ax.pie(data, wedgeprops=dict(width=0.5), startangle=-120, pctdistance=0.84, colors=COLORS_GRADIENT)
     kw = dict(xycoords='data', textcoords='data', arrowprops=dict(arrowstyle="-"), zorder=0, va="center")
@@ -96,6 +103,14 @@ def RenderStackBarChart(data, labels=[], labely='', labelx='', xticks=[]):
 
     # Save Image to ByteIO instead of File
     image = BytesIO()
+
+    # sumData = sum(data)
+    # if sumData == 0:
+    #     pyplot.text(0.5, 0.5, "Graph has no data")
+    #     pyplot.savefig(image, box_inches='tight', pad_inches=0.0)
+    #     pyplot.clf()
+    #     return '<img style="width: {}%" src="data:image/png;base64, {}">'.format(size, base64.b64encode(
+    #         image.getvalue()).decode())
     # the x locations for the bars
     ind = numpy.arange(len(data[0]))
 
@@ -123,14 +138,20 @@ def RenderStackBarChart(data, labels=[], labely='', labelx='', xticks=[]):
         else:
             p1 = ax.bar(ind, data_t, BAR_WIDTH, color=COLORS[3-index], alpha=OPACITY, zorder=3)
         titleLegend.append(p1)
-
+    try:
+        maxSumValue = max(sumValue)
+    except ValueError:
+        pyplot.text(0.33, 0.5, "Graph has no data")
+        pyplot.savefig(image, box_inches='tight', pad_inches=0.0)
+        pyplot.clf()
+        return '<img src="data:image/png;base64, {}">'.format(base64.b64encode(image.getvalue()).decode())
     # Reverse
     titleLegend = titleLegend[::-1]
-    if max(sumValue) < 20:
+    if maxSumValue < 20:
         horizonStep = 2
-    elif max(sumValue) <40:
+    elif maxSumValue <40:
         horizonStep = 5
-    elif max(sumValue) <100:
+    elif maxSumValue <100:
         horizonStep = 10
     else:
         horizonStep = 50

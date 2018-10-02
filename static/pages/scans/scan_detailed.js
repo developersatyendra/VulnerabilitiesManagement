@@ -332,7 +332,7 @@ function FillInfo(scaninfo) {
                 $("#dpStartTime").data("DateTimePicker").date(new Date(data.startTime));
                 $("#dpEndTime").data("DateTimePicker").date(new Date(data.endTime));
                 $("#id_scanProject").val(data.scanProject.id);
-                $("#id_isProcessed").val(data.isProcessed);
+                $('#id_isProcessed').prop('checked', data.isProcessed);
                 $("#id_description").val(data.description);
                 $("id_fileAttachment").val(data.fileAttachment);
                 deferred.resolve(data);
@@ -352,7 +352,7 @@ function FillInfo(scaninfo) {
         $("#dpStartTime").data("DateTimePicker").date(new Date(scaninfo.startTime));
         $("#dpEndTime").data("DateTimePicker").date(new Date(scaninfo.endTime));
         $("#id_scanProject").val(scaninfo.scanProject.id);
-        $("#id_isProcessed").val(scaninfo.isProcessed);
+        $("#id_isProcessed").prop('checked', scaninfo.isProcessed);
         $("#id_description").val(scaninfo.description);
         $("id_fileAttachment").val(scaninfo.fileAttachment);
         deferred.resolve(scaninfo);

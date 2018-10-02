@@ -331,6 +331,7 @@ class APIAddScan(APIView):
 
 class APIDeleteScan(APIView):
     def post(self, request):
+        print(request.POST)
         scanForm = ScanIDForm(request.POST)
         if scanForm.is_valid():
             successOnDelete = 0
@@ -370,6 +371,7 @@ class APIDeleteScan(APIView):
 
 class APIUpdateScan(APIView):
     def post(self, request):
+        print(request.POST)
         if request.POST.get('id'):
             try:
                 id = int(request.POST.get('id'))

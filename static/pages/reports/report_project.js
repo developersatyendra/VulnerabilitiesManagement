@@ -47,8 +47,8 @@ $(document).ready(
                     sortable: true
                 },
                 {
-                    title: "Hostname",
-                    field: "host.hostName",
+                    title: "Project",
+                    field: "scanProject.name",
                     align: "center",
                     valign: "middle",
                     formatter: HostnameIPFormater,
@@ -114,7 +114,7 @@ $(document).ready(
     // Add New Report
     //
     $("#addReportPostForm").submit(function(e){
-        $("<input>").attr("type", "hidden").attr("name","mode").val(MODE_HOST).appendTo('#addReportPostForm');
+        $("<input>").attr("type", "hidden").attr("name","mode").val(MODE_PROJECT).appendTo('#addReportPostForm');
         $.post("./api/addreport", $(this).serialize(), function(data){
             var notification = $("#retMsgAdd");
             var closebtn = '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>';
@@ -129,8 +129,8 @@ $(document).ready(
                         $('#id_name').next().text(data.detail.name[0]);
                     }
                     else if(prop === "host"){
-                        $('#id_host').parent().addClass("has-error");
-                        $('#id_host').next("span").text(data.detail.host[0]);
+                        $('#id_scanProject').parent().addClass("has-error");
+                        $('#id_scanProject').next("span").text(data.detail.host[0]);
                     }
                     else if(prop === "format"){
                         $('#id_format').parent().addClass("has-error");
@@ -146,8 +146,8 @@ $(document).ready(
                 // Remove error classes
                 $('#id_name').parent().removeClass("has-error");
                 $('#id_name').next("span").text('');
-                $('#id_host').parent().removeClass("has-error");
-                $('#id_host').next("span").text('');
+                $('#id_scanProject').parent().removeClass("has-error");
+                $('#id_scanProject').next("span").text('');
                 $('#id_format').parent().removeClass("has-error");
                 $('#id_format').next("span").text('');
                 // Disable Save button
@@ -163,7 +163,7 @@ $(document).ready(
     }),
 
     //
-    // Confirm delete service
+    // Confirm delete report
     //
     $("#confirmDelete").click(function () {
         // Get csrf_token
@@ -192,7 +192,7 @@ $(document).ready(
     }),
 
     //
-    // show delete service warning
+    // show delete report warning
     //
     $("#delete").click(function () {
         var data = $("#reporttable").bootstrapTable('getSelections');
@@ -369,7 +369,7 @@ function StatusFormater(value, row, index) {
 //
 function queryParams(params) {
     // params.advFilter = "projectID";
-    params.mode = MODE_HOST;
+    params.mode = MODE_PROJECT;
     return(params);
     // return {advFilter: 'projectID', advFilterValue: id};
 }

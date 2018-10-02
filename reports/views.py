@@ -11,7 +11,7 @@ from services.models import ServiceModel
 import tempfile
 from os import path
 from .ultil import ConvertHTMLToPDF
-from .forms import ReportForm
+from .forms import *
 
 
 class ReportHostView(TemplateView):
@@ -19,7 +19,7 @@ class ReportHostView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         sidebarHtml = RenderSideBar(request)
-        form = ReportForm()
+        form = ReportFormHost()
         context = {
             'form': form,
             'sidebar': sidebarHtml,
@@ -32,7 +32,9 @@ class ReportScanView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         sidebarHtml = RenderSideBar(request)
+        form = ReportFormScan()
         context = {
+            'form': form,
             'sidebar': sidebarHtml,
         }
         return render(request, self.template, context)
@@ -43,7 +45,9 @@ class ReportProjectView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         sidebarHtml = RenderSideBar(request)
+        form = ReportFormProject()
         context = {
+            'form': form,
             'sidebar': sidebarHtml,
         }
         return render(request, self.template, context)

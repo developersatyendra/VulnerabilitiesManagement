@@ -70,7 +70,7 @@ class ReportModel(models.Model):
     status = models.SmallIntegerField(verbose_name='Description of Vulnerability', choices=STATES,
                               default=STATE_REQUESTED, null=True, blank=True)
     # Format of File Report
-    format = models.SmallIntegerField(verbose_name="File format of report", choices=FORMAT, default=FORMAT_PDF, null=True, blank=True)
+    format = models.SmallIntegerField(verbose_name="File format of report", choices=FORMAT, default=FORMAT_PDF)
     host = models.ForeignKey(HostModel, on_delete=models.SET_NULL, null=True, blank=True)
     scanTask = models.ForeignKey(ScanTaskModel, on_delete=models.SET_NULL, null=True, blank=True)
     scanProject = models.ForeignKey(ScanProjectModel, on_delete=models.SET_NULL, null=True, blank=True)

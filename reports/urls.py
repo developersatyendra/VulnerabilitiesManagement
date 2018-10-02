@@ -12,5 +12,6 @@ urlpatterns = [
     path('api/getreportfile', apis.APIGetReportFile.as_view(), name='getReportFile'),
     path('api/getreportbyid', apis.APIGetReportByID.as_view(), name='getReportByID'),
     path('api/getreports', apis.APIGetReports.as_view(), name='getReports'),
-    path('api/addreport', apis.APIAddReport.as_view(), name='getReports'),
+    path('api/addreport', apis.APIAddReport.as_view(), name='addReport'),
+    path('api/deletereport', apis.APIDeleteReport.as_view(), name='deleteReports'),
 ]
