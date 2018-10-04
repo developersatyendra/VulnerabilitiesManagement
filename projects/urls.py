@@ -1,13 +1,16 @@
+from django.contrib.auth.decorators import login_required
+from django.conf import settings
 from django.urls import path
 from . import views
 from . import apis
 
+LOGIN_URL = getattr(settings, 'LOGIN_URL')
 app_name = 'projects'
 urlpatterns = [
-    path('', views.ProjectsView.as_view(), name='projects'),
-    path('<int:id>/', views.ProjectsDetailView.as_view(), name='projectdetail'),
-    path('<int:id>/detailed', views.ProjectsDetailView.as_view(), name='projectdetail'),
-    path('<int:id>/scantasks', views.ProjectsScanTaskView.as_view(), name='projectsscantaskview'),
+    path('', login_required(views.ProjectsView.as_view(), redirect_field_name=LOGIN_URL), name='projects'),
+    path('<int:id>/', login_required(views.ProjectsDetailView.as_view(), redirect_field_name=LOGIN_URL), name='projectdetail'),
+    path('<int:id>/detailed', login_required(views.ProjectsDetailView.as_view(), redirect_field_name=LOGIN_URL), name='projectdetail'),
+    path('<int:id>/scantasks', login_required(views.ProjectsScanTaskView.as_view(), redirect_field_name=LOGIN_URL), name='projectsscantaskview'),
 
     # APIs
     path('api/getprojectname', apis.APIGetProjectName.as_view(), name='getprojectname'),

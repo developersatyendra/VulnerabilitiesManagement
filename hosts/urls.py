@@ -1,15 +1,18 @@
+from django.contrib.auth.decorators import login_required
+from django.conf import settings
 from django.urls import path
 from . import views
 from . import apis
 
+LOGIN_URL = getattr(settings, 'LOGIN_URL')
 app_name = 'hosts'
 urlpatterns = [
-    path('', views.HostsView.as_view(), name='hosts'),
-    path('<int:id>/', views.HostDetailView.as_view(), name='hostDetail'),
-    path('<int:id>/detailed', views.HostDetailView.as_view(), name='hostDetail'),
-    path('<int:id>/scantask', views.HostScanTaskView.as_view(), name='hostDetail'),
-    path('<int:id>/currentvuln', views.HostCurrentVulnView.as_view(), name='hostDetail'),
-    path('<int:id>/runningservice', views.HostRunningServiceView.as_view(), name='hostrunningservice'),
+    path('', login_required(views.HostsView.as_view(), redirect_field_name=LOGIN_URL), name='hosts'),
+    path('<int:id>/', login_required(views.HostDetailView.as_view(), redirect_field_name=LOGIN_URL), name='hostDetail'),
+    path('<int:id>/detailed', login_required(views.HostDetailView.as_view(), redirect_field_name=LOGIN_URL), name='hostDetail'),
+    path('<int:id>/scantask', login_required(views.HostScanTaskView.as_view(), redirect_field_name=LOGIN_URL), name='hostDetail'),
+    path('<int:id>/currentvuln', login_required(views.HostCurrentVulnView.as_view(), redirect_field_name=LOGIN_URL), name='hostDetail'),
+    path('<int:id>/runningservice', login_required(views.HostRunningServiceView.as_view(), redirect_field_name=LOGIN_URL), name='hostrunningservice'),
 
     # APIs
     path('api/gethostname', apis.APIGetHostName.as_view(), name='APIgethostname'),

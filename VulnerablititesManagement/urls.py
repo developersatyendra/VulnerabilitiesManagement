@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+
 urlpatterns = [
     path('', include('dashboard.urls', namespace='index')),
     path('admin/', admin.site.urls),
@@ -29,6 +30,7 @@ urlpatterns = [
     path('reports/', include('reports.urls', namespace='reports')),
     path('submit/', include('submit.urls', namespace='submit')),
     path('settings/', include('settings.urls', namespace='settings')),
+    path('accounts/', include('accounts.urls', namespace='accounts')),
 ]
 
 if settings.DEBUG:

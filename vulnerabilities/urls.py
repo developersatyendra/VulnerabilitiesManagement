@@ -1,12 +1,15 @@
+from django.contrib.auth.decorators import login_required
+from django.conf import settings
 from django.urls import path
 from . import views, apis
 
+LOGIN_URL = getattr(settings, 'LOGIN_URL')
 app_name = 'vulnerabilities'
 urlpatterns = [
-    path('', views.VulnerabilitiesView.as_view(), name='vulnerabilities'),
-    path('<int:id>/', views.VulnerabilityDetailView.as_view(), name='vulnerabilityDetail'),
-    path('<int:id>/detailed', views.VulnerabilityDetailView.as_view(), name='vulnerabilityDetail'),
-    path('<int:id>/hostinvolved', views.HostInvolvedView.as_view(), name='hostInvoled'),
+    path('', login_required(views.VulnerabilitiesView.as_view(), redirect_field_name=LOGIN_URL), name='vulnerabilities'),
+    path('<int:id>/', login_required(views.VulnerabilityDetailView.as_view(), redirect_field_name=LOGIN_URL), name='vulnerabilityDetail'),
+    path('<int:id>/detailed', login_required(views.VulnerabilityDetailView.as_view(), redirect_field_name=LOGIN_URL), name='vulnerabilityDetail'),
+    path('<int:id>/hostinvolved', login_required(views.HostInvolvedView.as_view(), redirect_field_name=LOGIN_URL), name='hostInvoled'),
     
     # APIs
     path('api/getcurrenthostvuln', apis.APIGetCurrentHostVuln.as_view(), name='APIgetcurrenthostvuln'),

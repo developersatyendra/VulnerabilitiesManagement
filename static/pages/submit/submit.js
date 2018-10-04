@@ -18,7 +18,7 @@ $(document).ready(
                     valign: 'middle'
                 },
                 {
-                    title: "File Name",
+                    title: "Submit Name",
                     field: "fileSubmitted",
                     align: "center",
                     valign: "middle",
@@ -245,8 +245,13 @@ function FormattedDate(input) {
 
 // Get File name from path for bootstrap table
 function FilenameFormatter(value, row, index){
-    return value.replace(/^.*[\\\/]/, '');
-
+    try {
+        retval = value.replace(/^.*[\\\/]/, '');
+    }
+    catch (e) {
+        return '-';
+    }
+    return retval;
 }
 
 // Get file name from path

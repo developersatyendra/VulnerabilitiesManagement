@@ -1,12 +1,17 @@
+from django.contrib.auth.decorators import login_required
+from django.conf import settings
 from django.urls import path
 from . import views
 from . import apis
+
+
+LOGIN_URL = getattr(settings, 'LOGIN_URL')
 app_name = 'reports'
 urlpatterns = [
-    path('', views.ReportProjectView.as_view(), name='reports'),
-    path('hostreports', views.ReportHostView.as_view(), name='hostReport'),
-    path('scanreports', views.ReportScanView.as_view(), name='scanReport'),
-    path('projectreports', views.ReportProjectView.as_view(), name='projectReport'),
+    path('',  login_required(views.ReportProjectView.as_view(), redirect_field_name=LOGIN_URL), name='reports'),
+    path('hostreports', login_required(login_required(views.ReportHostView.as_view()),redirect_field_name=LOGIN_URL), name='hostReport'),
+    path('scanreports', login_required(views.ReportScanView.as_view(), redirect_field_name=LOGIN_URL), name='scanReport'),
+    path('projectreports', login_required(views.ReportProjectView.as_view(), redirect_field_name=LOGIN_URL), name='projectReport'),
 
     # APIs
     path('api/getreportfile', apis.APIGetReportFile.as_view(), name='getReportFile'),

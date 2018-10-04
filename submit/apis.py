@@ -6,7 +6,7 @@ from .serializers import SubmitSerializer
 from .forms import SubmitAddForm, SubmitIDForm
 from rest_framework.parsers import MultiPartParser, FormParser, FileUploadParser
 from django.db.utils import IntegrityError
-
+from wsgiref.util import FileWrapper
 import tempfile
 import zipfile
 from os import path
@@ -326,3 +326,19 @@ def ProcessFoundStoneXML(hostdata, riskdata, submitQueueElement):
     submitObj.status = "Processed"
     submitObj.save()
     return scantaskObj
+
+
+class APIGetSubmitFile(APIView):
+
+    def get(self, request):
+        submitID = request.GET.get('id', None)
+        if submitID:
+            try:
+                submit = SubmitModel.objects.get(pk=submitID)
+            except SubmitModel.DoesNotExist:
+                return Response({'status': -1, 'message': 'Report does not exist'})
+            submitFile = open(submit.fileSubmitted.path, 'rb')
+            response = HttpResponse(FileWrapper(submitFile), content_type='application/zip')
+            response['Content-Disposition'] = 'attachment; filename="{}"'.format(submit.fileSubmitted.name + '.zip')
+            return response
+        return Response({'status': -1, 'message': " Report not found"})

@@ -203,7 +203,7 @@ def PDFHostReport(report):
         return retval
     else:
         # Assign file path of report
-        report.fileReport.save(reportPath, ContentFile(retval['object']))
+        report.fileReport.save(report.name+'.pdf', ContentFile(retval['object']))
         report.save()
     return {'status': 0, 'object': report}
 
@@ -343,7 +343,7 @@ def PDFScanReport(report):
         return retval
     else:
         # Assign file path of report
-        report.fileReport.save(reportPath, ContentFile(retval['object']))
+        report.fileReport.save(report.name+'.pdf', ContentFile(retval['object']))
         report.save()
     return {'status': 0, 'object': report}
 
@@ -498,6 +498,6 @@ def PDFProjectReport(report):
         return retval
     else:
         # Assign file path of report
-        report.fileReport.save(reportPath, ContentFile(retval['object']))
+        report.fileReport.save(report.name+'.pdf', ContentFile(retval['object']))
         report.save()
     return {'status': 0, 'object': report}

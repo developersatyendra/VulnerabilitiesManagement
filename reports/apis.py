@@ -210,7 +210,6 @@ class APIGetReportFile(APIView):
 
     def get(self, request):
         reportID = request.GET.get('id', None)
-        print(reportID)
         if reportID:
             try:
                 report = ReportModel.objects.get(pk=reportID)
@@ -226,11 +225,11 @@ class APIGetReportFile(APIView):
                 response['Content-Disposition'] = 'attachment; filename="{}"'.format(report.name + '.html')
                 return response
             elif report.format == ReportModel.FORMAT_XML:
-                response = HttpResponse(FileWrapper(reportFile), content_type='text/xml')
+                response = HttpResponse(FileWrapper(reportFile), content_type='application/xml')
                 response['Content-Disposition'] = 'attachment; filename="{}"'.format(report.name + '.xml')
                 return response
             elif report.format == ReportModel.FORMAT_XLS:
-                response = HttpResponse(FileWrapper(reportFile), content_type='application/xls')
+                response = HttpResponse(FileWrapper(reportFile), content_type='application/vnd.ms-excel')
                 response['Content-Disposition'] = 'attachment; filename="{}"'.format(report.name + '.xls')
                 return response
-        return Response({'status': 1, 'message': " Report not found"})
+        return Response({'status': -1, 'message': " Report not found"})

@@ -1,14 +1,17 @@
+from django.contrib.auth.decorators import login_required
+from django.conf import settings
 from django.urls import path
 from . import views
 from . import apis
 
+LOGIN_URL = getattr(settings, 'LOGIN_URL')
 app_name='services'
 urlpatterns = [
-    path('', views.ServicesView.as_view(), name='services'),
-    path('<int:id>/', views.ServiceDetailView.as_view(), name='serviceDetail'),
-    path('<int:id>/detailed', views.ServiceDetailView.as_view(), name='serviceDetail'),
-    path('<int:id>/relevantvuln', views.ServiceRelevantVulnView.as_view(), name='serviceRelevantVulnDetail'),
-    path('<int:id>/runningonhost', views.ServiceRunOnHostView.as_view(), name='serviceRunningOnHost'),
+    path('', login_required(views.ServicesView.as_view(), redirect_field_name=LOGIN_URL), name='services'),
+    path('<int:id>/', login_required(views.ServiceDetailView.as_view(), redirect_field_name=LOGIN_URL), name='serviceDetail'),
+    path('<int:id>/detailed', login_required(views.ServiceDetailView.as_view(), redirect_field_name=LOGIN_URL), name='serviceDetail'),
+    path('<int:id>/relevantvuln', login_required(views.ServiceRelevantVulnView.as_view(), redirect_field_name=LOGIN_URL), name='serviceRelevantVulnDetail'),
+    path('<int:id>/runningonhost', login_required(views.ServiceRunOnHostView.as_view(), redirect_field_name=LOGIN_URL), name='serviceRunningOnHost'),
 
     # APIs
     path('api/getservices', apis.APIGetServices.as_view(), name='APIgetservices'),

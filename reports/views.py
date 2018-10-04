@@ -14,6 +14,7 @@ from .ultil import ConvertHTMLToPDF
 from .forms import *
 
 
+
 class ReportHostView(TemplateView):
     template = 'reports/report_host.html'
 

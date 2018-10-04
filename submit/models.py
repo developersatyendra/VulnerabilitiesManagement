@@ -4,9 +4,11 @@ from django.contrib.auth.models import User
 from projects.models import ScanProjectModel
 from django.utils.deconstruct import deconstructible
 from django.core.validators import FileExtensionValidator
+from django.core.files.storage import FileSystemStorage
+from django.conf import settings
 
 STATUS = ['uploaded', 'processing', 'processed', 'duplicated', 'error']
-
+SUBMIT_STORAGE = getattr(settings, 'PATH_IMPORTED_FILES')
 
 # @deconstructible
 # class ValidateValueInArray(object):
@@ -39,9 +41,7 @@ class SubmitModel(models.Model):
         (STATE_ERROR, "Error")
     )
 
-
-    fileSubmitted = models.FileField(verbose_name='File attachment', null=False, blank=False, validators=[FileExtensionValidator(allowed_extensions=['zip'])],
-                                      upload_to='submits/%Y/%m/%d/',)
+    fileSubmitted = models.FileField(verbose_name='File attachment', null=False, blank=False, validators=[FileExtensionValidator(allowed_extensions=['zip'])], storage=SUBMIT_STORAGE)
     description = models.CharField(verbose_name='Description of Vulnerability', max_length=1024, blank=True)
     project = models.ForeignKey(to=ScanProjectModel, on_delete=models.CASCADE)
     scanTask = models.ForeignKey(to=ScanTaskModel, on_delete=models.CASCADE, blank=True, null=True)

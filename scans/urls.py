@@ -1,13 +1,16 @@
+from django.contrib.auth.decorators import login_required
+from django.conf import settings
 from django.urls import path
 from . import views
 from . import apis
 
+LOGIN_URL = getattr(settings, 'LOGIN_URL')
 app_name='scans'
 urlpatterns = [
-    path('', views.ScansView.as_view(), name='scans'),
-    path('<int:id>/', views.ScansDetailView.as_view(), name='scanDetail'),
-    path('<int:id>/detailed', views.ScansDetailView.as_view(), name='scanDetail'),
-    path('<int:id>/hostscanned', views.ScanHostsView.as_view(), name='scanHostsview'),
+    path('', login_required(views.ScansView.as_view(), redirect_field_name=LOGIN_URL), name='scans'),
+    path('<int:id>/', login_required(views.ScansDetailView.as_view(), redirect_field_name=LOGIN_URL), name='scanDetail'),
+    path('<int:id>/detailed', login_required(views.ScansDetailView.as_view(), redirect_field_name=LOGIN_URL), name='scanDetail'),
+    path('<int:id>/hostscanned', login_required(views.ScanHostsView.as_view(), redirect_field_name=LOGIN_URL), name='scanHostsview'),
 
     # APIs
     path('api/getscanname', apis.APIGetScanName.as_view(), name='APIgetscanname'),

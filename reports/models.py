@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from hosts.models import HostModel
 from scans.models import ScanTaskModel
 from projects.models import ScanProjectModel
+from django.core.files.storage import FileSystemStorage
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -10,7 +12,7 @@ from django.utils.deconstruct import deconstructible
 
 FORMAT_REPORT = ['PDF', 'XML', 'XLS', 'HTML']
 STATUS = ['uploaded', 'processing', 'processed', 'duplicated', 'error']
-
+REPORT_STORAGE = FileSystemStorage(location=getattr(settings, 'PATH_GEN_REPORT'))
 
 # @deconstructible
 # class ValidateValueInArray(object):
@@ -66,7 +68,7 @@ class ReportModel(models.Model):
     name = models.CharField(verbose_name='Name of Report', max_length=64, unique=True)
     createBy = models.ForeignKey(User, on_delete=models.CASCADE, blank=True)
     mode = models.SmallIntegerField(verbose_name="Mode of report", choices=MODE, default=MODE_HOST)
-    fileReport = models.FileField(verbose_name='File report', blank=True, null=True)
+    fileReport = models.FileField(verbose_name='File report', blank=True, null=True, storage=REPORT_STORAGE)
     status = models.SmallIntegerField(verbose_name='Description of Vulnerability', choices=STATES,
                               default=STATE_REQUESTED, null=True, blank=True)
     # Format of File Report

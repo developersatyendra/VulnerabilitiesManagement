@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'reports.apps.ReportsConfig',
     'submit.apps.SubmitConfig',
     'settings.apps.SettingsConfig',
+    'accounts.apps.AccountsConfig'
 ]
 
 MIDDLEWARE = [
@@ -65,6 +66,13 @@ ROOT_URLCONF = 'VulnerablititesManagement.urls'
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
     )
 }
 
@@ -120,7 +128,9 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/accounts/login'
+LOGIN_URL = '/accounts/login'
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
@@ -144,12 +154,18 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
+FILE_DATA_ROOT = os.path.join(BASE_DIR, 'files_data')
 #################################################
 # Celery Broker
 CELERY_BROKER_URL = 'amqp://localhost'
 
+#################################################
+# Path to scan attachments
+PATH_ATTACHMENT = os.path.join(FILE_DATA_ROOT, 'scan_attachment')
 
+#################################################
+# Path to scan attachments
+PATH_IMPORTED_FILES = os.path.join(FILE_DATA_ROOT, 'imported_file')
 
 #################################################
 # Risk Level Definition
@@ -168,7 +184,7 @@ LEVEL_INFO = 0
 # REPORT configurations
 
 # Path to save Generated reports
-PATH_GEN_REPORT = os.path.join(MEDIA_ROOT, 'reports')
+PATH_GEN_REPORT = os.path.join(FILE_DATA_ROOT, 'generated_report')
 PATH_WKHTMLTOPDF = r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
 
 REPORT_CSS = [
