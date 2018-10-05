@@ -22,6 +22,7 @@ import dateutil.parser as DateParser
 from django.contrib.auth.models import User
 from .models import SubmitModel
 from .tasks import ProcessSubmitFileTask
+from django.http import HttpResponse
 
 
 PAGE_DEFAULT = 1
@@ -337,8 +338,11 @@ class APIGetSubmitFile(APIView):
                 submit = SubmitModel.objects.get(pk=submitID)
             except SubmitModel.DoesNotExist:
                 return Response({'status': -1, 'message': 'Report does not exist'})
-            submitFile = open(submit.fileSubmitted.path, 'rb')
+            try:
+                submitFile = open(submit.fileSubmitted.path, 'rb')
+            except FileNotFoundError:
+                return Response({'status': -1, 'message': "File not found"})
             response = HttpResponse(FileWrapper(submitFile), content_type='application/zip')
             response['Content-Disposition'] = 'attachment; filename="{}"'.format(submit.fileSubmitted.name + '.zip')
             return response
-        return Response({'status': -1, 'message': " Report not found"})
+        return Response({'status': -1, 'message': "Report not found"})

@@ -8,7 +8,7 @@ from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 
 STATUS = ['uploaded', 'processing', 'processed', 'duplicated', 'error']
-SUBMIT_STORAGE = getattr(settings, 'PATH_IMPORTED_FILES')
+SUBMIT_STORAGE = FileSystemStorage(getattr(settings, 'PATH_IMPORTED_FILES'))
 
 # @deconstructible
 # class ValidateValueInArray(object):

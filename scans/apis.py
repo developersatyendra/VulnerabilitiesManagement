@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from django.core.paginator import Paginator
 from django.db.models import Q, Count
 from django.contrib.auth.models import User
+from .ultil import GetScansVuln
 from .models import ScanTaskModel
 from .serializers import ScanSerializer, ScanAttachmentSerializer, ScanVulnSerializer
 from .forms import ScanIDForm, ScanAttachmentForm, ScanAddForm
@@ -60,110 +61,69 @@ class APIGetScanName(APIView):
 #   dayRange: range of day to filter
 
 class APIGetScansVuln(APIView):
+
     def get(self, request):
-        scanTask = ScanTaskModel.objects.all()
+        params = dict()
+        projectID = request.GET.getlist("projectID", None)
+        hostID = request.GET.getlist("hostID", None)
+        serviceID = request.GET.getlist("serviceID", None)
+        vulnID = request.GET.getlist("vulnID", None)
+        searchText = request.GET.get('searchText', None)
+        sortOrder = request.GET.get('sortOrder')
+        sortName = request.GET.get('sortName')
 
-        ######################################################
-        # Adv Filter
-        #
-        # Filter by project
-        if request.GET.get('projectID'):
-            try:
-                projectID = int(request.GET.get('projectID'))
-            except ValueError:
-                return Response({'status': -1, 'message': "projectID is not integer"})
-            scanTask = scanTask.filter(scanProject=projectID)
+        if projectID:
+            params['projectID'] = projectID
 
-        # Filter by host
-        if request.GET.get('hostID'):
-            try:
-                hostID = int(request.GET.get('hostID'))
-            except ValueError:
-                return Response({'status': -1, 'message': "hostID is not integer"})
-            scanTask = scanTask.filter(ScanInfoScanTask__hostScanned__id=hostID)
+        if hostID:
+            params['hostID'] = hostID
 
-        # Filter by vuln
-        if request.GET.get('vulnID'):
-            try:
-                vulnID = int(request.GET.get('vulnID'))
-            except ValueError:
-                return Response({'status': -1, 'message': "vulnID is not integer"})
-            scanTask = scanTask.filter(ScanInfoScanTask__vulnFound__id=vulnID)
+        if serviceID:
+            params['serviceID'] = serviceID
 
-        scanTask =  scanTask.annotate(
-                high=Count('ScanInfoScanTask__vulnFound', filter=Q(ScanInfoScanTask__vulnFound__levelRisk__gte=LEVEL_HIGH), distinct=True),
-                med=Count('ScanInfoScanTask__vulnFound', filter=(Q(ScanInfoScanTask__vulnFound__levelRisk__gte=LEVEL_MED) & Q(ScanInfoScanTask__vulnFound__levelRisk__lt=LEVEL_HIGH)), distinct=True),
-                low=Count('ScanInfoScanTask__vulnFound', filter=Q(ScanInfoScanTask__vulnFound__levelRisk__gt=LEVEL_INFO) & Q(ScanInfoScanTask__vulnFound__levelRisk__lt=LEVEL_MED), distinct=True),
-                info=Count('ScanInfoScanTask__vulnFound', filter=Q(ScanInfoScanTask__vulnFound__levelRisk=LEVEL_INFO), distinct=True),
-                numHost=Count('ScanInfoScanTask', distinct=True))
+        if vulnID:
+            params['vulID'] = vulnID
 
-        ######################################################
-        # Filter by day range
-        #
-        if request.GET.get('dayRange'):
-            try:
-                dayRange = int(request.GET.get('dayRange'))
-            except ValueError:
-                return Response({'status': -1, 'message': "dayRange is not integer"})
-            filterDate = (datetime.now() - timedelta(days=dayRange)).date()
-            scanTask = scanTask.filter(startTime__gte=filterDate)
-        ######################################################
-        # Filter by search keyword
-        #
-        if request.GET.get('searchText'):
-            search = request.GET.get('searchText')
-            query = Q(name__icontains=search) | \
-                    Q(startTime__icontains=search) | \
-                    Q(endTime__icontains=search)
-            scanTask = scanTask.filter(query)
+        if searchText:
+            params['searchText'] = searchText
 
-        # Set filter to get distinct entry only
-        scanTask = scanTask.distinct()
+        if sortOrder:
+            params['sortOrder'] = sortOrder
 
-        # Get number of object
-        numObject = scanTask.count()
+        if sortName:
+            params['sortName'] = sortName
 
-        # Get sort order
-        if request.GET.get('sortOrder') == 'asc':
-            sortString = ''
-        else:
-            sortString = '-'
-
-        # Get sort filed
-        if request.GET.get('sortName'):
-            sortString = sortString + request.GET.get('sortName')
-            sortString = sortString.replace('.', '__')
-            sortString = [sortString]
-        else:
-            sortString = ['-high', '-med', '-low', '-info', 'name']
-
-        scanTask = scanTask.order_by(*sortString)
-
-        # Get Page Number
-        if request.GET.get('pageNumber'):
-            try:
-                page = int(request.GET.get('pageNumber'))
-            except ValueError:
+        retval = GetScansVuln(**params)
+        if retval['status'] == 0:
+            if request.GET.get('pageNumber'):
+                try:
+                    page = int(request.GET.get('pageNumber'))
+                except TypeError:
+                    page = PAGE_DEFAULT
+            else:
                 page = PAGE_DEFAULT
-        else:
-            page = PAGE_DEFAULT
 
-        # Get Page Size
-        if request.GET.get('pageSize'):
-            numEntry = request.GET.get('pageSize')
-            # IF Page size is 'ALL'
-            if numEntry.lower() == 'all' or numEntry == -1:
-                numEntry = numObject
+            # Get Page Size
+            if request.GET.get('pageSize'):
+                try:
+                    numEntry = int(request.GET.get('pageSize'))
+                except TypeError:
+                    numEntry = NUM_ENTRY_DEFAULT
+                # IF Page size is 'ALL'
+                if str(numEntry).lower() == 'all' or numEntry == -1:
+                    numEntry = retval['total']
+            else:
+                numEntry = NUM_ENTRY_DEFAULT
+            querySetPaged = Paginator(retval['object'], numEntry)
+            dataPaged = querySetPaged.get_page(page)
+            dataSerialized = ScanVulnSerializer(dataPaged, many=True)
+            object = {
+                'total': retval['total'],
+                'rows': dataSerialized.data
+            }
+            return Response({'status': 0, 'object': object})
         else:
-            numEntry = NUM_ENTRY_DEFAULT
-        querySetPaged = Paginator(scanTask, int(numEntry))
-        dataPaged = querySetPaged.get_page(page)
-        dataSerialized = ScanVulnSerializer(dataPaged, many=True)
-        data = dict()
-        data["total"] = numObject
-        data['rows'] = dataSerialized.data
-        return Response({'status': 0, 'object': data})
-
+            return Response(retval)
 
 ######################################################
 #   APIGetScans get scan task from these params:
@@ -403,7 +363,7 @@ class APIGetScanAttachment(APIView):
             id = request.GET.get('id')
             try:
                 retService = ScanTaskModel.objects.get(pk=id)
-            except ValueError:
+            except TypeError:
                 return Response({'status': '-1', 'message': 'Value error',
                                  'detail': {"id": [{"message": "ID is not integer", "code": "value error"}]}})
             except ScanTaskModel.DoesNotExist:

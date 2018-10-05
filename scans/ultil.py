@@ -37,34 +37,45 @@ def GetScansVuln(*args, **kwargs):
     #
     # Filter by project
     if 'projectID' in kwargs:
-        try:
-            projectID = int(kwargs.get('projectID'))
-        except ValueError:
+        projectID = kwargs.get('projectID')
+        if isinstance(projectID, int):
+            scanTask = scanTask.filter(scanProject=projectID)
+        elif isinstance(projectID, list):
+            try:
+                scanTask = scanTask.filter(scanProject__in=projectID)
+            except TypeError:
+                return {'status': -1, 'message': "projectID is not integer"}
+        else:
             return {'status': -1, 'message': "projectID is not integer"}
-        scanTask = scanTask.filter(scanProject=projectID)
 
     # Filter by host
     if 'hostID' in kwargs:
-        try:
-            hostID = int(kwargs.get('hostID'))
-        except ValueError:
+        hostID = kwargs.get('hostID')
+        if isinstance(hostID, int):
+            scanTask = scanTask.filter(ScanInfoScanTask__hostScanned=hostID)
+        elif isinstance(hostID, list):
+            try:
+                scanTask = scanTask.filter(ScanInfoScanTask__hostScanned__in=hostID)
+            except TypeError:
+                return {'status': -1, 'message': "hostID is not integer"}
+        else:
             return {'status': -1, 'message': "hostID is not integer"}
-        scanTask = scanTask.filter(ScanInfoScanTask__hostScanned__id=hostID)
 
     # Filter by vuln
     if 'vulnID' in kwargs:
-        try:
-            vulnID = int(kwargs.get('vulnID'))
-        except ValueError:
+        vulnID = kwargs.get('vulnID')
+        if isinstance(vulnID, int):
+            scanTask = scanTask.filter(ScanInfoScanTask__vulnFound__id=vulnID)
+        elif isinstance(vulnID, list):
+            try:
+                scanTask = scanTask.filter(ScanInfoScanTask__vulnFound__id__in=vulnID)
+            except TypeError:
+                return {'status': -1, 'message': "vulnID is not integer"}
+        else:
             return {'status': -1, 'message': "vulnID is not integer"}
-        scanTask = scanTask.filter(ScanInfoScanTask__vulnFound__id=vulnID)
 
-    scanTask =  scanTask.annotate(
-            # high=Count('ScanInfoScanTask__vulnFound', filter=Q(ScanInfoScanTask__vulnFound__levelRisk__gte=LEVEL_HIGH), distinct=True),
-            # med=Count('ScanInfoScanTask__vulnFound', filter=(Q(ScanInfoScanTask__vulnFound__levelRisk__gte=LEVEL_MED) & Q(ScanInfoScanTask__vulnFound__levelRisk__lt=LEVEL_HIGH)), distinct=True),
-            # low=Count('ScanInfoScanTask__vulnFound', filter=Q(ScanInfoScanTask__vulnFound__levelRisk__gt=LEVEL_INFO) & Q(ScanInfoScanTask__vulnFound__levelRisk__lt=LEVEL_MED), distinct=True),
-            # info=Count('ScanInfoScanTask__vulnFound', filter=Q(ScanInfoScanTask__vulnFound__levelRisk=LEVEL_INFO), distinct=True),
-            # numHost=Count('ScanInfoScanTask', distinct=True))
+
+    scanTask = scanTask.annotate(
         high = Count('ScanInfoScanTask__vulnFound', filter=Q(ScanInfoScanTask__vulnFound__levelRisk__gte=LEVEL_HIGH)),
         med = Count('ScanInfoScanTask__vulnFound', filter=(Q(ScanInfoScanTask__vulnFound__levelRisk__gte=LEVEL_MED) & Q(
             ScanInfoScanTask__vulnFound__levelRisk__lt=LEVEL_HIGH))),
@@ -141,4 +152,4 @@ def GetScansVuln(*args, **kwargs):
     # data = dict()
     # data["total"] = numObject
     # data['rows'] = dataSerialized.data
-    return {'status': 0, 'object': scanTask}
+    return {'status': 0, 'object': scanTask, 'total':numObject}

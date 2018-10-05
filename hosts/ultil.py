@@ -5,6 +5,7 @@ from django.db.models import Q, Count, F
 from rest_framework.response import Response
 
 
+
 PAGE_DEFAULT = 1
 NUM_ENTRY_DEFAULT = 50
 
@@ -31,6 +32,7 @@ LEVEL_INFO = 0
 #   serviceID: Service to be used to filter
 
 def GetHostsVuln(*args, **kwargs):
+    print(kwargs)
     hostQuery = HostModel.objects.all()
 
     ######################################################
@@ -38,35 +40,57 @@ def GetHostsVuln(*args, **kwargs):
 
     # Filter by serviceID
     if 'serviceID' in kwargs:
-        try:
-            serviceID = int(kwargs.get('serviceID'))
-        except ValueError:
+        serviceID = kwargs.get('serviceID')
+        if isinstance(serviceID, int):
+            hostQuery.filter(services=serviceID)
+        elif isinstance(serviceID, list):
+            try:
+                hostQuery.filter(services__in=serviceID)
+            except TypeError:
+                return {'status': -1, 'message': "serviceID is not integer"}
+        else:
             return{'status': -1, 'message': "serviceID is not integer"}
-        hostQuery = hostQuery.filter(services=serviceID)
 
     # Filter by vulnID
     if 'vulnID' in kwargs:
-        try:
-            vulnID = int(kwargs.get('vulnID'))
-        except ValueError:
+        vulnID = kwargs.get('vulnID')
+        if isinstance(vulnID, int):
+            hostQuery = hostQuery.filter(ScanInfoHost__vulnFound=vulnID)
+        elif isinstance(vulnID, list):
+            try:
+                hostQuery = hostQuery.filter(ScanInfoHost__vulnFound__in=vulnID)
+            except TypeError:
+                return {'status': -1, 'message': "vulnID is not integer"}
+        else:
             return{'status': -1, 'message': "vulnID is not integer"}
-        hostQuery = hostQuery.filter(ScanInfoHost__vulnFound=vulnID)
+
 
     # Filter by scanTask
     if 'scanID' in kwargs:
-        try:
-            scanID = int(kwargs.get('scanID'))
-        except ValueError:
+        scanID = kwargs.get('scanID')
+        if isinstance(scanID, int):
+            hostQuery = hostQuery.filter(ScanInfoHost__scanTask=scanID)
+        elif isinstance(scanID, list):
+            try:
+                hostQuery = hostQuery.filter(ScanInfoHost__scanTask__in=scanID)
+            except TypeError:
+                return {'status': -1, 'message': "scanID is not integer"}
+        else:
             return{'status': -1, 'message': "scanID is not integer"}
-        hostQuery = hostQuery.filter(ScanInfoHost__scanTask__id=scanID)
+
 
     # Filter by project
     if 'projectID' in kwargs:
-        try:
-            projectID = int(kwargs.get('projectID'))
-        except ValueError:
+        projectID = kwargs.get('projectID')
+        if isinstance(projectID, int):
+            hostQuery = hostQuery.filter(ScanInfoHost__scanTask__scanProject=projectID)
+        elif isinstance(projectID, list):
+            try:
+                hostQuery = hostQuery.filter(ScanInfoHost__scanTask__scanProject__in=projectID)
+            except TypeError:
+                return {'status': -1, 'message': "projectID is not integer"}
+        else:
             return{'status': -1, 'message': "projectID is not integer"}
-        hostQuery = hostQuery.filter(ScanInfoHost__scanTask__scanProject__id=projectID)
 
     hostQuery = hostQuery.distinct()
     hostQuery = hostQuery.annotate(
@@ -130,4 +154,4 @@ def GetHostsVuln(*args, **kwargs):
     # data = dict()
     # data["total"] = numObject
     # data['rows'] = dataSerialized.data
-    return {'status': 0, 'object':querySet}
+    return {'status': 0, 'object':querySet, 'total':numObject}
