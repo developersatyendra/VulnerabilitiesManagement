@@ -54,6 +54,13 @@ $(document).ready(
                     align: "center",
                     valign: "middle",
                     sortable: true
+                },
+                {
+                    title: "Submit File",
+                    align: "center",
+                    valign: "middle",
+                    formatter: DownloadFormater,
+                    sortable: false
                 }
 
                 // {
@@ -76,6 +83,26 @@ $(document).ready(
             search: true,
         })
 
+    }),
+    //////////////////////////////////////////
+    // Detect changes on Select row to enable or disable Delete/ Edit button
+    //
+    $("#submittable").change(function () {
+        var data = $("#submittable").bootstrapTable('getSelections');
+        var editBtn = $("#edit");
+        var delBtn = $("#delete");
+        if(data.length!=1){
+            editBtn.addClass("disabled");
+        }
+        else{
+            editBtn.removeClass("disabled");
+        }
+        if(data.length==0 ){
+            delBtn.addClass("disabled");
+        }
+        else{
+            delBtn.removeClass("disabled");
+        }
     }),
 
     //
@@ -159,8 +186,7 @@ $(document).ready(
     //
     $("#confirmDelete").click(function () {
         // Get csrf_token
-        var csrf_token = $('meta[name="csrf-token"]').attr('content');
-
+        var csrf_token = $('input[name=csrfmiddlewaretoken]').val();
         // Create array contains submit ids
         var dataTable = $("#submittable").bootstrapTable('getSelections');
             var ids = new Array();
@@ -170,6 +196,7 @@ $(document).ready(
         // Create array
         var data = [];
         data.push({name: "id", value: ids});
+        console.log(data);
         data.push({name: "csrfmiddlewaretoken", value: csrf_token});
         $.post('./api/deletesubmit', $.param(data),
              function(returnedData){
@@ -197,10 +224,10 @@ $(document).ready(
         var data = $("#submittable").bootstrapTable('getSelections');
         if(data.length > 0){
             if(data.length == 1){
-                $('#msgOnDelete').text("Are you sure to delete " + data.length + " selected service?");
+                $('#msgOnDelete').text("Are you sure to delete " + data.length + " selected submit file?");
             }
             else{
-                $('#msgOnDelete').text("Are you sure to delete " + data.length + " selected services?");
+                $('#msgOnDelete').text("Are you sure to delete " + data.length + " selected submit files?");
             }
             $('#warningOnDelete').modal('show')
         }
@@ -312,4 +339,11 @@ function ajaxRequest(params) {
             params.error(er);
         }
     });
+}
+
+//////////////////////////////////////////
+// Download formater
+//
+function DownloadFormater(value, row, index) {
+    return '<a href="/submit/api/getsubmitfile?id=' + row.id + '"><i class="fa fa-download fa-fw"></i> Download</a>';
 }

@@ -273,7 +273,7 @@ class APIAddScan(APIView):
         scanAddForm = ScanAddForm(request.POST)
         if scanAddForm.is_valid():
             scanObj = scanAddForm.save(commit=False)
-            scanObj.scanBy = User.objects.get(pk=1)
+            scanObj.scanBy = User.objects.get(username=request.user)
             scanObj.submitter = User.objects.get(pk=1)
             # scanObj.fileAttachment = request.FILES['fileAttachment']
             scanObj.save()

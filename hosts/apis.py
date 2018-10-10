@@ -358,7 +358,7 @@ class APIAddHost(APIView):
         hostForm = HostForm(request.POST)
         if hostForm.is_valid():
             entry = hostForm.save(commit=False)
-            entry.createBy = User.objects.get(pk=1)
+            entry.createBy = User.objects.get(username=request.user)
             entry.save()
             dataSerialized = HostSerializer(entry, many=False)
             return Response({'status': '0', 'object': dataSerialized.data})

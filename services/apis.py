@@ -131,7 +131,7 @@ class APIAddService(APIView):
         serviceForm = ServiceForm(request.POST)
         if serviceForm.is_valid():
             entry = serviceForm.save(commit=False)
-            entry.createBy = User.objects.get(pk=1)
+            entry.createBy = User.objects.get(username=request.user)
             entry.save()
             dataSerialized = ServiceSerializer(entry, many=False)
             return Response({'status': '0', 'object': dataSerialized.data})

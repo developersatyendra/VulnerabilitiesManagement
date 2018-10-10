@@ -122,8 +122,8 @@ class APIAddSubmit(APIView):
         submitForm = SubmitAddForm(request.POST, request.FILES)
         if submitForm.is_valid():
             submitObj = submitForm.save(commit=False)
-            submitObj.submitter = User.objects.get(pk=1)
-            submitObj.status = 'Uploaded'
+            submitObj.submitter = User.objects.get(username=request.user)
+            submitObj.status = SubmitModel.STATE_UPLOADED
             submitObj.save()
             ProcessSubmitFileTask.delay(id=submitObj.id, overwrite=False)
             dataSerialized = SubmitSerializer(submitObj, many=False)
@@ -141,10 +141,9 @@ class APIAddSubmit(APIView):
 class APIDeleteSubmit(APIView):
 
     def post(self, request):
-        submitForm = SubmitIDForm(request.POST)
-        if submitForm.is_valid():
+        if request.POST.get('id'):
             successOnDelete = 0
-            for rawID in submitForm.data['id'].split(','):
+            for rawID in request.POST.get('id').split(','):
                 try:
                     id = int(rawID)
                 except ValueError:
@@ -152,7 +151,7 @@ class APIDeleteSubmit(APIView):
                 else:
                     try:
                         retVuln = SubmitModel.objects.get(pk=id)
-                    except ServiceModel.DoesNotExist:
+                    except SubmitModel.DoesNotExist:
                         pass
                     else:
                         try:
@@ -168,7 +167,7 @@ class APIDeleteSubmit(APIView):
                 return Response(
                             {'status': '0', 'message': '{} submit files are successfully deleted.'.format(successOnDelete), 'numDeleted': successOnDelete})
         else:
-            return Response({'status': '-1', 'message': 'Form is invalid', 'detail': {submitForm.errors}})
+            return Response({'status': '-1', 'message': 'IDs are required'})
 
 
 #
@@ -177,26 +176,29 @@ class APIDeleteSubmit(APIView):
 
 def ProcessFoundStoneZipXML(submitQueueElement):
 
-    # Change Status tu Processing
-    submitQueueElement.submitObj.status = 'Processing'
+    # Change Status to Processing
+    submitQueueElement.submitObj.status = SubmitModel.STATE_PROCESSING
     submitQueueElement.submitObj.save()
 
     # extract zipped file
     try:
         zipFile = zipfile.ZipFile(submitQueueElement.submitObj.fileSubmitted.path, 'r')
     except OSError:
-        submitQueueElement.submitObj.status = 'Error - Zip file not found'
+        submitQueueElement.submitObj.status = SubmitModel.STATE_ERROR
+        print("[!] Error - Zip file not found")
         submitQueueElement.submitObj.save()
         return -1
     except zipfile.BadZipFile:
-        submitQueueElement.submitObj.status = 'Submit is not Zip File'
+        submitQueueElement.submitObj.status = SubmitModel.STATE_ERROR
+        print("[!] Error - Submit is not Zip File")
         submitQueueElement.submitObj.save()
         return -1
     tempdir = tempfile.mkdtemp()
     try:
         zipFile.extractall(tempdir)
     except zipfile.BadZipFile:
-        submitQueueElement.submitObj.status = 'Error - Extract error'
+        submitQueueElement.submitObj.status = SubmitModel.STATE_ERROR
+        print("[!] Error - Extract error")
         submitQueueElement.submitObj.save()
         return -1
     zipFile.close()
@@ -220,11 +222,13 @@ def ProcessFoundStoneXML(hostdata, riskdata, submitQueueElement):
         xmltreeHostData = XMLTree.parse(hostdata)
         xmltreeRiskData = XMLTree.parse(riskdata)
     except OSError:
-        submitObj.status = 'Error - XML files not found'
+        submitObj.status = SubmitModel.STATE_ERROR
+        print("[!] Error - XML files not found")
         submitObj.save()
         return -1
     except XMLTree.ParseError:
-        submitObj.status = 'Error - XML parsed error'
+        submitObj.status = SubmitModel.STATE_ERROR
+        print("[!] Error - XML parsed error")
         submitObj.save()
         return -1
     rootHostData = xmltreeHostData.getroot()
@@ -235,7 +239,7 @@ def ProcessFoundStoneXML(hostdata, riskdata, submitQueueElement):
     scantaskObj.name = rootHostData[1].attrib['ScanName']
     scantaskObj.startTime = DateParser.parse(rootHostData[1].attrib['StartTime'])
     scantaskObj.endTime = DateParser.parse(rootHostData[1].attrib['EndTime'])
-    scantaskObj.submitter = User.objects.get(pk=1)
+    scantaskObj.submitter = User.objects.get(pk=userID)
     scantaskObj.scanProject = ScanProjectModel.objects.get(pk=projectID)
     scantaskObj.scanBy = User.objects.get(pk=userID)
     try:
@@ -248,7 +252,7 @@ def ProcessFoundStoneXML(hostdata, riskdata, submitQueueElement):
             scanTaskConflict.delete()
             scantaskObj.save()
         else:
-            submitObj.status = "Duplicated"
+            submitObj.status = SubmitModel.STATE_DUPLICATED
             submitObj.save()
             return -1
 
@@ -324,7 +328,7 @@ def ProcessFoundStoneXML(hostdata, riskdata, submitQueueElement):
 
             scanInfo.vulnFound.add(vulnObj)
         scanInfo.save()
-    submitObj.status = "Processed"
+    submitObj.status = SubmitModel.STATE_PROCESSED
     submitObj.save()
     return scantaskObj
 

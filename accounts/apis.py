@@ -4,10 +4,9 @@ from rest_framework.response import Response
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.contrib.auth.models import User
-from .models import ScanProjectModel
-from .serializers import ProjectSerializer
-from .forms import ProjectForm, ProjectIDForm
-
+from .forms import CustomChangePasswordForm
+from django.contrib.auth import update_session_auth_hash
+from .serializers import UserSerializer
 
 PAGE_DEFAULT = 1
 NUM_ENTRY_DEFAULT = 50
@@ -17,18 +16,25 @@ NUM_ENTRY_DEFAULT = 50
 #   APIGetProjectName get Name of Project from id
 #
 
-class APIGetProjectName(APIView):
+class APIChangeMyPassword(APIView):
+    def post(self, request):
+        form = CustomChangePasswordForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important!
+            return Response({'status': '0', 'message': 'Your password was successfully updated!'})
+        else:
+            return Response({'status': '-1', 'message': 'Form is invalid', 'detail': form.errors})
+
+
+######################################################
+#   APIGetProjectName get Name of Project from id
+#
+
+class APIGetMyAccount(APIView):
     def get(self, request):
-        try:
-            id = int(request.GET.get('id'))
-        except (ValueError, TypeError):
-            return Response({'status': '-1', 'message': 'Value error',
-                             'detail': {"id": [{"message": "ID is not integer", "code": "value error"}]}})
-        try:
-            name = ScanProjectModel.objects.get(pk=id).name
-        except ScanProjectModel.DoesNotExist:
-            return Response({'status': '-1', 'message': 'Project does not exist'})
-        return Response({'status': 0, 'object':name})
+        object = UserSerializer(User.objects.get(username=request.user))
+        return Response({'status': '0', 'object': object.data})
 
 
 ######################################################

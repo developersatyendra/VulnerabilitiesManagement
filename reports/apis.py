@@ -159,7 +159,7 @@ class APIAddReport(APIView):
                 return Response({'status': '-1', 'message': 'Form is invalid', 'detail': error})
             if reportForm.is_valid():
                 reportObj = reportForm.save(commit=False)
-                reportObj.createBy = User.objects.get(pk=1)
+                reportObj.createBy = User.objects.get(username=request.user)
                 reportObj.status = ReportModel.STATE_REQUESTED
                 reportObj.save()
                 ProcessGenerateReportTask.delay(report=reportObj)

@@ -9,3 +9,11 @@ class SettingsView(TemplateView):
         context = {'sidebar': sidebarHtml}
         return render(request, 'dashboard.html', context)
 
+
+class MyAccountView(TemplateView):
+    template = 'settings/settings_myaccount.html'
+
+    def get(self, request, *args, **kwargs):
+        sidebarHtml = RenderSideBar(request)
+        context = {'sidebar': sidebarHtml}
+        return render(request, self.template, context)

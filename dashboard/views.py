@@ -33,16 +33,22 @@ class SidebarBtn(object):
 def RenderSideBar(request):
     sidebar = [
         SidebarBtn(False, ' Dashboard', reverse_lazy('dashboard:dashboard'), 'fa fa-dashboard fa-fw'),
-        SidebarBtn(False, ' Scan', reverse_lazy('scans:scans'), 'fa fa-search fa-fw', [
-            SidebarBtn(False, ' Scan Projects', reverse_lazy('projects:projects'), 'fa fa-clipboard'),
-            SidebarBtn(False, ' Scan Tasks', reverse_lazy('scans:scans'), 'fa fa-tasks fa-fw'),
+        SidebarBtn(False, ' Scan', None, 'fa fa-search fa-fw', [
+            SidebarBtn(False, ' Scan Projects', reverse_lazy('projects:projects'), 'fa fa-clipboard fa-fw'),
+            SidebarBtn(False, ' Scan Tasks', reverse_lazy('scans:scans'), 'fa fa-search fa-fw'),
         ]),
         SidebarBtn(False, ' Vulnerabilities', reverse_lazy('vulnerabilities:vulnerabilities'), 'fa fa-exclamation-triangle fa-fw'),
         SidebarBtn(False, ' Hosts', reverse_lazy('hosts:hosts'), 'fa fa-desktop fa-fw'),
         SidebarBtn(False, ' Services', reverse_lazy('services:services'), 'fa fa-cogs fa-fw'),
-        SidebarBtn(False, ' Reports', reverse_lazy('reports:reports'), 'fa fa-file-pdf-o fa-fw'),
+        SidebarBtn(False, ' Reports', None, 'fa fa-file-pdf-o fa-fw',[
+            SidebarBtn(False, ' Project Reports', reverse_lazy('reports:projectReport'), 'fa fa-clipboard fa-fw'),
+            SidebarBtn(False, ' Scan Reports', reverse_lazy('reports:scanReport'), 'fa fa-search fa-fw'),
+            SidebarBtn(False, ' Host Reports', reverse_lazy('reports:hostReport'), 'fa fa-desktop fa-fw'),
+        ]),
         SidebarBtn(False, ' Submit', reverse_lazy('submit:submit'), 'fa fa-upload fa-fw'),
-        SidebarBtn(False, ' Settings', reverse_lazy('settings:settings'), 'fa fa-sliders fa-fw'),
+        SidebarBtn(False, ' Settings', reverse_lazy('settings:settings'), 'fa fa-sliders fa-fw',[
+            SidebarBtn(False, ' My Account', reverse_lazy('settings:MyAccount'), 'fa fa-user fa-fw'),
+        ]),
     ]
     sidebarHtml = ''
 
