@@ -79,17 +79,25 @@
                         <!-- /.panel-heading -->
                         <div class="panel-body" >
                             <div id="toolbar">
+                            {% if perms.hosts %}
                                 <div class="dropdown">
                                     <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
                                         <i class="fa fa-gear fa-fw"></i>Actions
                                         <span class="caret"></span>
                                     </button>
                                     <ul class="dropdown-menu">
-                                        <li id="add"><a href="#" data-toggle="modal" data-target="#addHostModal"><i class="fa fa-plus fa-fw"></i> Add Host</a></li>
-                                        <li id="edit" class="disabled"><a href="#" ><i class="fa fa-pencil fa-fw"></i> Edit Host</a></li>
-                                        <li id="delete" class="disabled"><a href="#" ><i class="fa fa-trash-o fa-fw"></i> Delete Hosts</a></li>
+                                        {% if perms.add_hostmodel %}
+                                            <li id="add"><a href="#" data-toggle="modal" data-target="#addHostModal"><i class="fa fa-plus fa-fw"></i> Add Host</a></li>
+                                        {% endif %}
+                                        {% if perms.change_hostmodel %}
+                                            <li id="edit" class="disabled"><a href="#" ><i class="fa fa-pencil fa-fw"></i> Edit Host</a></li>
+                                        {% endif %}
+                                        {% if perms.delete_hostmodel %}
+                                            <li id="delete" class="disabled"><a href="#" ><i class="fa fa-trash-o fa-fw"></i> Delete Hosts</a></li>
+                                        {% endif %}
                                     </ul>
                                 </div>
+                            {% endif %}
                             </div>
                             <table id="hosttable" data-toolbar="#toolbar"></table>
                             <!-- /.table-responsive -->

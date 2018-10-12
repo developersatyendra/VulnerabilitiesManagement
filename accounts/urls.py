@@ -10,4 +10,5 @@ urlpatterns = [
     # APIs
     path('api/getmyaccount', APIGetMyAccount.as_view(), name='GetMyAccount'),
     path('api/changemypassword', APIChangeMyPassword.as_view(), name='ChangeMyPassword'),
+    path('api/updatemyaccount', APIUpdateMyAccount.as_view(), name='UpdateMyAccount')
 ]

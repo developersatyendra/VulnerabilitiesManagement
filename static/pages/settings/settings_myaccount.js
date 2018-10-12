@@ -1,10 +1,6 @@
-var apiurl = "/projects/api/getprojectbyid?id=";
 
 //////////////////////////////////////////////////
-var url = window.location.pathname;
-var id = url.split("/")[url.split("/").length -2];
-//////////////////////////////////////////////////
-var geturl = apiurl.concat(id);
+var geturl = '/accounts/api/getmyaccount';
 
 //////////////////////////////////////////////////
 var flagDataStored = false;
@@ -87,15 +83,15 @@ $(document).ready(
     //////////////////////////////////////////
     // POST update
     //
-    $("#editProjectPostForm").submit(function(e){
-        $.post("/projects/api/updateproject", $(this).serialize(), function(data){
+    $("#editMyAccountPostForm").submit(function(e){
+        $.post("/accounts/api/updatemyaccount", $(this).serialize(), function(data){
             if(data.status != 0){
                 $("#titleInfo").text("Error");
                 $("#msgInfo").text("Error: "+data.message+'. '+ data.detail.name[0]);
             }
             else{
                 $("#titleInfo").text("About");
-                $("#msgInfo").text("The project is updated.");
+                $("#msgInfo").text("Your account information is updated.");
                 SetReadonly(true);
             }
             $("#infoModal").modal("show");
@@ -115,7 +111,7 @@ $(document).ready(
     $("#id_description").on("input", function () {
         $("#saveInfoBtn").attr('disabled', false);
     }),
-    $('#editProjectPostForm').change(function () {
+    $('#editMyAccountPostForm').change(function () {
         $("#saveInfoBtn").attr('disabled', false);
     }),
 );
@@ -133,16 +129,12 @@ function FillInfo(input) {
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (data) {
-                // Fill breadcrumb
-                $('#brProject').text(data.object.name);
-
                 //  Fill in form
-                $('#id_name').val(data.object.name);
-                $('#id_id').val(data.object.id);
-                $('#id_createBy').val(data.object.username);
-                $("#id_dateCreated").val(FormattedDate(data.object.dateCreated));
-                $("#id_dateUpdate").val(FormattedDate(data.object.dateUpdate));
-                $("#id_description").val(data.object.description);
+                $('#id_username').val(data.object.username);
+                $('#id_date_joined').val(FormattedDate(data.object.date_joined));
+                $('#id_first_name').val(data.object.first_name);
+                $("#id_last_name").val(data.object.last_name);
+                $("#id_email").val(data.object.email);
                 deferred.resolve(data);
             }
         });
@@ -152,12 +144,11 @@ function FillInfo(input) {
         $('#brScan').text(input.object.name);
 
         //  Fill in form
-        $('#id_name').val(input.object.name);
-        $('#id_id').val(input.object.id);
-        $('#id_createBy').val(input.object.username);
-        $("#id_dateCreated").val(FormattedDate(input.object.dateCreated));
-        $("#id_dateUpdate").val(FormattedDate(input.object.dateUpdate));
-        $("#id_description").val(input.object.description);
+        $('#id_username').val(input.object.username);
+        $('#id_date_joined').val(FormattedDate(input.object.date_joined));
+        $('#id_first_name').val(input.object.first_name);
+        $("#id_last_name").val(input.object.last_name);
+        $("#id_email").val(input.object.email);
         deferred.resolve(input);
     }
     return deferred.promise();
@@ -171,16 +162,16 @@ function SetReadonly(Enable) {
     if(Enable){
         $("#saveInfoBtn").attr('disabled', true);
 
-        $('#id_name').attr("readonly","readonly");
-        $('#id_id').attr("readonly","readonly");
-        $("#id_description").attr("readonly","readonly");
-        $("#projectInfoBtn").addClass("hidden");
+        $('#id_first_name').attr("readonly","readonly");
+        $('#id_last_name').attr("readonly","readonly");
+        $("#id_email").attr("readonly","readonly");
+        $("#myAccountInfoBtn").addClass("hidden");
     }
     else{
-        $('#id_name').removeAttr("readonly");
-        $('#id_id').removeAttr("readonly");
-        $("#id_description").removeAttr("readonly");
-        $("#projectInfoBtn").removeClass("hidden");
+        $('#id_first_name').removeAttr("readonly");
+        $('#id_last_name').removeAttr("readonly");
+        $("#id_email").removeAttr("readonly");
+        $("#myAccountInfoBtn").removeClass("hidden");
     }
 }
 

@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView
 from dashboard.views import RenderSideBar
+from accounts.forms import AccountInfoForm, CustomChangePasswordForm
+from django.contrib.auth.models import User
 
 
 class SettingsView(TemplateView):
@@ -15,5 +17,7 @@ class MyAccountView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         sidebarHtml = RenderSideBar(request)
-        context = {'sidebar': sidebarHtml}
+        form = AccountInfoForm()
+        formChangePassword = CustomChangePasswordForm(User.objects.get(username=request.user))
+        context = {'sidebar': sidebarHtml, 'form': form, 'formChangePassword':formChangePassword}
         return render(request, self.template, context)

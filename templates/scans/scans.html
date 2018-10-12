@@ -83,17 +83,25 @@
                         <!-- /.panel-heading -->
                         <div class="panel-body" >
                             <div id="toolbar">
+                                {% if perms.scans %}
                                 <div class="dropdown">
                                     <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
                                         <i class="fa fa-gear fa-fw"></i>Actions
                                         <span class="caret"></span>
                                     </button>
                                     <ul class="dropdown-menu">
-                                        <li id="add"><a href="#" data-toggle="modal" data-target="#addScanModal"><i class="fa fa-plus fa-fw"></i> Add Task</a></li>
-                                        <li id="edit" class="disabled"><a href="#" ><i class="fa fa-pencil fa-fw"></i> Edit Task</a></li>
-                                        <li id="delete" class="disabled"><a href="#" ><i class="fa fa-trash-o fa-fw"></i> Delete Tasks</a></li>
+                                        {% if perms.scans.add_scantaskmodel %}
+                                        <li id="add"><a href="#" data-toggle="modal" data-target="#addScanModal"><i class="fa fa-plus fa-fw"></i> Add Scan Task</a></li>
+                                        {% endif %}
+                                        {% if perms.scans.change_scantaskmodel %}
+                                        <li id="edit" class="disabled"><a href="#" ><i class="fa fa-pencil fa-fw"></i> Edit Scan Task</a></li>
+                                        {% endif %}
+                                        {% if perms.scans.delete_scantaskmodel %}
+                                        <li id="delete" class="disabled"><a href="#" ><i class="fa fa-trash-o fa-fw"></i> Delete Scan Tasks</a></li>
+                                        {% endif %}
                                     </ul>
                                 </div>
+                                {% endif %}
                             </div>
                             <table id="scanstable" data-toolbar="#toolbar"></table>
                             <!-- /.table-responsive -->

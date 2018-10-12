@@ -60,9 +60,11 @@
                         </div>
                         <div class="panel-body">
                             <div id="toolbar">
-                              <button id="delete" class="btn btn-danger disabled">
+                                {% if perms.submit.delete_submitmodel %}
+                                <button id="delete" class="btn btn-danger disabled">
                                 <i class="fa fa-trash-o"></i> Delete
-                              </button>
+                                </button>
+                                {% endif %}
                             </div>
                             <table id="submittable" data-toolbar="#toolbar" data-show-export="true"></table>
                         </div>
@@ -73,6 +75,7 @@
                 <!-- /.col-lg-12 -->
             </div>
             <!-- /.row -->
+            {% if perms.submit.add_submitmodel %}
             <div class="row">
                 <div class="col-lg-12">
                     <div class="panel panel-default">
@@ -129,6 +132,7 @@
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
+            {% endif %}
             <!-- /.row -->
             <!-- Modal Warning on Deleting Services -->
             <div class="modal" id="warningOnDelete" tabindex="-1" role="dialog">

@@ -88,6 +88,7 @@
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <i class="fa fa-info-circle fa-info fa-fw" aria-hidden="true"></i> Scan Task Information
+                            {% if perms.scans %}
                             <div class="pull-right">
                                 <div class="dropdown">
                                     <button class="btn btn-default dropdown-toggle btn-xs" type="button" data-toggle="dropdown">
@@ -95,11 +96,16 @@
                                         <span class="caret"></span>
                                     </button>
                                     <ul class="dropdown-menu pull-right">
-                                        <li id="edit"><a href="#" ><i class="fa fa-pencil fa-fw"></i> Edit Vulnerability</a></li>
-                                        <li id="delete"><a href="#" ><i class="fa fa-trash-o fa-fw"></i> Delete Vulnerability</a></li>
+                                        {% if perms.scans.change_scantaskmodel %}
+                                        <li id="edit"><a href="#" ><i class="fa fa-pencil fa-fw"></i> Edit Scan Task</a></li>
+                                        {% endif %}
+                                        {% if perms.scans.delete_scantaskmodel %}
+                                        <li id="delete"><a href="#" ><i class="fa fa-trash-o fa-fw"></i> Delete Scan Task</a></li>
+                                        {% endif %}
                                     </ul>
                                 </div>
                             </div>
+                            {% endif %}
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body" >
@@ -198,6 +204,7 @@
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <i class="fa fa-paperclip fa-fw" aria-hidden="true"></i> Scan Task Attachment
+                            {% if perms.scans %}
                             <div class="pull-right">
                                 <div class="dropdown">
                                     <button class="btn btn-default dropdown-toggle btn-xs" type="button" data-toggle="dropdown">
@@ -205,11 +212,16 @@
                                         <span class="caret"></span>
                                     </button>
                                     <ul class="dropdown-menu pull-right">
+                                        {% if perms.scans.change_scantaskmodel %}
                                         <li id="editAtt"><a href="#" ><i class="fa fa-pencil fa-fw"></i> Edit Attachment</a></li>
+                                        {% endif %}
+                                        {% if perms.scans.delete_scantaskmodel %}
                                         <li id="deleteAtt"><a href="#" ><i class="fa fa-trash-o fa-fw"></i> Delete Attachment</a></li>
+                                        {% endif %}
                                     </ul>
                                 </div>
                             </div>
+                            {% endif %}
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body" >

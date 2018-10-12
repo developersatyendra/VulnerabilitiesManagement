@@ -78,39 +78,6 @@ $(document).ready(
     }),
 
     //
-    // Edit service
-    //,
-    // $("#editServicePostForm").submit(function(e){
-    //     var data = $('#editServicePostForm').serializeArray();
-    //     data.push({name: "id", value: rowIDSelected});
-    //     data = $.param(data);
-    //     $.post("./api/updateservice", data, function(data){
-    //         var notification = $("#retMsgEdit");
-    //         var closebtn = '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>';
-    //         notification.removeClass("hidden");
-    //         if(data.status != 0){
-    //             notification.html("Error: "+data.message + '. '+data.detail.__all__[0]);
-    //             notification.removeClass("alert-info");
-    //             notification.addClass("alert-danger");
-    //         }
-    //         else{
-    //             notification.html("The service is edited.");
-    //             notification.removeClass("alert-danger");
-    //             notification.addClass("alert-info");
-    //
-    //             // Disable Save button
-    //             $("#saveEditBtn").attr('disabled', true);
-    //         }
-    //         notification.append(closebtn);
-    //         $("#servicetable").bootstrapTable('refresh');
-    //     });
-    //     e.preventDefault();
-    // }),
-    // $("#editServiceModal").on("hidden.bs.modal", function () {
-    //     $("#retMsgEdit").addClass("hidden");
-    // }),
-
-    //
     // Add New Report
     //
     $("#addReportPostForm").submit(function(e){
