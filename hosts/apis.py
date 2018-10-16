@@ -9,6 +9,9 @@ from rest_framework.views import APIView
 from django.core.paginator import Paginator
 from django.db.models import Q, Count, F
 from rest_framework.response import Response
+from rest_framework.permissions import DjangoModelPermissions, IsAdminUser
+
+
 
 PAGE_DEFAULT = 1
 NUM_ENTRY_DEFAULT = 50
@@ -29,6 +32,7 @@ LEVEL_INFO = 0
 #
 
 class APIGetHostName(APIView):
+    permission_classes = (IsAdminUser,)
     def get(self, request):
         if request.GET.get('id'):
             try:
@@ -58,7 +62,6 @@ class APIGetHostName(APIView):
 #   serviceID: Service to be used to filter
 
 class APIGetHostsVuln(APIView):
-
     def get(self, request):
         params = dict()
         projectID = request.GET.getlist("projectID", None)

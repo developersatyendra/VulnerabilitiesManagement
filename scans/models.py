@@ -27,6 +27,11 @@ class ScanTaskModel(models.Model):
     def __str__(self):
         return self.name
 
+    def clean(self):
+        from django.core.exceptions import ValidationError
+        if self.startTime > self.endTime:
+            raise ValidationError('Start time cannot precede end time')
+
 
 class ScanInfoModel(models.Model):
     hostScanned = models.ForeignKey(to=HostModel, on_delete=models.CASCADE, related_name="ScanInfoHost")

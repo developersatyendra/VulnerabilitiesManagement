@@ -2,34 +2,37 @@
 
 {% block css %}
     {% load staticfiles %}
-    <title>Scans management - Hosts</title>
+    <title>Scans management - Settings - Account Management</title>
 
     <!-- Bootstrap Core CSS -->
-    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css'%}" rel="stylesheet">
 
     <!-- MetisMenu CSS -->
-    <link href="{% static 'vendor/metisMenu/metisMenu.min.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/metisMenu/metisMenu.min.css'%}" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="{% static 'dist/css/sb-admin-2.css' %}" rel="stylesheet">
+    <link href="{% static 'dist/css/sb-admin-2.css'%}" rel="stylesheet">
 
     <!-- Morris Charts CSS -->
-    <link href="{% static 'vendor/morrisjs/morris.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/morrisjs/morris.css'%}" rel="stylesheet">
 
     <!-- DataTables CSS -->
-    <link href="{% static 'vendor/datatables-plugins/datatables.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/datatables-plugins/dataTables.css' %}" rel="stylesheet">
 
     <!-- DataTables Responsive CSS -->
-    <link href=" {% static 'vendor/datatables-responsive/dataTables.responsive.css' %}" rel="stylesheet">
+    <link href=" {% static 'vendor/datatables-responsive/dataTables.responsive.css'%}" rel="stylesheet">
 
     <!--Datatable-checkboxes-->
-    <link href="{% static  'vendor/datatables-plugins/DataTables-checkboxes/css/dataTables.checkboxes.css' %}" rel="stylesheet">
+    <link href="{% static  'vendor/datatables-plugins/DataTables-checkboxes/css/dataTables.checkboxes.css'%}" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="{% static 'vendor/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
 
     <!--Bootstrap-table-->
     <link href="{% static 'vendor/bootstrap-table/css/bootstrap-table.min.css' %}" rel="stylesheet" type="text/css">
+
+    <!--Bootstrap-datepicker -->
+    <link href="{% static 'vendor/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 
 {% block sidebar %}
@@ -59,7 +62,7 @@
     <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">Hosts</h1>
+                    <h1 class="page-header">Settings</h1>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
@@ -68,38 +71,41 @@
                 <div class="col-lg-12">
                     <ul class="breadcrumb">
                         <li><a href="/">Home</a></li>
-                        <li class="active">Hosts</li>
+                        <li><a href="#">Settings</a></li>
+                        <li class="active">Account Management</li>
                     </ul>
+                </div>
+                <div class="col-lg-12">
+                    <div class="divnav">
+                        <ul class="nav nav-tabs">
+                            <li><a href="/settings/myaccount"><i class="fa fa-user fa-fw"></i> My Account</a></li>
+                            <li class="active"><a href="#"><i class="fa fa-users fa-fw"></i> Account Management</a></li>
+                        </ul>
+                    </div>
                 </div>
                <div class="col-lg-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <i class="fa fa-table fa-fw" aria-hidden="true"></i> Host Data Table
+                            <i class="fa fa-table fa-fw" aria-hidden="true"></i>
+                            Account Data Table
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body" >
                             <div id="toolbar">
-                            {% if perms.hosts %}
                                 <div class="dropdown">
                                     <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
                                         <i class="fa fa-gear fa-fw"></i>Actions
                                         <span class="caret"></span>
                                     </button>
                                     <ul class="dropdown-menu">
-                                        {% if perms.hosts.add_hostmodel %}
-                                            <li id="add"><a href="#" data-toggle="modal" data-target="#addHostModal"><i class="fa fa-plus fa-fw"></i> Add Host</a></li>
-                                        {% endif %}
-                                        {% if perms.hosts.change_hostmodel %}
-                                            <li id="edit" class="disabled"><a href="#" ><i class="fa fa-pencil fa-fw"></i> Edit Host</a></li>
-                                        {% endif %}
-                                        {% if perms.hosts.delete_hostmodel %}
-                                            <li id="delete" class="disabled"><a href="#" ><i class="fa fa-trash-o fa-fw"></i> Delete Hosts</a></li>
-                                        {% endif %}
+                                        <li id="add"><a href="#" data-toggle="modal" data-target="#addUserModal"><i class="fa fa-plus fa-fw"></i> Add Account</a></li>
+                                        <li id="edit" class="disabled"><a href="#" ><i class="fa fa-pencil fa-fw"></i> Edit Account</a></li>
+{#                                        <li id="delete" class="disabled"><a href="#" ><i class="fa fa-lock fa-fw"></i> Disable Account</a></li>#}
+                                        <li id="reset" class="disabled"><a href="#" ><i class="fa fa-refresh fa-fw"></i> Reset Password</a></li>
                                     </ul>
                                 </div>
-                            {% endif %}
                             </div>
-                            <table id="hosttable" data-toolbar="#toolbar"></table>
+                            <table id="datatable" data-toolbar="#toolbar"></table>
                             <!-- /.table-responsive -->
                         </div>
                         <!-- /.panel-body -->
@@ -109,20 +115,22 @@
             </div>
             <!-- /.row -->
 
-            <!-- Modal AddHost -->
-            <div class="modal fade" id="addHostModal">
+            <!-- Modal Add User -->
+            <div class="modal fade" id="addUserModal">
                 <div class="modal-dialog">
                     <div class="modal-content">
-                        <form method="post" id="addHostPostForm">
+                        <form enctype="multipart/form-data" method="post" id="addUserPostForm">
+
                             {% csrf_token %}
                             <!-- Modal Header -->
                             <div class="modal-header">
-                              <h4 class="modal-title">Add New Host</h4>
+                              <h4 class="modal-title">Add New Account</h4>
                               <button type="button" class="close" data-dismiss="modal">&times;</button>
                             </div>
 
                             <!-- Modal body -->
                             <div class="modal-body">
+
                                 <div class="row">
                                     <div class="col-lg-12">
                                         <div class="alert alert-danger alert-dismissable hidden" id="retMsgAdd">
@@ -130,38 +138,70 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-12">
                                         <div class="form-group">
-                                            <label>Hostname*</label>
-                                            {{ form.hostName }}
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="form-group">
-                                            <label>IP Address*</label>
-                                            {{ form.ipAddr }}
+                                            <label>Username *</label>
+                                            {{ addUserForm.username}}
+                                            <span class="help-block"></span>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-lg-6">
                                         <div class="form-group">
-                                            <label>OS Name</label>
-                                            {{ form.osName }}
+                                            <label>First Name</label>
+                                            {{ addUserForm.first_name }}
+                                            <span class="help-block"></span>
                                         </div>
                                     </div>
                                     <div class="col-lg-6">
                                         <div class="form-group">
-                                            <label>OS Version</label>
-                                            {{ form.osVersion }}
+                                            <label>Last Name</label>
+                                            {{ addUserForm.last_name }}
+                                            <span class="help-block"></span>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-lg-12">
                                         <div class="form-group">
-                                            <label>Descriptions</label>
-                                            {{ form.description }}
+                                            <label>Email</label>
+                                            {{ addUserForm.email}}
+                                            <span class="help-block"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <label>Password *</label>
+                                            {{ addUserForm.password1}}
+                                            <span class="help-block"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <label>Confirm Password *</label>
+                                            {{ addUserForm.password2}}
+                                            <span class="help-block"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label>Permission</label>
+                                            {{ addUserForm.permission }}
+                                            <span class="help-block"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label>Status</label>
+                                            {{ addUserForm.isActive }}
+                                            <span class="help-block"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -176,20 +216,22 @@
                     </div>
                 </div>
             </div>
-            <!-- Modal EditHost -->
-            <div class="modal fade" id="editHostModal">
+            <!-- Modal Edit User -->
+            <div class="modal fade" id="editUserModal">
                 <div class="modal-dialog">
                     <div class="modal-content">
-                        <form method="post" id="editHostPostForm">
+                        <form enctype="multipart/form-data" method="post" id="editUserPostForm">
+
                             {% csrf_token %}
                             <!-- Modal Header -->
                             <div class="modal-header">
-                              <h4 class="modal-title">Edit Host</h4>
+                              <h4 class="modal-title">Add New Account</h4>
                               <button type="button" class="close" data-dismiss="modal">&times;</button>
                             </div>
 
                             <!-- Modal body -->
                             <div class="modal-body">
+
                                 <div class="row">
                                     <div class="col-lg-12">
                                         <div class="alert alert-danger alert-dismissable hidden" id="retMsgEdit">
@@ -197,38 +239,46 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-12">
                                         <div class="form-group">
-                                            <label>Hostname*</label>
-                                            {{ formEdit.hostName }}
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="form-group">
-                                            <label>IP Address*</label>
-                                            {{ formEdit.ipAddr }}
+                                            <label>Username *</label>
+                                            {{ editUserForm.username}}
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-lg-6">
                                         <div class="form-group">
-                                            <label>OS Name</label>
-                                            {{ formEdit.osName }}
+                                            <label>First Name</label>
+                                            {{ editUserForm.first_name }}
                                         </div>
                                     </div>
                                     <div class="col-lg-6">
                                         <div class="form-group">
-                                            <label>OS Version</label>
-                                            {{ formEdit.osVersion }}
+                                            <label>Last Name</label>
+                                            {{ editUserForm.last_name }}
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-lg-12">
                                         <div class="form-group">
-                                            <label>Descriptions</label>
-                                            {{ formEdit.description }}
+                                            <label>Email</label>
+                                            {{ editUserForm.email}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label>Permission</label>
+                                            {{ editUserForm.permission }}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label>Status</label>
+                                            {{ editUserForm.isActive }}
                                         </div>
                                     </div>
                                 </div>
@@ -243,7 +293,64 @@
                     </div>
                 </div>
             </div>
-            <!-- Modal Warning on Deleting Hosts -->
+            <!-- Modal Reset Password -->
+            <div class="modal fade" id="resetPasswordModal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form enctype="multipart/form-data" method="post" id="resetPasswordPostForm">
+
+                            {% csrf_token %}
+                            <!-- Modal Header -->
+                            <div class="modal-header">
+                              <h4 class="modal-title">Reset Password</h4>
+                              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+
+                            <!-- Modal body -->
+                            <div class="modal-body">
+
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="alert alert-danger alert-dismissable hidden" id="retMsgReset">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <label>Username *</label>
+                                            <input type="text" class="form-control"  id="id_username_reset" readonly="readonly">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <label>Password *</label>
+                                            {{ resetPasswordForm.password1}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <label>Confirm Password *</label>
+                                            {{ resetPasswordForm.password2}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Modal footer -->
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary" id="saveResetBtn" disabled>Reset</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal Warning on Deleting Services -->
             <div class="modal" id="warningOnDelete" tabindex="-1" role="dialog">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -289,28 +396,34 @@
 
 {% block js %}
     <!-- jQuery -->
-    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'vendor/jquery/jquery.min.js'%}"></script>
 
     <!-- Bootstrap Core JavaScript -->
-    <script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.min.js'%}"></script>
+
+    <!-- Moment -->
+    <script src="{% static 'vendor/moment/moment.js'%}"></script>
 
     <!-- Metis Menu Plugin JavaScript -->
-    <script src="{% static 'vendor/metisMenu/metisMenu.min.js' %}"></script>
+    <script src="{% static 'vendor/metisMenu/metisMenu.min.js'%}"></script>
 
     <!-- DataTables JavaScript -->
     <script src="{% static 'vendor/datatables/js/jquery.dataTables.min.js' %}"></script>
-    <script src="{% static  'vendor/datatables/js/dataTables.bootstrap.min.js' %}"></script>
+    <script src="{% static  'vendor/datatables/js/dataTables.bootstrap.min.js'%}"></script>
     <script src="{% static 'vendor/datatables-responsive/dataTables.responsive.js' %}"></script>
     <script src="{% static 'vendor/datatables-plugins/DataTables-checkboxes/js/dataTables.checkboxes.js' %}"></script>
 
     <!-- Custom Theme JavaScript -->
-    <script src="{% static 'dist/js/sb-admin-2.js' %}"></script>
+    <script src="{% static 'dist/js/sb-admin-2.js'%}"></script>
 
     <!-- Bootstrap-table JavaScript -->
-    <script src="{% static 'vendor/bootstrap-table/js/bootstrap-table.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap-table/js/bootstrap-table.min.js'%}"></script>
 
-    <!-- Host JavaScript -->
-    <script src="{% static 'pages/hosts/hosts.js' %}"></script>
+    <!-- Bootstrap-datetimepicker JavaScript -->
+    <script src="{% static 'vendor/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js'%}"></script>
+
+    <!-- Scan JavaScript -->
+    <script src="{% static 'pages/settings/settings_accountmanagement.js' %}"></script>
 
 {% endblock %}
 

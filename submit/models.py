@@ -49,3 +49,9 @@ class SubmitModel(models.Model):
     status = models.SmallIntegerField(verbose_name='Status of Submitted File', choices=STATES, default=STATE_UPLOADED, blank=True, null=True)
     dateCreated = models.DateTimeField(auto_now_add=True)
     dateUpdated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.fileSubmitted.name
+
+    def __unicode__(self):
+        return self.fileSubmitted.name

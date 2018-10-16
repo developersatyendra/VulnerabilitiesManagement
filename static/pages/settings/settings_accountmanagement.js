@@ -1,10 +1,13 @@
 var rowIDSelected = null;
+const PERMS_VIEWONLY = 0;
+const PERMS_SUBMITTER = 1;
+const PERMS_MANAGER = 2;
 $(document).ready(
     //////////////////////////////////////////
     // Decleare scan tasks table
     //
     $(function () {
-        $("#scanstable").bootstrapTable({
+        $("#datatable").bootstrapTable({
             columns:[
                 {
                     field: 'state',
@@ -13,50 +16,65 @@ $(document).ready(
                     valign: 'middle'
                 },
                 {
-                    title: "Scan Task",
-                    field: "name",
+                    title: "Username",
+                    field: "username",
                     align: "center",
                     valign: "middle",
-                    formatter: HrefFormater,
                     sortable: true
                 },
                 {
-                    title: "Is Processed",
-                    field: "isProcessed",
+                    title: "First Name",
+                    field: "first_name",
+                    align: "center",
+                    valign: "middle",
+                    sortable: true
+                },
+                {
+                    title: "Last Name",
+                    field: "last_name",
+                    align: "center",
+                    valign: "middle",
+                    sortable: true
+                },
+
+                {
+                    title: "Email",
+                    field: "email",
+                    align: "center",
+                    valign: "middle",
+                    sortable: true
+                },
+                {
+                    title: "Date Joined",
+                    field: "date_joined",
+                    align: "center",
+                    valign: "middle",
+                    formatter: FormattedDate,
+                    sortable: true
+                },
+                {
+                    title: "Active",
+                    field: "is_active",
                     align: "center",
                     valign: "middle",
                     formatter: BooleanFormatter,
                     sortable: true
                 },
                 {
-                    title: "Start Time",
-                    field: "startTime",
+                    title: "Super User",
+                    field: "is_superuser",
                     align: "center",
                     valign: "middle",
-                    formatter: FormattedDate,
+                    formatter: BooleanFormatter,
                     sortable: true
                 },
                 {
-                    title: "Finished Time",
-                    field: "endTime",
+                    title: "Permission",
+                    field: "permissionLevel",
                     align: "center",
                     valign: "middle",
-                    formatter: FormattedDate,
+                    formatter: PermissionFormatter,
                     sortable: true
-                },
-                {
-                    title: "Scan Project",
-                    field: "scanProject.name",
-                    align: "center",
-                    valign: "middle",
-                    sortable: true
-                },
-                {
-                  title: "Description",
-                  field: "description",
-                  align: "center",
-                  valign: "middle",
-                  sortable: true
                 }
             ],
             ajax: ajaxRequest,
@@ -71,43 +89,60 @@ $(document).ready(
     }),
 
     //////////////////////////////////////////
-    // Initial datetime picker
-    //
-    $('#dpStartTime').datetimepicker({
-        format: 'MM/DD/YYYY hh:mm:ss A',
-        sideBySide: true
-        }),
-    $('#dpEndTime').datetimepicker({
-        format: 'MM/DD/YYYY hh:mm:ss A',
-        sideBySide: true
-        }),
-    $('#dpEditStartTime').datetimepicker({
-        format: 'MM/DD/YYYY hh:mm:ss A',
-        sideBySide: true
-        }),
-    $('#dpEditEndTime').datetimepicker({
-        format: 'MM/DD/YYYY hh:mm:ss A',
-        sideBySide: true
-        }),
+    // Initial
 
     //////////////////////////////////////////
-    // Fill data from datetimepicker to form
+    // Add New Account
     //
-    $("#dpEditStartTime").on('dp.change', function(e){
-        var date = e.date.toISOString();
-        $('#id_startTime_edit').val(date);
+    $("#addUserPostForm").submit(function(e){
+        var formData = new FormData(this);
+        $.ajax({
+            url: "/accounts/api/createaccount",
+            type: 'POST',
+            data: formData,
+            success: function (data) {
+                var notification = $("#retMsgAdd");
+                var closebtn = '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>';
+                notification.removeClass("hidden");
+                if(data.status != 0){
+                    var errStr = "Error: "+data.message;
+                    notification.html(errStr);
+                    notification.removeClass("alert-info");
+                    notification.addClass("alert-danger");
+                    for(var prop in data.detail){
+                    if(prop === "username"){
+                        $('#id_username').parent().addClass("has-error");
+                        $('#id_username').next().text(data.detail.name[0]);
+                    }
+                    else if(prop === "host"){
+                        $('#id_scanProject').parent().addClass("has-error");
+                        $('#id_scanProject').next("span").text(data.detail.host[0]);
+                    }
+                    else if(prop === "format"){
+                        $('#id_format').parent().addClass("has-error");
+                        $('#id_format').next("span").text(data.detail.format[0]);
+                    }
+                }
+                }
+                else{
+                    notification.html("New account is added.");
+                    notification.removeClass("alert-danger");
+                    notification.addClass("alert-info");
+
+                    // Disable Save button
+                    $("#saveAddBtn").attr('disabled', true);
+                }
+                notification.append(closebtn);
+                $("#datatable").bootstrapTable('refresh');
+            },
+            cache: false,
+            contentType: false,
+            processData: false
+        });
+        e.preventDefault();
     }),
-    $("#dpEditEndTime").on('dp.change', function(e){
-        var date = e.date.toISOString();
-        $('#id_endTime_edit').val(date);
-    }),
-    $("#dpStartTime").on('dp.change', function(e){
-        var date = e.date.toISOString();
-        $('#id_startTime').val(date);
-    }),
-    $("#dpEndTime").on('dp.change', function(e){
-        var date = e.date.toISOString();
-        $('#id_endTime').val(date);
+    $("#addUserModal").on("hidden.bs.modal", function () {
+        $("#retMsgAdd").addClass("hidden");
     }),
 
     //////////////////////////////////////////
@@ -153,54 +188,7 @@ $(document).ready(
         $("#retMsgEdit").addClass("hidden");
     }),
 
-    //////////////////////////////////////////
-    // Add New scan
-    //
-    $("#addScanPostForm").submit(function(e){
-        var formData = new FormData(this);
-        $.ajax({
-            url: "./api/addscan",
-            type: 'POST',
-            data: formData,
-            success: function (data) {
-                var notification = $("#retMsgAdd");
-                var closebtn = '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>';
-                notification.removeClass("hidden");
-                if(data.status != 0){
-                    var errStr = "Error: "+data.message;
-                    if(typeof data.detail.name !='undefined'){
-                    errStr = errStr + ". Name: " + data.detail.name[0];
-                    }
-                    if(typeof data.detail.startTime !='undefined'){
-                        errStr = errStr + ". Start Time: " + data.detail.startTime[0];
-                    }
-                    if(typeof data.detail.endTime !='undefined'){
-                        errStr = errStr + ". Finished Time: " + data.detail.endTime[0];
-                    }
-                    notification.html(errStr);
-                    notification.removeClass("alert-info");
-                    notification.addClass("alert-danger");
-                }
-                else{
-                    notification.html("New Scan Task is added.");
-                    notification.removeClass("alert-danger");
-                    notification.addClass("alert-info");
 
-                    // Disable Save button
-                    $("#saveAddBtn").attr('disabled', true);
-                }
-                notification.append(closebtn);
-                $("#scanstable").bootstrapTable('refresh');
-            },
-            cache: false,
-            contentType: false,
-            processData: false
-        });
-        e.preventDefault();
-    }),
-    $("#addScanModal").on("hidden.bs.modal", function () {
-        $("#retMsgAdd").addClass("hidden");
-    }),
 
     //////////////////////////////////////////
     // Confirm delete scan tasks
@@ -252,25 +240,22 @@ $(document).ready(
     // Fill in edit form when edit btn is clicked
     //
     $("#edit").click(function () {
-        var data = $("#scanstable").bootstrapTable('getSelections');
+        var data = $("#datatable").bootstrapTable('getSelections');
         if(data.length > 1){
             $('#msgInfo').text("Please choose only one row for editing.");
             $('#infoModal').modal('show');
         }
         else if (data.length == 1) {
-            $('#id_name_edit').val(data[0].name);
-            // $('#id_isProcessed_edit').val(data[0].isProcessed);
-            var startTime = data[0].startTime;
-            var endTime = data[0].endTime;
-
-            $('#id_fileAttachment_edit').val(data[0].fileAttachment);
-            $('#id_scanProject_edit').val(data[0].scanProject.id);
-            $('#id_description_edit').val(data[0].description);
-            $('#id_isProcessed_edit').prop('checked', data[0].isProcessed);
-            // $('#id_isProcessed_edit').val(data[0].isProcessed);
-            $('#editScanModal').modal('show');
-            $("#dpEditStartTime").data("DateTimePicker").date(new Date(data[0].startTime));
-            $("#dpEditEndTime").data("DateTimePicker").date(new Date(data[0].endTime));
+            $('#id_username_edit').val(data[0].username);
+            $('#id_first_name_edit').val(data[0].first_name);
+            $('#id_last_name_edit').val(data[0].last_name);
+            $('#id_email_edit').val(data[0].email);
+            $('#id_permission_edit').val(data[0].permissionLevel);
+            if(data[0].state)
+                $('#id_isActive_edit').val(0);
+            else
+                $('#id_isActive_edit').val(1);;
+            $('#editUserModal').modal('show');
             rowIDSelected = data[0].id;
 
             // Dissable Save Edit Button
@@ -279,17 +264,40 @@ $(document).ready(
     }),
 
     //////////////////////////////////////////
+    // Fill in reset form when reset btn is clicked
+    //
+    $("#reset").click(function () {
+        var data = $("#datatable").bootstrapTable('getSelections');
+        if(data.length > 1){
+            $('#msgInfo').text("Please choose only one row for editing.");
+            $('#infoModal').modal('show');
+        }
+        else if (data.length == 1) {
+            $('#id_username_reset').val(data[0].username);
+            $('#resetPasswordModal').modal('show');
+            rowIDSelected = data[0].id;
+
+            // Dissable Save Edit Button
+            $("#saveResetBtn").attr('disabled', true);
+        }
+    }),
+
+
+    //////////////////////////////////////////
     // Detect changes on Select row to enable or disable Delete/ Edit button
     //
-    $("#scanstable").change(function () {
-        var data = $("#scanstable").bootstrapTable('getSelections');
+    $("#datatable").change(function () {
+        var data = $("#datatable").bootstrapTable('getSelections');
         var editBtn = $("#edit");
         var delBtn = $("#delete");
+        var resetBtn = $("#reset")
         if(data.length!=1){
             editBtn.addClass("disabled");
+            resetBtn.addClass("disabled");
         }
         else{
             editBtn.removeClass("disabled");
+            resetBtn.removeClass("disabled");
         }
         if(data.length==0 ){
             delBtn.addClass("disabled");
@@ -396,13 +404,27 @@ function BooleanFormatter(value, row, index){
         return '<b><i class="fa fa-remove" aria-hidden="true"></i></i></b>';
 }
 
+function PermissionFormatter(value, row, index){
+    if(value===PERMS_SUBMITTER){
+        return("Submitter");
+    }
+    else if(value===PERMS_MANAGER){
+        return("Submitter");
+    }
+    else if(row.is_superuser){
+        return('Super User');
+    }
+    else{
+        return("View Only");
+    }
+}
 //////////////////////////////////////////
 // Ajax get data to table
 //
 function ajaxRequest(params) {
     $.ajax({
         type: "GET",
-        url: "/scans/api/getscans",
+        url: "/accounts/api/getaccounts",
         data: params.data,
         dataType: "json",
         success: function(data) {

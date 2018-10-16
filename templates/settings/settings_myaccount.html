@@ -75,7 +75,10 @@
                 <div class="col-lg-12">
                     <div class="divnav">
                         <ul class="nav nav-tabs">
-                                <li class="active"><a href="#"><i class="fa fa-user fa-fw"></i> My Account</a></li>
+                            <li class="active"><a href="#"><i class="fa fa-user fa-fw"></i> My Account</a></li>
+                            {% if request.user.is_superuser %}
+                            <li><a href="/settings/accountmanagement/"><i class="fa fa-users fa-fw"></i> Account Management</a></li>
+                            {% endif %}
                         </ul>
                     </div>
                 </div>
@@ -271,5 +274,3 @@
     <script src="{% static 'pages/settings/settings_changemypassword.js' %}"></script>
 
 {% endblock %}
-
-

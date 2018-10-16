@@ -48,6 +48,7 @@ def RenderSideBar(request):
         SidebarBtn(False, ' Submit', reverse_lazy('submit:submit'), 'fa fa-upload fa-fw'),
         SidebarBtn(False, ' Settings', reverse_lazy('settings:settings'), 'fa fa-sliders fa-fw',[
             SidebarBtn(False, ' My Account', reverse_lazy('settings:MyAccount'), 'fa fa-user fa-fw'),
+            SidebarBtn(False, ' Account Management', reverse_lazy('settings:AccountManagement'), 'fa fa-users fa-fw'),
         ]),
     ]
     sidebarHtml = ''

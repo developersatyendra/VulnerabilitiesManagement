@@ -3,6 +3,7 @@ from django.db.models import Q
 
 PERMS_APPS = ['projects', 'scans', 'vulnerabilities', 'hosts', 'services', 'submit']
 
+#########################
 # Check if superuser is exist
 user = User.objects.filter(is_superuser=True)
 if not user:
@@ -11,6 +12,7 @@ if not user:
 else:
     print('[i] Superuser is already existed')
 
+#########################
 # Group submitter
 submitter, created = Group.objects.get_or_create(name='submitter')
 if created:
@@ -18,12 +20,16 @@ if created:
 else:
     print('[i] Group submitter is already existed')
 
-perms = Permission.objects.filter(Q(content_type__app_label__in=PERMS_APPS), codename__icontains='add')
+
+queryPerms = Q(content_type__app_label__in=PERMS_APPS) & (Q(codename__icontains='add') | Q(codename__icontains='change'))
+perms = Permission.objects.filter(queryPerms)
 for perm in perms:
     submitter.permissions.add(perm)
 submitter.save()
 print('[+] Assigned permissions to group submitter')
 
+
+#########################
 # Group manager
 manager, created = Group.objects.get_or_create(name='manager')
 if created:
