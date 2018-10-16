@@ -101,14 +101,17 @@ $(document).ready(
 
 
     //////////////////////////////////////////
-    // Form on change
+    // Form editMyAccountPostForm on change
     //
 
     // Main Form
-    $("#id_name").on("input", function () {
+    $("#id_first_name").on("input", function () {
         $("#saveInfoBtn").attr('disabled', false);
     }),
-    $("#id_description").on("input", function () {
+    $("#id_last_name").on("input", function () {
+        $("#saveInfoBtn").attr('disabled', false);
+    }),
+    $("#id_email").on("input", function () {
         $("#saveInfoBtn").attr('disabled', false);
     }),
     $('#editMyAccountPostForm').change(function () {
