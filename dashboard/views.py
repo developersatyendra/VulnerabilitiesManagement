@@ -18,16 +18,21 @@ class SidebarBtn(object):
     href = ''
     iconRef = ''
     childBtn = None
+    permissions = []
 
-    def __init__(self, isActive, name, href, iconRef, childBtn=None):
+    def __init__(self, isActive, name, href, iconRef, permissions, childBtn=None):
         self.isActive = isActive
         self.name = name
         self.href = href
         self.iconRef = iconRef
+        self.permissions = permissions
         self.childBtn = childBtn
 
     def __str__(self):
         return self.name
+
+    def CheckPermissions(self):
+        pass
 
 
 def RenderSideBar(request):

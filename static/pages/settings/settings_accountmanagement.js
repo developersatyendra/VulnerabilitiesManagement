@@ -88,12 +88,11 @@ $(document).ready(
         })
     }),
 
-    //////////////////////////////////////////
-    // Initial
+    ////////////////////////////////////////////////////////////////////////////////////
+    // ADD NEW ACCOUNT
+    ////////////////////////////////////////////////////////////////////////////////////
 
-    //////////////////////////////////////////
-    // Add New Account
-    //
+    // Post API
     $("#addUserPostForm").submit(function(e){
         var formData = new FormData(this);
         $.ajax({
@@ -110,22 +109,28 @@ $(document).ready(
                     notification.removeClass("alert-info");
                     notification.addClass("alert-danger");
                     for(var prop in data.detail){
-                    if(prop === "username"){
-                        $('#id_username').parent().addClass("has-error");
-                        $('#id_username').next().text(data.detail.name[0]);
+                        if(prop === "username"){
+                            $('#id_username').parent().addClass("has-error");
+                            $('#id_username').next().text(data.detail.username[0]);
+                        }
+                        else if(prop === "password1"){
+                            $('#id_password1').parent().addClass("has-error");
+                            $('#id_password1').next("span").text(data.detail.password1[0]);
+                        }
+                        else if(prop === "password2"){
+                            $('#id_password2').parent().addClass("has-error");
+                            $('#id_password2').next("span").text(data.detail.password2[0]);
+                        }
                     }
-                    else if(prop === "host"){
-                        $('#id_scanProject').parent().addClass("has-error");
-                        $('#id_scanProject').next("span").text(data.detail.host[0]);
-                    }
-                    else if(prop === "format"){
-                        $('#id_format').parent().addClass("has-error");
-                        $('#id_format').next("span").text(data.detail.format[0]);
-                    }
-                }
                 }
                 else{
-                    notification.html("New account is added.");
+                    $('#id_username').parent().removeClass("has-error");
+                    $('#id_username').next("span").text('');
+                    $('#id_password1').parent().removeClass("has-error");
+                    $('#id_password1').next("span").text('');
+                    $('#id_password2').parent().removeClass("has-error");
+                    $('#id_password2').next("span").text('');
+                    notification.html(data.message);
                     notification.removeClass("alert-danger");
                     notification.addClass("alert-info");
 
@@ -145,34 +150,78 @@ $(document).ready(
         $("#retMsgAdd").addClass("hidden");
     }),
 
-    //////////////////////////////////////////
-    // Edit scanning task
-    //
-    $("#editScanPostForm").submit(function(e){
-        var data = $('#editScanPostForm').serializeArray();
+    // Enable Save button
+    $('#addUserPostForm').change(function () {
+        $('#saveAddBtn').attr('disabled', false);
+    }),
+    $("#id_username").on("input", function () {
+        $("#saveAddBtn").attr('disabled', false);
+    }),
+    $("#id_first_name").on("input", function () {
+        $("#saveAddBtn").attr('disabled', false);
+    }),
+    $("#id_last_name").on("input", function () {
+        $("#saveAddBtn").attr('disabled', false);
+    }),
+    $("#id_email").on("input", function () {
+        $("#saveAddBtn").attr('disabled', false);
+    }),
+    $("#id_password1").on("input", function () {
+        $("#saveAddBtn").attr('disabled', false);
+    }),
+    $("#id_password2").on("input", function () {
+        $("#saveAddBtn").attr('disabled', false);
+    }),
+
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    // EDIT EXISTING ACCOUNT
+    ////////////////////////////////////////////////////////////////////////////////////
+
+
+    // Click edit btn
+    $("#edit").click(function () {
+        var data = $("#datatable").bootstrapTable('getSelections');
+        if(data.length > 1){
+            $('#msgInfo').text("Please choose only one row for editing.");
+            $('#infoModal').modal('show');
+        }
+        else if (data.length == 1) {
+            $('#id_username_edit').val(data[0].username);
+            $('#id_first_name_edit').val(data[0].first_name);
+            $('#id_last_name_edit').val(data[0].last_name);
+            $('#id_email_edit').val(data[0].email);
+            $('#id_permission_edit').val(data[0].permissionLevel);
+            if(data[0].state)
+                $('#id_isActive_edit').val('True');
+            else
+                $('#id_isActive_edit').val('False');
+            $('#editUserModal').modal('show');
+            rowIDSelected = data[0].id;
+
+            // Dissable Save Edit Button
+            $("#saveEditBtn").attr('disabled', true);
+        }
+    }),
+
+
+    // Post API
+    $("#editUserPostForm").submit(function(e){
+        var data = $('#editUserPostForm').serializeArray();
         data.push({name: "id", value: rowIDSelected});
         data = $.param(data);
-        $.post("./api/updatescan", data, function(data){
+        $.post("/accounts/api/editaccount", data, function(data){
             var notification = $("#retMsgEdit");
             var closebtn = '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>';
             notification.removeClass("hidden");
             if(data.status != 0){
                 var errStr = "Error: "+data.message;
-                if(typeof data.detail.name !='undefined'){
-                    errStr = errStr + ". Name: " + data.detail.name[0];
-                }
-                if(typeof data.detail.startTime !='undefined'){
-                    errStr = errStr + ". Start Time: " + data.detail.startTime[0];
-                }
-                if(typeof data.detail.endTime !='undefined'){
-                    errStr = errStr + ". Finished Time: " + data.detail.endTime[0];
-                }
                 notification.html(errStr);
                 notification.removeClass("alert-info");
                 notification.addClass("alert-danger");
             }
             else{
-                notification.html("The vulnerability is updated.");
+                notification.html(data.message);
                 notification.removeClass("alert-danger");
                 notification.addClass("alert-info");
 
@@ -180,14 +229,116 @@ $(document).ready(
                 $("#saveEditBtn").attr('disabled', true);
             }
             notification.append(closebtn);
-            $("#scanstable").bootstrapTable('refresh');
+            $("#datatable").bootstrapTable('refresh');
         });
         e.preventDefault();
     }),
-    $("#editScanModal").on("hidden.bs.modal", function () {
+    $("#editUserModal").on("hidden.bs.modal", function () {
         $("#retMsgEdit").addClass("hidden");
     }),
+    
+    // Enable Save button
+    $('#editUserPostForm').change(function () {
+        $('#saveEditBtn').attr('disabled', false);
+    }),
+    $("#id_username_edit").on("input", function () {
+        $("#saveEditBtn").attr('disabled', false);
+    }),
+    $("#id_first_name_edit").on("input", function () {
+        $("#saveEditBtn").attr('disabled', false);
+    }),
+    $("#id_last_name_edit").on("input", function () {
+        $("#saveEditBtn").attr('disabled', false);
+    }),
+    $("#id_email_edit").on("input", function () {
+        $("#saveEditBtn").attr('disabled', false);
+    }),
 
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    // RESET PASSWORD
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    // Click edit btn
+    $("#reset").click(function () {
+        var data = $("#datatable").bootstrapTable('getSelections');
+        if(data.length > 1){
+            $('#msgInfo').text("Please choose only one row for editing.");
+            $('#infoModal').modal('show');
+        }
+        else if (data.length == 1) {
+            $('#id_username_reset').val(data[0].username);
+            $('#resetPasswordModal').modal('show');
+            rowIDSelected = data[0].id;
+
+            // Dissable Save Edit Button
+            $("#saveResetBtn").attr('disabled', true);
+        }
+    }),
+
+    // Post API
+    $("#resetPasswordPostForm").submit(function(e){
+        var data = $('#resetPasswordPostForm').serializeArray();
+        data.push({name: "id", value: rowIDSelected});
+        data = $.param(data);
+        $.post("/accounts/api/resetpasswordaccount", data, function(data){
+            var notification = $("#retMsgReset");
+            var closebtn = '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>';
+            notification.removeClass("hidden");
+            if(data.status != 0){
+                var errStr = "Error: "+data.message;
+                notification.html(errStr);
+                notification.removeClass("alert-info");
+                notification.addClass("alert-danger");
+                for(var prop in data.detail){
+                    if(prop === "password1"){
+                        $('#id_password1_reset').parent().addClass("has-error");
+                        $('#id_password1_reset').next("span").text(data.detail.password1[0]);
+                    }
+                    else if(prop === "password2"){
+                        $('#id_password2_reset').parent().addClass("has-error");
+                        $('#id_password2_reset').next("span").text(data.detail.password2[0]);
+                    }
+                }
+            }
+            else{
+                notification.html(data.message);
+                notification.removeClass("alert-danger");
+                notification.addClass("alert-info");
+                $('#id_password1_reset').parent().removeClass("has-error");
+                $('#id_password1_reset').next("span").text('');
+                $('#id_password2_reset').parent().removeClass("has-error");
+                $('#id_password2_reset').next("span").text('');
+                // Disable Save button
+                $("#saveResetBtn").attr('disabled', true);
+            }
+            notification.append(closebtn);
+            $("#datatable").bootstrapTable('refresh');
+        });
+        e.preventDefault();
+    }),
+    $("#resetPasswordModal").on("hidden.bs.modal", function () {
+        $("#retMsgReset").addClass("hidden");
+        var password1_reset = $('#id_password1_reset');
+        var password2_reset = $('#id_password2_reset');
+        password1_reset.val('');
+        password2_reset.val('');
+        password1_reset.parent().removeClass("has-error");
+        password1_reset.next("span").text('');
+        password2_reset.parent().removeClass("has-error");
+        password2_reset.next("span").text('');
+    }),
+
+    // Enable Save button
+    $('#resetPasswordPostForm').change(function () {
+        $('#saveResetBtn').attr('disabled', false);
+    }),
+    $("#id_password1_reset").on("input", function () {
+        $("#saveResetBtn").attr('disabled', false);
+    }),
+    $("#id_password2_reset").on("input", function () {
+        $("#saveResetBtn").attr('disabled', false);
+    }),
 
 
     //////////////////////////////////////////
@@ -236,56 +387,9 @@ $(document).ready(
         }
     }),
 
-    //////////////////////////////////////////
-    // Fill in edit form when edit btn is clicked
-    //
-    $("#edit").click(function () {
-        var data = $("#datatable").bootstrapTable('getSelections');
-        if(data.length > 1){
-            $('#msgInfo').text("Please choose only one row for editing.");
-            $('#infoModal').modal('show');
-        }
-        else if (data.length == 1) {
-            $('#id_username_edit').val(data[0].username);
-            $('#id_first_name_edit').val(data[0].first_name);
-            $('#id_last_name_edit').val(data[0].last_name);
-            $('#id_email_edit').val(data[0].email);
-            $('#id_permission_edit').val(data[0].permissionLevel);
-            if(data[0].state)
-                $('#id_isActive_edit').val(0);
-            else
-                $('#id_isActive_edit').val(1);;
-            $('#editUserModal').modal('show');
-            rowIDSelected = data[0].id;
-
-            // Dissable Save Edit Button
-            $("#saveEditBtn").attr('disabled', true);
-        }
-    }),
-
-    //////////////////////////////////////////
-    // Fill in reset form when reset btn is clicked
-    //
-    $("#reset").click(function () {
-        var data = $("#datatable").bootstrapTable('getSelections');
-        if(data.length > 1){
-            $('#msgInfo').text("Please choose only one row for editing.");
-            $('#infoModal').modal('show');
-        }
-        else if (data.length == 1) {
-            $('#id_username_reset').val(data[0].username);
-            $('#resetPasswordModal').modal('show');
-            rowIDSelected = data[0].id;
-
-            // Dissable Save Edit Button
-            $("#saveResetBtn").attr('disabled', true);
-        }
-    }),
 
 
-    //////////////////////////////////////////
     // Detect changes on Select row to enable or disable Delete/ Edit button
-    //
     $("#datatable").change(function () {
         var data = $("#datatable").bootstrapTable('getSelections');
         var editBtn = $("#edit");
@@ -313,45 +417,8 @@ $(document).ready(
     $('.alert').on('close.bs.alert', function (e) {
         $(this).addClass("hidden");
         e.preventDefault();
-    }),
-
-    //////////////////////////////////////////
-    // Form on change to enable submit buttons
-    //
-
-    // Add form
-    $('#addScanPostForm').change(function () {
-        $('#saveAddBtn').attr('disabled', false);
-    }),
-    $("#id_name").on("input", function () {
-        $("#saveAddBtn").attr('disabled', false);
-    }),
-    $("#id_description").on("input", function () {
-        $("#saveAddBtn").attr('disabled', false);
-    }),
-    $("#dpStartTime").on('dp.change', function(){
-        $("#saveAddBtn").attr('disabled', false);
-    }),
-    $("#dpEndTime").on('dp.change', function(){
-        $("#saveAddBtn").attr('disabled', false);
-    }),
-
-    // Edit form
-    $('#editScanPostForm').change(function () {
-        $('#saveEditBtn').attr('disabled', false);
-    }),
-    $("#id_name_edit").on("input", function () {
-        $("#saveEditBtn").attr('disabled', false);
-    }),
-    $("#id_description_edit").on("input", function () {
-        $("#saveEditBtn").attr('disabled', false);
-    }),
-    $("#dpEditStartTime").on('dp.change', function(){
-        $("#saveEditBtn").attr('disabled', false);
-    }),
-    $("#dpEditEndTime").on('dp.change', function(){
-        $("#saveEditBtn").attr('disabled', false);
     })
+
 );
 
 // Format href for bootstrap table
@@ -409,7 +476,7 @@ function PermissionFormatter(value, row, index){
         return("Submitter");
     }
     else if(value===PERMS_MANAGER){
-        return("Submitter");
+        return("Manager");
     }
     else if(row.is_superuser){
         return('Super User');

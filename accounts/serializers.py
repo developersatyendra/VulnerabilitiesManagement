@@ -11,7 +11,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         # fields = '__all__'
-        fields = ('username', 'date_joined', 'first_name', 'last_name', 'email', 'is_active')
+        fields = ('id', 'username', 'date_joined', 'first_name', 'last_name', 'email', 'is_active')
         # fields = ('email', 'username', 'password')
 
 
@@ -21,12 +21,11 @@ class AccountSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('username', 'date_joined', 'first_name', 'last_name', 'email', 'is_active', 'is_superuser', 'permissionLevel')
+        fields = ('id', 'username', 'date_joined', 'first_name', 'last_name', 'email', 'is_active', 'is_superuser', 'permissionLevel')
 
     def get_permissionLevel(self, obj):
         # groupName = obj.groups.first().name
         groupName = User.objects.get(id=obj.id).groups.values_list('name', flat=True)
-        print("Debug: {}".format(groupName))
         if 'submitter' in groupName.__str__().lower():
             return PERMS_SUBMITTER
         elif 'manager' in groupName.__str__().lower():

@@ -1,10 +1,10 @@
-from django.utils.datastructures import MultiValueDictKeyError
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAdminUser
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.contrib.auth.models import User
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import permission_required, login_required
 from .forms import *
 from django.contrib.auth import update_session_auth_hash
 from .serializers import UserSerializer, AccountSerializer
@@ -13,9 +13,7 @@ PAGE_DEFAULT = 1
 NUM_ENTRY_DEFAULT = 50
 
 
-######################################################
 #   APIChangeMyPassword
-#
 
 class APIChangeMyPassword(APIView):
     def post(self, request):
@@ -25,52 +23,54 @@ class APIChangeMyPassword(APIView):
             update_session_auth_hash(request, user)  # Important!
             return Response({'status': '0', 'message': 'Your password was successfully updated!'})
         else:
-            return Response({'status': '-1', 'message': 'Change password is failed', 'detail': form.errors})
+            return Response({'status': '-1', 'message': 'Changing password is failed.', 'detail': form.errors})
 
 
-######################################################
 #   APIGetMyAccount
-#
 
 class APIGetMyAccount(APIView):
+
+    @login_required
     def get(self, request):
         object = UserSerializer(User.objects.get(username=request.user))
         return Response({'status': '0', 'object': object.data})
 
 
-######################################################
 #   APIUpdateMyAccount
-#
+
 class APIUpdateMyAccount(APIView):
+
+    @login_required
     def post(self, request):
         user = User.objects.get(username=request.user)
         form = AccountUpdateMyInfoForm(request.POST, instance=user)
         if form.is_valid():
             form.save()
-            return Response({'status':0, 'message': 'Your account inforation is updated'})
+            return Response({'status':0, 'message': 'Your account information is updated.'})
         else:
-            return Response({'status': '-1', 'message': 'Form is invalid', 'detail': form.errors})
+            return Response({'status': '-1', 'message': 'Form is invalid.', 'detail': form.errors})
 
 
-######################################################
-#   APIUpdateMyAccount
-#
+#   APICreateAccount
+
 class APICreateAccount(APIView):
-    permission_classes = (IsAdminUser,)
 
+    @method_decorator(permission_required('user.can_add_user', raise_exception=True))
     def post(self, request):
 
         form = AccountCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            return Response({'status':0, 'message': '{} account is created'.format(user.username)})
+            return Response({'status':0, 'message': '{} account is successfully created.'.format(user.username)})
         else:
-            return Response({'status': '-1', 'message': 'Form is invalid', 'detail': form.errors})
+            return Response({'status': '-1', 'message': 'Form is invalid.', 'detail': form.errors})
 
+
+#   APIGetAccounts
 
 class APIGetAccounts(APIView):
-    permission_classes = (IsAdminUser,)
 
+    @method_decorator(permission_required('user.can_view_user', raise_exception=True))
     def get(self, request):
         users = User.objects.all()
 
@@ -121,37 +121,41 @@ class APIGetAccounts(APIView):
         return Response({'status': 0, 'object': data})
 
 
+#   APIEditAccount
+
 class APIEditAccount(APIView):
 
-    permission_classes = (IsAdminUser,)
-
+    @method_decorator(permission_required('user.can_change_user',raise_exception=True))
     def post(self, request):
         try:
-            user = User.objects.get(pk=request.POST.get('id'))
+            user = User.objects.get(pk=int(request.POST.get('id')))
         except (User.DoesNotExist, ValueError, TypeError) as e:
             return Response({'status': '-1', 'message': 'Some thing go wrong'})
         form = AccountEditForm(request.POST, instance=user)
         if form.is_valid():
             user = form.save()
-            return Response({'status': 0, 'message': '{} account is updated'.format(user.username)})
+            return Response({'status': 0, 'message': '{} account is successfully updated.'.format(user.username)})
         else:
-            return Response({'status': '-1', 'message': 'Form is invalid', 'detail': form.errors})
+            return Response({'status': '-1', 'message': 'Form is invalid.', 'detail': form.errors})
 
+
+#   APIResetPasswordAccount
 
 class APIResetPasswordAccount(APIView):
     permission_classes = (IsAdminUser,)
 
+    @method_decorator(permission_required('user.can_change_user',raise_exception=True))
     def post(self, request):
         try:
             user = User.objects.get(pk=request.POST.get('id'))
         except (User.DoesNotExist, ValueError, TypeError) as e:
-            return Response({'status': '-1', 'message': 'Some thing go wrong'})
+            return Response({'status': '-1', 'message': 'Some thing go wrong.'})
         form = AccountResetPasswordForm(request.POST)
         if form.is_valid():
             password = form.cleaned_data['password2']
             user.set_password(password)
             user.save()
             update_session_auth_hash(request, user)  # Important!
-            return Response({'status': 0, 'message': '{} password account is updated'.format(user.username)})
+            return Response({'status': 0, 'message': '{} password account is successfully updated.'.format(user.username)})
         else:
-            return Response({'status': '-1', 'message': 'Form is invalid', 'detail': form.errors})
+            return Response({'status': '-1', 'message': 'Form is invalid.', 'detail': form.errors})

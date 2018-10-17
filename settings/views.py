@@ -1,10 +1,9 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView
 from dashboard.views import RenderSideBar
-from accounts.forms import AccountInfoForm, CustomChangePasswordForm
-from django.contrib.auth.models import User
 from accounts.forms import *
-from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import permission_required
 
 
 class SettingsView(TemplateView):
@@ -28,6 +27,7 @@ class MyAccountView(TemplateView):
 class AccountManagementView(TemplateView):
     template = 'settings/settings_accountmanagement.html'
 
+    @method_decorator(permission_required(['user.can_view_user','user.can_add_user', 'user.can_change_user'], raise_exception=True))
     def get(self, request, *args, **kwargs):
         addUserForm = AccountCreationForm()
         editUserForm = AccountEditForm(id='edit')
