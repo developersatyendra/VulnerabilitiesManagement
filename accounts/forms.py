@@ -82,8 +82,8 @@ class AccountCreationForm(forms.ModelForm):
     isActive = forms.ChoiceField(
         label=_('Status'),
         choices=(
-            (0, 'Active'),
-            (1, 'Deactive'),
+            (True, 'Active'),
+            (False ,'Deactive'),
         ),
         initial=1,
         widget=forms.Select(attrs={'class': 'form-control'})
@@ -145,19 +145,24 @@ class AccountCreationForm(forms.ModelForm):
         user.is_active = self.cleaned_data["isActive"]
         groupManager = Group.objects.get(name='manager')
         groupSubmitter = Group.objects.get(name='submitter')
-        if int(self.cleaned_data['permission']) == self.PERMS_MANAGER:
-            groupManager.user_set.add(user)
-            groupSubmitter.user_set.remove(user)
-        elif int(self.cleaned_data['permission']) == self.PERMS_SUBMITTER:
-            groupSubmitter.user_set.add(user)
-            groupManager.user_set.remove(user)
-        elif int(self.cleaned_data['permission']) == self.PERMS_VIEWONLY:
-            groupManager.user_set.remove(user)
-            groupSubmitter.user_set.remove(user)
-        groupManager.save()
-        groupSubmitter.save()
+        groupViewonly = Group.objects.get(name='viewonly')
         if commit:
             user.save()
+            if int(self.cleaned_data['permission']) == self.PERMS_MANAGER:
+                groupManager.user_set.add(user)
+                groupSubmitter.user_set.remove(user)
+                groupViewonly.user_set.remove(user)
+            elif int(self.cleaned_data['permission']) == self.PERMS_SUBMITTER:
+                groupManager.user_set.remove(user)
+                groupSubmitter.user_set.add(user)
+                groupViewonly.user_set.remove(user)
+            elif int(self.cleaned_data['permission']) == self.PERMS_VIEWONLY:
+                groupManager.user_set.remove(user)
+                groupSubmitter.user_set.remove(user)
+                groupViewonly.user_set.add(user)
+            groupManager.save()
+            groupSubmitter.save()
+            groupViewonly.save()
         return user
 
 
@@ -220,37 +225,24 @@ class AccountEditForm(forms.ModelForm):
         user.is_active = self.cleaned_data["isActive"]
         groupManager = Group.objects.get(name='manager')
         groupSubmitter = Group.objects.get(name='submitter')
+        groupViewonly = Group.objects.get(name='viewonly')
+
         if int(self.cleaned_data['permission']) == self.PERMS_MANAGER:
             user.groups.add(groupManager)
             user.groups.remove(groupSubmitter)
+            user.groups.remove(groupViewonly)
+            groupViewonly.user_set.remove(user)
         elif int(self.cleaned_data['permission']) == self.PERMS_SUBMITTER:
             user.groups.add(groupSubmitter)
             user.groups.remove(groupManager)
+            user.groups.remove(groupViewonly)
         elif int(self.cleaned_data['permission']) == self.PERMS_VIEWONLY:
-            user.groups.remove(groupManager)
+            user.groups.add(groupViewonly)
             user.groups.remove(groupSubmitter)
+            user.groups.remove(groupManager)
         if commit:
             user.save()
         return user
-    # def save(self, commit=True):
-    #     user = super().save(commit=False)
-    #     user.is_active = self.cleaned_data["isActive"]
-    #     groupManager = Group.objects.get(name='manager')
-    #     groupSubmitter = Group.objects.get(name='submitter')
-    #     if self.cleaned_data['permission'] == self.PERMS_MANAGER:
-    #         groupManager.user_set.add(user)
-    #         groupManager.user_set.remove(user)
-    #     elif self.cleaned_data['permission'] == self.PERMS_SUBMITTER:
-    #         groupSubmitter.user_set.add(user)
-    #         groupManager.user_set.remove(user)
-    #     elif self.cleaned_data['permission'] == self.PERMS_VIEWONLY:
-    #         groupManager.user_set.remove(user)
-    #         groupManager.user_set.remove(user)
-    #     groupManager.save()
-    #     groupSubmitter.save()
-    #     if commit:
-    #         user.save()
-    #     return user
 
 
 ###########################################

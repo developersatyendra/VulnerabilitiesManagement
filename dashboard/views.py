@@ -20,7 +20,7 @@ class SidebarBtn(object):
     childBtn = None
     permissions = []
 
-    def __init__(self, isActive, name, href, iconRef, permissions, childBtn=None):
+    def __init__(self, isActive, name, href, iconRef, permissions = [], childBtn=None):
         self.isActive = isActive
         self.name = name
         self.href = href
@@ -31,29 +31,32 @@ class SidebarBtn(object):
     def __str__(self):
         return self.name
 
-    def CheckPermissions(self):
-        pass
+    def CheckPermissions(self, user):
+        ret_val = True
+        for perm in self.permissions:
+            ret_val = ret_val and user.has_perm(perm)
+        return ret_val
 
 
 def RenderSideBar(request):
     sidebar = [
         SidebarBtn(False, ' Dashboard', reverse_lazy('dashboard:dashboard'), 'fa fa-dashboard fa-fw'),
-        SidebarBtn(False, ' Scan', None, 'fa fa-search fa-fw', [
+        SidebarBtn(False, ' Scan', None, 'fa fa-search fa-fw', childBtn= [
             SidebarBtn(False, ' Scan Projects', reverse_lazy('projects:projects'), 'fa fa-clipboard fa-fw'),
             SidebarBtn(False, ' Scan Tasks', reverse_lazy('scans:scans'), 'fa fa-search fa-fw'),
         ]),
         SidebarBtn(False, ' Vulnerabilities', reverse_lazy('vulnerabilities:vulnerabilities'), 'fa fa-exclamation-triangle fa-fw'),
         SidebarBtn(False, ' Hosts', reverse_lazy('hosts:hosts'), 'fa fa-desktop fa-fw'),
         SidebarBtn(False, ' Services', reverse_lazy('services:services'), 'fa fa-cogs fa-fw'),
-        SidebarBtn(False, ' Reports', None, 'fa fa-file-pdf-o fa-fw',[
+        SidebarBtn(False, ' Reports', None, 'fa fa-file-pdf-o fa-fw', childBtn= [
             SidebarBtn(False, ' Project Reports', reverse_lazy('reports:projectReport'), 'fa fa-clipboard fa-fw'),
             SidebarBtn(False, ' Scan Reports', reverse_lazy('reports:scanReport'), 'fa fa-search fa-fw'),
             SidebarBtn(False, ' Host Reports', reverse_lazy('reports:hostReport'), 'fa fa-desktop fa-fw'),
         ]),
         SidebarBtn(False, ' Submit', reverse_lazy('submit:submit'), 'fa fa-upload fa-fw'),
-        SidebarBtn(False, ' Settings', reverse_lazy('settings:settings'), 'fa fa-sliders fa-fw',[
+        SidebarBtn(False, ' Settings', reverse_lazy('settings:settings'), 'fa fa-sliders fa-fw',childBtn= [
             SidebarBtn(False, ' My Account', reverse_lazy('settings:MyAccount'), 'fa fa-user fa-fw'),
-            SidebarBtn(False, ' Account Management', reverse_lazy('settings:AccountManagement'), 'fa fa-users fa-fw'),
+            SidebarBtn(False, ' Account Management', reverse_lazy('settings:AccountManagement'), 'fa fa-users fa-fw', permissions=['user.can_view_user', 'user.can_add_user', 'user.can_change_user']),
         ]),
     ]
     sidebarHtml = ''

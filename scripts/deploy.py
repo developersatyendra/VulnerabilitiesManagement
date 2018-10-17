@@ -14,6 +14,21 @@ else:
 
 #########################
 # Group submitter
+viewonly, created = Group.objects.get_or_create(name='viewonly')
+if created:
+    print('[+] Created group viewonly')
+else:
+    print('[i] Group viewonly is already existed')
+
+queryPerms = Q(content_type__app_label__in=PERMS_APPS) & Q(codename__icontains='view')
+perms = Permission.objects.filter(queryPerms)
+for perm in perms:
+    viewonly.permissions.add(perm)
+viewonly.save()
+print('[+] Assigned permissions to group viewonly')
+
+#########################
+# Group submitter
 submitter, created = Group.objects.get_or_create(name='submitter')
 if created:
     print('[+] Created group submitter')
