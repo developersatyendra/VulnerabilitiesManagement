@@ -11,6 +11,7 @@ urlpatterns = [
     path('<int:id>/', login_required(views.ScansDetailView.as_view(), redirect_field_name=LOGIN_URL), name='scanDetail'),
     path('<int:id>/detailed', login_required(views.ScansDetailView.as_view(), redirect_field_name=LOGIN_URL), name='scanDetail'),
     path('<int:id>/hostscanned', login_required(views.ScanHostsView.as_view(), redirect_field_name=LOGIN_URL), name='scanHostsview'),
+    path('<int:id>/statistics', login_required(views.ScanStatisticsView.as_view(), redirect_field_name=LOGIN_URL), name='scanStatisticsview'),
 
     # APIs
     path('api/getscanname', apis.APIGetScanName.as_view(), name='APIgetscanname'),

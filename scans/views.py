@@ -31,8 +31,20 @@ class ScansDetailView(TemplateView):
         }
         return render(request, self.template, context)
 
+
 class ScanHostsView(TemplateView):
     template = 'scans/scan_hosts.html'
+
+    def get(self, request, *args, **kwargs):
+        sidebarHtml = RenderSideBar(request)
+        context = {
+            'sidebar': sidebarHtml,
+        }
+        return render(request, self.template, context)
+
+
+class ScanStatisticsView(TemplateView):
+    template = 'scans/scan_statistics.html'
 
     def get(self, request, *args, **kwargs):
         sidebarHtml = RenderSideBar(request)

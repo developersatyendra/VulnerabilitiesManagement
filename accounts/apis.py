@@ -16,6 +16,8 @@ NUM_ENTRY_DEFAULT = 50
 #   APIChangeMyPassword
 
 class APIChangeMyPassword(APIView):
+
+    @method_decorator(login_required)
     def post(self, request):
         form = CustomChangePasswordForm(request.user, request.POST)
         if form.is_valid():
@@ -30,17 +32,17 @@ class APIChangeMyPassword(APIView):
 
 class APIGetMyAccount(APIView):
 
-    @login_required
+    @method_decorator(login_required)
     def get(self, request):
-        object = UserSerializer(User.objects.get(username=request.user))
-        return Response({'status': '0', 'object': object.data})
+        UserSerialized = UserSerializer(User.objects.get(username=request.user))
+        return Response({'status': '0', 'object': UserSerialized.data})
 
 
 #   APIUpdateMyAccount
 
 class APIUpdateMyAccount(APIView):
 
-    @login_required
+    @method_decorator(login_required)
     def post(self, request):
         user = User.objects.get(username=request.user)
         form = AccountUpdateMyInfoForm(request.POST, instance=user)

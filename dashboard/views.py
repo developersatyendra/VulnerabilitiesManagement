@@ -65,31 +65,34 @@ def RenderSideBar(request):
         if btn.childBtn:
             ndBtnHtml = ''
             for btnSub in btn.childBtn:
-                btnSubHref = str(btnSub.href).lower()
-                fullPathUrl = str(request.get_full_path())
-                if btnSubHref in fullPathUrl:
-                    btn.isActive = True
-                    btnSub.isActive = True
-                ndBtnHtml = ndBtnHtml + "<li>\
-                            <a href=\"{0}\" {1}><i class=\"{2}\"></i>{3}</a>\
-                        </li>".format(btnSub.href, 'class=\"active\"' if btnSub.isActive else '', btnSub.iconRef, btnSub.name)
-            sidebarHtml = sidebarHtml + \
-                    "<li {0}>\
-                        <a href=\"{1}\"><i class=\"{2}\"></i> {3}<span class=\"fa arrow\"></span></a>\
-                        <ul class=\"nav nav-second-level {4}\">\
-                        {5}</ul>\
-                        <!-- /.nav-second-level -->\
-                    </li>".format('class=\"active\"' if btn.isActive else "", btn.href, btn.iconRef, btn.name, 'collapse in' if btn.isActive else 'collapse', ndBtnHtml)
+                if btnSub.CheckPermissions(request.user):
+                    btnSubHref = str(btnSub.href).lower()
+                    fullPathUrl = str(request.get_full_path())
+                    if btnSubHref in fullPathUrl:
+                        # btn.isActive = True
+                        btnSub.isActive = True
+                    ndBtnHtml = ndBtnHtml + "<li>\
+                                <a href=\"{0}\" {1}><i class=\"{2}\"></i>{3}</a>\
+                            </li>".format(btnSub.href, 'class=\"active\"' if btnSub.isActive else '', btnSub.iconRef, btnSub.name)
+            if ndBtnHtml != '':
+                sidebarHtml = sidebarHtml + \
+                        "<li>\
+                            <a href=\"{0}\"><i class=\"{1}\"></i> {2}<span class=\"fa arrow\"></span></a>\
+                            <ul class=\"nav nav-second-level {3}\">\
+                            {4}</ul>\
+                            <!-- /.nav-second-level -->\
+                        </li>".format(btn.href, btn.iconRef, btn.name, 'collapse in' if btn.isActive else 'collapse', ndBtnHtml)
         else:
-            btnHref = str(btn.href).lower()
-            fullPathUrl = str(request.get_full_path())
-            if btnHref in fullPathUrl:
-                sidebarHtml = sidebarHtml + "<li><a href=\"{}\" {}><i class=\"{}\"></i> {}</a></li>".format(btn.href,
-                                                                                                            'class=\"active\"',
-                                                                                                            btn.iconRef,
-                                                                                                            btn.name)
-            else:
-                sidebarHtml = sidebarHtml + "<li><a href=\"{}\"><i class=\"{}\"></i> {}</a></li>".format(btn.href,
-                                                                                                         btn.iconRef,
-                                                                                                         btn.name)
+            if btn.CheckPermissions(request.user):
+                btnHref = str(btn.href).lower()
+                fullPathUrl = str(request.get_full_path())
+                if btnHref in fullPathUrl:
+                    sidebarHtml = sidebarHtml + "<li><a href=\"{}\" {}><i class=\"{}\"></i> {}</a></li>".format(btn.href,
+                                                                                                                'class=\"active\"',
+                                                                                                                btn.iconRef,
+                                                                                                                btn.name)
+                else:
+                    sidebarHtml = sidebarHtml + "<li><a href=\"{}\"><i class=\"{}\"></i> {}</a></li>".format(btn.href,
+                                                                                                             btn.iconRef,
+                                                                                                             btn.name)
     return sidebarHtml

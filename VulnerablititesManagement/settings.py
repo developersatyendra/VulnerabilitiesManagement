@@ -193,3 +193,8 @@ REPORT_CSS = [
 ]
 
 REPORT_LOGO = os.path.join(MEDIA_ROOT, r'img\reports\logo.png')
+
+#################################################
+# OS Signatures
+LINUX_OS = ['ubuntu', 'kali', 'fedora', 'redhat', 'rhel', 'oracle', 'gento', 'mint', 'linux']
+UNIX_OS = ['aix', 'unix']
