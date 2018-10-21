@@ -1,13 +1,12 @@
 from django.utils.datastructures import MultiValueDictKeyError
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from django.core.paginator import Paginator
-from django.db.models import Q
 from services.models import ServiceModel
-from scans.models import ScanTaskModel, ScanInfoModel
+from scans.models import ScanTaskModel
 from .models import VulnerabilityModel
 from .serializers import VulnSerializer
 from .forms import VulnForm, VulnIDForm
+from .ultil import GetVulns
 
 
 PAGE_DEFAULT = 1
@@ -50,96 +49,14 @@ class APIGetVulnName(APIView):
 
 class APIGetVulns(APIView):
     def get(self, request):
+        kw = dict(request.GET)
+        retval = GetVulns(**kw)
+        if retval['status'] != 0:
+            return Response({'status': retval['status'], 'message': retval['message'], 'detail': retval['detail']})
 
-        # Filter by search keyword
-        if request.GET.get('searchText'):
-            search = request.GET.get('searchText')
-            # Filter On Vuln
-            queryVulnModel = Q(description__icontains=search) \
-                             | Q(name__icontains=search) \
-                             | Q(observation__icontains=search) \
-                             | Q(recommendation__icontains=search) \
-                             | Q(cve__icontains=search) \
-                             | Q(levelRisk__icontains=search) \
-                             | Q(service__name__icontains=search)
-            querySet = VulnerabilityModel.objects.filter(queryVulnModel)
-        else:
-            querySet = VulnerabilityModel.objects.all()
-
-        ######################################################
-        # Adv Filter
-        #
-
-        # Filter by serviceID
-        if request.GET.get('serviceID'):
-            try:
-                serviceID = int(request.GET.get('serviceID'))
-            except ValueError:
-                return Response({'status': -1, 'message': "serviceID is not integer"})
-            querySet = querySet.filter(service=serviceID)
-
-        # Filter by project
-        if request.GET.get('projectID'):
-            try:
-                projectID = int(request.GET.get('projectID'))
-            except ValueError:
-                return Response({'status': -1, 'message': "projectID is not integer"})
-            querySet = querySet.filter(ScanInfoVuln__scanTask__scanProject=projectID)
-
-        # Filter by scanTask
-        if request.GET.get('scanID'):
-            try:
-                scanID = int(request.GET.get('scanID'))
-            except ValueError:
-                return Response({'status': -1, 'message': "scanID is not integer"})
-            querySet = querySet.filter(ScanInfoVuln__scanTask__id=scanID)
-
-        # Filter by host
-        if request.GET.get('hostID'):
-            try:
-                hostID = int(request.GET.get('hostID'))
-            except ValueError:
-                return Response({'status': -1, 'message': "hostID is not integer"})
-            querySet = querySet.filter(ScanInfoVuln__hostScanned__id=hostID)
-
-        querySet=querySet.distinct()
-
-        # get total
-        numObject = querySet.count()
-        # Get sort order
-        if request.GET.get('sortOrder') == 'asc':
-            sortString = ''
-        else:
-            sortString = '-'
-
-        # Get sort filed
-        if request.GET.get('sortName'):
-            sortString = sortString + request.GET.get('sortName')
-            sortString = sortString.replace('.', '__')
-            sortString = [sortString]
-        else:
-            sortString = ['-levelRisk', 'name']
-
-        querySet = querySet.order_by(*sortString)
-        # Get Page Number
-        if request.GET.get('pageNumber'):
-            page = request.GET.get('pageNumber')
-        else:
-            page = PAGE_DEFAULT
-
-        # Get Page Size
-        if request.GET.get('pageSize'):
-            numEntry = request.GET.get('pageSize')
-            # IF Page size is 'ALL'
-            if numEntry.lower() == 'all' or numEntry == -1:
-                numEntry = numObject
-        else:
-            numEntry = NUM_ENTRY_DEFAULT
-        querySetPaged = Paginator(querySet, int(numEntry))
-        dataPaged = querySetPaged.get_page(page)
-        dataSerialized = VulnSerializer(dataPaged, many=True)
+        dataSerialized = VulnSerializer(retval['object'], many=True)
         data = dict()
-        data["total"] = numObject
+        data["total"] = retval['total']
         data['rows'] = dataSerialized.data
         return Response({'status':0, 'object':data})
 
@@ -263,58 +180,17 @@ class APIGetCurrentHostVuln(APIView):
         if request.GET.get('id'):
             try:
                 id = int(request.GET.get('id'))
-            except ValueError:
+            except TypeError:
                 return Response({'status': '-1', 'message': 'Value error',
                                  'detail': {"id": [{"message": "ID is not integer", "code": "value error"}]}})
             scanTask = ScanTaskModel.objects.filter(ScanInfoScanTask__hostScanned=id).order_by('-startTime')[0]
-            scanInfo = scanTask.ScanInfoScanTask.get(hostScanned=id)
-            vulns = scanInfo.vulnFound.all()
-            if request.GET.get('searchText'):
-                search = request.GET.get('searchText')
-                queryVulnModel = Q(description__icontains=search) \
-                                 | Q(name__icontains=search) \
-                                 | Q(observation__icontains=search) \
-                                 | Q(recommendation__icontains=search) \
-                                 | Q(cve__icontains=search) \
-                                 | Q(levelRisk__icontains=search) \
-                                 | Q(service__name__icontains=search)
-                vulns = vulns.filter(queryVulnModel)
-            vulns = vulns.distinct()
-
-            # get total
-            numObject = vulns.count()
-            # Get sort order
-            if request.GET.get('sortOrder') == 'asc':
-                sortString = ''
-            else:
-                sortString = '-'
-
-            # Get sort filed
-            if request.GET.get('sortName'):
-                sortString = sortString + request.GET.get('sortName')
-            else:
-                sortString = sortString + 'id'
-            sortString = sortString.replace('.', '__')
-            querySet = vulns.order_by(sortString)
-            # Get Page Number
-            if request.GET.get('pageNumber'):
-                page = request.GET.get('pageNumber')
-            else:
-                page = PAGE_DEFAULT
-
-            # Get Page Size
-            if request.GET.get('pageSize'):
-                numEntry = request.GET.get('pageSize')
-                # IF Page size is 'ALL'
-                if numEntry.lower() == 'all' or numEntry == -1:
-                    numEntry = numObject
-            else:
-                numEntry = NUM_ENTRY_DEFAULT
-            querySetPaged = Paginator(querySet, int(numEntry))
-            dataPaged = querySetPaged.get_page(page)
-            dataSerialized = VulnSerializer(dataPaged, many=True)
+            retval = GetVulns(scanID=scanTask.id, hostID=id, **dict(request.GET))
+            if retval['status'] != 0:
+                print(retval)
+                return Response({'status': retval['status'], 'message': retval['message'], 'detail': retval['detail']})
+            dataSerialized = VulnSerializer(retval['object'], many=True)
             data = dict()
-            data["total"] = numObject
+            data["total"] = retval['total']
             data['rows'] = dataSerialized.data
             return Response({'status': 0, 'object': data})
         else:

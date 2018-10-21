@@ -25,18 +25,34 @@ UNIX_OS = ['aix', 'unix']
 #   serviceID: Service to be used to filter
 
 def GetVulns(*args, **kwargs):
-
     # Filter by search keyword
     if 'searchText' in kwargs:
-        search = kwargs.get('searchText')
+        rawSearch = kwargs.get('searchText', None)
+        if type(rawSearch) is list:
+            queryVulnModel = None
+            for search in rawSearch:
+                querry = Q(description__icontains=search) \
+                             | Q(name__icontains=search) \
+                             | Q(observation__icontains=search) \
+                             | Q(recommendation__icontains=search) \
+                             | Q(cve__icontains=search) \
+                             | Q(levelRisk__icontains=search) \
+                             | Q(service__name__icontains=search)
+                if queryVulnModel:
+                    queryVulnModel = queryVulnModel | querry
+                else:
+                    queryVulnModel = querry
+
         # Filter On Vuln
-        queryVulnModel = Q(description__icontains=search) \
-                         | Q(name__icontains=search) \
-                         | Q(observation__icontains=search) \
-                         | Q(recommendation__icontains=search) \
-                         | Q(cve__icontains=search) \
-                         | Q(levelRisk__icontains=search) \
-                         | Q(service__name__icontains=search)
+        else:
+            search = rawSearch
+            queryVulnModel = Q(description__icontains=search) \
+                             | Q(name__icontains=search) \
+                             | Q(observation__icontains=search) \
+                             | Q(recommendation__icontains=search) \
+                             | Q(cve__icontains=search) \
+                             | Q(levelRisk__icontains=search) \
+                             | Q(service__name__icontains=search)
         querySet = VulnerabilityModel.objects.filter(queryVulnModel)
     else:
         querySet = VulnerabilityModel.objects.all()
@@ -47,82 +63,149 @@ def GetVulns(*args, **kwargs):
 
     # Filter by serviceID
     if 'serviceID' in kwargs:
-        try:
-            serviceID = int(kwargs.get('serviceID'))
-        except ValueError:
-            return {'status': -1, 'message': "serviceID is not integer"}
-        querySet = querySet.filter(service=serviceID)
+        serviceID = kwargs.get('serviceID', None)
+        if type(serviceID) is list:
+            try:
+                querySet = querySet.filter(service__in=serviceID)
+            except (ValueError, TypeError) as e:
+                return {'status': -1, 'message': "serviceID is not integer", 'detail': str(e)}
+        else:
+            try:
+                serviceID = int(serviceID)
+            except (ValueError, TypeError) as e:
+                return {'status': -1, 'message': "serviceID is not integer", 'detail': str(e)}
+            querySet = querySet.filter(service=serviceID)
 
     # Filter by project
     if 'projectID' in kwargs:
-        try:
-            projectID = int(kwargs.get('projectID'))
-        except ValueError:
-            return {'status': -1, 'message': "projectID is not integer"}
-        querySet = querySet.filter(ScanInfoVuln__scanTask__scanProject=projectID)
+        projectID = kwargs.get('projectID', None)
+        if type(projectID) is list:
+            try:
+                querySet = querySet.filter(ScanInfoVuln__scanTask__scanProject__in=projectID)
+            except (ValueError, TypeError) as e:
+                return {'status': -1, 'message': "projectID is not integer", 'detail': str(e)}
+        else:
+            try:
+                projectID = int(kwargs.get('projectID'))
+            except (ValueError, TypeError) as e:
+                return {'status': -1, 'message': "projectID is not integer", 'detail': str(e)}
+            querySet = querySet.filter(ScanInfoVuln__scanTask__scanProject=projectID)
 
     # Filter by scanTask
     if 'scanID' in kwargs:
-        try:
-            scanID = int(kwargs.get('scanID'))
-        except ValueError:
-            return {'status': -1, 'message': "scanID is not integer"}
-        querySet = querySet.filter(ScanInfoVuln__scanTask__id=scanID)
+        scanID = kwargs.get('scanID', None)
+        if type(scanID) is list:
+            try:
+                querySet = querySet.filter(ScanInfoVuln__scanTask__in=scanID)
+            except (ValueError, TypeError) as e:
+                return {'status': -1, 'message': "scanID is not integer", 'detail': str(e)}
+        else:
+            try:
+                scanID = int(scanID)
+            except (ValueError, TypeError) as e:
+                return {'status': -1, 'message': "scanID is not integer", 'detail': str(e)}
+            querySet = querySet.filter(ScanInfoVuln__scanTask__id=scanID)
 
     # Filter by host
     if 'hostID' in kwargs:
-        try:
-            hostID = int(kwargs.get('hostID'))
-        except ValueError:
-            return {'status': -1, 'message': "hostID is not integer"}
-        querySet = querySet.filter(ScanInfoVuln__hostScanned__id=hostID)
+        hostID = kwargs.get('hostID', None)
+        if type(hostID) is list:
+            try:
+                querySet = querySet.filter(ScanInfoVuln__hostScanned__in=hostID)
+            except (ValueError, TypeError) as e:
+                return {'status': -1, 'message': "hostID is not integer", 'detail': str(e)}
+        else:
+            try:
+                hostID = int(hostID)
+            except (ValueError, TypeError) as e:
+                return {'status': -1, 'message': "hostID is not integer", 'detail': str(e)}
+            querySet = querySet.filter(ScanInfoVuln__hostScanned__id=hostID)
 
     querySet=querySet.distinct()
 
     # get total
     numObject = querySet.count()
-    # Get sort order
-    if 'sortOrder' in kwargs:
-        if kwargs.get('sortOrder') == 'asc':
-            sortString = ''
-        else:
-            sortString = '-'
-    else:
-        sortString = '-'
-
-    # Get sort filed
+    # Get sort field
     if 'sortName' in kwargs:
-        sortString = sortString + kwargs.get('sortName')
-    else:
-        sortString = sortString + 'levelRisk'
-    sortString = sortString.replace('.', '__')
-    querySet = querySet.order_by(sortString)
-    # Get Page Number
+        sortNames = kwargs.get('sortName', None)
+        sortOrder = kwargs.get('sortOrder', None)
+        if type(sortNames) is list:
+            sortStrings = []
+            for index, sortName in enumerate(sortNames):
+                if type(sortOrder) is list:
+                    try:
+                        if sortOrder[index] == 'asc':
+                            sortString = ''
+                        else:
+                            sortString = '-'
+                    except IndexError:
+                        sortString = '-'
+                elif sortOrder == 'asc':
+                    sortString = ''
+                else:
+                    sortString = '-'
+                sortString=sortString + sortName
+                sortString = sortString.replace('.', '__')
+                sortStrings.append(sortString)
+            querySet = querySet.order_by(*sortStrings)
+
+        else:
+            if type(sortOrder) is list:
+                try:
+                    if sortOrder[0] == 'asc':
+                        sortString = ''
+                    else:
+                        sortString = '-'
+                except IndexError:
+                    sortString = '-'
+            elif sortOrder == 'asc':
+                sortString = ''
+            else:
+                sortString = '-'
+            sortString = sortString+sortNames
+            sortString = sortString.replace('.', '__')
+            querySet = querySet.order_by(sortString)
+
+    # page number
     if 'pageNumber' in kwargs:
-        try:
-            page = int(kwargs.get('pageNumber'))
-        except ValueError:
-            return {'status': -1, 'message': "pageNumber is not integer"}
+        pageNumber = kwargs.get('pageNumber', None)
+        if type(pageNumber) is list:
+            try:
+                page = int(pageNumber[0])
+            except (TypeError, IndexError) as e:
+                return {'status': -1, 'message': "pageNumber is not integer", 'detail': str(e)}
+        else:
+            try:
+                page = int(pageNumber)
+            except TypeError as e:
+                return {'status': -1, 'message': "pageNumber is not integer", 'detail': str(e)}
     else:
         page = PAGE_DEFAULT
 
     # Get Page Size
     if 'pageSize' in kwargs:
-        numEntry = kwargs.get('pageSize')
-
+        pageSize = kwargs.get('pageSize', None)
+        if type(pageSize) is list:
+            try:
+                numEntry = pageSize[0]
+            except IndexError:
+                numEntry = NUM_ENTRY_DEFAULT
+        else:
+            numEntry = pageSize
         # IF Page size is 'ALL'
         if numEntry.lower() == 'all' or numEntry == -1:
             numEntry = numObject
         else:
             try:
-                numEntry = int(kwargs.get('pageSize'))
-            except ValueError:
-                return {'status': -1, 'message': "pageSize is not integer"}
+                numEntry = int(numEntry)
+            except TypeError as e:
+                return {'status': -1, 'message': "pageSize is not integer", 'detail': str(e)}
     else:
         numEntry = NUM_ENTRY_DEFAULT
     querySetPaged = Paginator(querySet, int(numEntry))
     dataPaged = querySetPaged.get_page(page)
-    return {'status':0, 'object': querySet}
+
+    return {'status': 0, 'object': dataPaged, 'total': numObject}
 
 
 def VulnStatisticByOS(*args, **kwargs):
@@ -191,7 +274,7 @@ def GetCurrentHostVuln(*args,**kwargs):
     if 'hostID' in kwargs:
         hostID = kwargs.get('hostID')
         latestScanTask = ScanTaskModel.objects.filter(ScanInfoScanTask__hostScanned__id=hostID).order_by('-startTime')[0]
-        currentVulns = GetVulns(hostID=hostID, scanID=latestScanTask.id)['object']
+        currentVulns = GetVulns(hostID=hostID, scanID=latestScanTask.id, pageSize= -1)['object']
         return {'status': 0, 'object': currentVulns}
     else:
         return {'status': -1, 'message': "HostID is required"}

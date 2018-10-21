@@ -614,6 +614,7 @@ function DrawChartServiceStat(){
             },
             options: {
                 legend: {display: false},
+                responsive: true,
                 title: {
                     display: true,
                     text: 'Statistics of vulnerabilities by services'
