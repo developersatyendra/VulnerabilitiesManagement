@@ -14,9 +14,10 @@ urlpatterns = [
     path('<int:id>/runningonhost', login_required(views.ServiceRunOnHostView.as_view(), redirect_field_name=LOGIN_URL), name='serviceRunningOnHost'),
 
     # APIs
-    path('api/getservices', apis.APIGetServices.as_view(), name='APIgetservices'),
-    path('api/getservicebyid', apis.APIGetServicesByID.as_view(), name='APIgetservicebyid'),
-    path('api/addservice', apis.APIAddService.as_view(), name='APIaddservice'),
-    path('api/deleteservice', apis.APIDeleteService.as_view(), name='APIdeleteservice'),
-    path('api/updateservice', apis.APIUpdateService.as_view(), name='APIupdateservice'),
+    path('api/getservices', apis.APIGetServices.as_view(), name='APIGetServices'),
+    path('api/getservicebyid', apis.APIGetServicesByID.as_view(), name='APIGetServiceByID'),
+    path('api/getservicevulnstat', apis.APIServiceVulnStatistic.as_view(), name='APIGetServiceVulnStat'),
+    path('api/addservice', apis.APIAddService.as_view(), name='APIAddService'),
+    path('api/deleteservice', apis.APIDeleteService.as_view(), name='APIDeleteService'),
+    path('api/updateservice', apis.APIUpdateService.as_view(), name='APIUpdateService'),
 ]

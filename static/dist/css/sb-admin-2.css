@@ -417,10 +417,14 @@ table.dataTable thead .sorting:after {
 .timeline-body > p + p {
   margin-top: 5px;
 }
-.equal {
-  display: flex;
-  display: -webkit-flex;
-  flex-wrap: wrap;
+.row-equal {
+    display: table;
+}
+
+.col-equal {
+    float: none;
+    display: table-cell;
+    vertical-align: top;
 }
 @media (max-width: 767px) {
   ul.timeline:before {

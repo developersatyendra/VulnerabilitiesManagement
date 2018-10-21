@@ -5,6 +5,7 @@ $(document).ready(
     // Bar chart
     DrawChartScanResult(),
     DrawChartOSStat(),
+    DrawChartServiceStat(),
     //////////////////////////////////////////
     // Decleare scan tasks table
     //
@@ -572,6 +573,50 @@ function DrawChartOSStat(){
                 title: {
                     display: true,
                     text: 'OS Statistic'
+                }
+            }
+        });
+    })
+}
+
+function DrawChartServiceStat(){
+    function GetData() {
+        return $.ajax({
+            url:'/services/api/getservicevulnstat?scanID='+id,
+            method: "GET",
+            success: function (data) {
+                if(data.status ==0)
+                    rawData = data.object;
+            }
+        });
+    }
+    $.when(GetData()).done(function (results){
+        if(results.status <0)
+            return -1;
+        var rawData = results.object;
+        var labels = [];
+        var dataset = [];
+        for(i=0; i<rawData.length;i++){
+            labels.push(rawData[i].name + ' - '+rawData[i].port);
+            dataset.push(rawData[i].vuln);
+        }
+
+        var ctx = document.getElementById("vulnStatBySrv").getContext("2d");
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels ,
+                datasets: [
+                    {
+                        data: dataset,
+                        backgroundColor: '#4B98FF'
+                    }]
+            },
+            options: {
+                legend: {display: false},
+                title: {
+                    display: true,
+                    text: 'Statistics of vulnerabilities by services'
                 }
             }
         });

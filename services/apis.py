@@ -8,6 +8,8 @@ from django.db.models import Q
 from django.contrib.auth.models import User
 from hosts.models import HostModel
 from vulnerabilities.models import VulnerabilityModel
+from scans.models import ScanTaskModel, ScanInfoModel
+from projects.models import ScanProjectModel
 from .models import ServiceModel
 from .serializers import ServiceSerializer
 from .forms import ServiceForm, ServiceIDForm
@@ -201,3 +203,70 @@ class APIUpdateService(APIView):
             return Response({'status': '0', 'object': dataSerialized.data})
         else:
             return Response({'status': '-1', 'message': 'Form is invalid', 'detail': serviceForm.errors})
+
+
+class APIServiceVulnStatistic(APIView):
+    def get(self, request):
+        serviceIDs= None
+        vulnIDs = None
+
+        # scanID process
+        if request.GET.get('scanID'):
+            scanID = request.GET.get('scanID')
+            try:
+                scanTask = ScanTaskModel.objects.get(id=scanID)
+                print(scanTask)
+            except (ValueError, TypeError) as e:
+                return Response({'status': '-1', 'message': 'Value error',
+                                 'detail': {"scanID": [{"message": "ID is not integer", "code": "value error"}]}})
+            except ScanTaskModel.DoesNotExist:
+                return Response({'status': '-1', 'message': 'Scan not found error',
+                                 'detail': {"scanID": [{"message": "Scan does not exist", "code": "exist error"}]}})
+            serviceIDs = scanTask.ScanInfoScanTask.distinct().values_list('vulnFound__service', flat=True)
+            vulnIDs = scanTask.ScanInfoScanTask.distinct().values_list('vulnFound', flat=True)
+
+        # hostID process
+        elif request.GET.get('hostID'):
+            hostID = request.GET.get('hostID')
+            try:
+                host = HostModel.objects.get(id=hostID)
+            except (ValueError, TypeError) as e:
+                return Response({'status': '-1', 'message': 'Value error',
+                                 'detail': {"hostID": [{"message": "ID is not integer", "code": "value error"}]}})
+            except HostModel.DoesNotExist:
+                return Response({'status': '-1', 'message': 'Host not found error',
+                                 'detail': {"hostID": [{"message": "Host does not exist", "code": "exist error"}]}})
+            serviceIDs = host.ScanInfoHost.distinct().values_list('vulnFound__service', flat=True)
+            vulnIDs = host.ScanInfoHost.distinct().values_list('vulnFound', flat=True)
+
+        # projectID process
+        elif request.GET.get('projectID'):
+            projectID = request.GET.get('projectID')
+            try:
+                project = ScanProjectModel.objects.get(id=projectID)
+
+            except (ValueError, TypeError) as e:
+                return Response({'status': '-1', 'message': 'Value error',
+                                 'detail': {"projectID": [{"message": "ID is not integer", "code": "value error"}]}})
+            except ScanProjectModel.DoesNotExist:
+                return Response({'status': '-1', 'message': 'Project not found error',
+                                 'detail': {"projectID": [{"message": "Project does not exist", "code": "exist error"}]}})
+            scanInfoID = project.ScanProjectScanTask.values_list('ScanInfoScanTask')
+            scanInfo = ScanInfoModel.objects.filter(id__in=scanInfoID).distinct()
+            serviceIDs = scanInfo.values_list('vulnFound__service', flat=True)
+            vulnIDs = scanInfo.values_list('vulnFound', flat=True)
+
+        if serviceIDs and vulnIDs:
+            serviceQuerySet = ServiceModel.objects.filter(id__in=serviceIDs)
+            vulnQuerySet = VulnerabilityModel.objects.filter(id__in=vulnIDs)
+            object_data = []
+            for service in serviceQuerySet:
+                count = 0
+                for vuln in vulnQuerySet:
+                    if vuln.service.id == service.id:
+                        count = count + 1
+                object_data.append({'name': service.name,'port': service.port, 'vuln': count})
+            return Response({'status': 0, 'object': object_data})
+
+        else:
+            return Response({'status': '-1', 'message': 'statsBy is required',})
