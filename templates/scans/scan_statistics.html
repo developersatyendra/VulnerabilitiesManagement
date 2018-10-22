@@ -125,11 +125,24 @@
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <i class="fa fa-table fa-fw" aria-hidden="true"></i>
-                            Operating System Statistic
+                            Top Vulnerabilities of Scan Task
+                            <div class="pull-right">
+                                <div class="dropdown">
+                                    <button class="btn btn-default dropdown-toggle btn-xs" type="button" data-toggle="dropdown" aria-expanded="true">
+                                        <i class="fa fa-gear fa-fw"></i>Actions
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu pull-right">
+                                        <li id="edit"><a href="#"><i class="fa fa-pencil fa-fw"></i> Edit Host</a></li>
+                                        <li id="delete"><a href="#"><i class="fa fa-trash-o fa-fw"></i> Delete Host</a></li>
+
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
-{#                            <canvas id="osStatisticChart" height="400px" width="400px"></canvas>#}
+                            <table id="vulntable" data-pagination="false"></table>
                             <!-- /.table-responsive -->
                         </div>
                         <!-- /.panel-body -->

@@ -23,7 +23,8 @@ from django.contrib.auth.models import User
 from .models import SubmitModel
 from .tasks import ProcessSubmitFileTask
 from django.http import HttpResponse
-
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import permission_required
 
 PAGE_DEFAULT = 1
 NUM_ENTRY_DEFAULT = 50
@@ -56,6 +57,8 @@ class SubmitQueueElement:
 #   pageNumber: page number of curent view
 
 class APIGetSubmits(APIView):
+
+    @method_decorator(permission_required('submit.view_submitmodel', raise_exception=True))
     def get(self, request):
         # Filter by search keyword
         if request.GET.get('search'):
@@ -118,6 +121,7 @@ class APIGetSubmits(APIView):
 class APIAddSubmit(APIView):
     parser_classes = (MultiPartParser, FormParser, FileUploadParser,)
 
+    @method_decorator(permission_required('submit.add_submitmodel', raise_exception=True))
     def post(self, request):
         submitForm = SubmitAddForm(request.POST, request.FILES)
         if submitForm.is_valid():
@@ -140,6 +144,7 @@ class APIAddSubmit(APIView):
 
 class APIDeleteSubmit(APIView):
 
+    @method_decorator(permission_required('submit.delete_submitmodel', raise_exception=True))
     def post(self, request):
         if request.POST.get('id'):
             successOnDelete = 0
@@ -335,6 +340,7 @@ def ProcessFoundStoneXML(hostdata, riskdata, submitQueueElement):
 
 class APIGetSubmitFile(APIView):
 
+    @method_decorator(permission_required('submit.view_submitmodel', raise_exception=True))
     def get(self, request):
         submitID = request.GET.get('id', None)
         if submitID:

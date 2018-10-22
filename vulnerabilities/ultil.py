@@ -24,7 +24,7 @@ UNIX_OS = ['aix', 'unix']
 #   hostID: Vuln to be used to filter
 #   serviceID: Service to be used to filter
 
-def GetVulns(*args, **kwargs):
+def GetVulns(skipPaging=False,*args, **kwargs,):
     # Filter by search keyword
     if 'searchText' in kwargs:
         rawSearch = kwargs.get('searchText', None)
@@ -165,6 +165,12 @@ def GetVulns(*args, **kwargs):
             sortString = sortString+sortNames
             sortString = sortString.replace('.', '__')
             querySet = querySet.order_by(sortString)
+    else:
+        querySet = querySet.order_by('-levelRisk')
+
+    # Check if need for paging
+    if skipPaging:
+        return {'status': 0, 'object': querySet, 'total': numObject}
 
     # page number
     if 'pageNumber' in kwargs:
@@ -193,7 +199,7 @@ def GetVulns(*args, **kwargs):
         else:
             numEntry = pageSize
         # IF Page size is 'ALL'
-        if numEntry.lower() == 'all' or numEntry == -1:
+        if str(numEntry).lower() == 'all' or str(numEntry) == '-1':
             numEntry = numObject
         else:
             try:
@@ -209,7 +215,7 @@ def GetVulns(*args, **kwargs):
 
 
 def VulnStatisticByOS(*args, **kwargs):
-    vulns = GetVulns(*args, **kwargs)
+    vulns = GetVulns(skipPaging=True, *args, **kwargs)
     if vulns['status'] != 0:
         return -1
     vulnQuerySet = vulns['object']
@@ -253,11 +259,10 @@ def VulnStatisticByOS(*args, **kwargs):
 
 
 def VulnStatisticByService(*args, **kwargs):
-    vulns = GetVulns(*args, **kwargs)
+    vulns = GetVulns(skipPaging=True, *args, **kwargs)
     if vulns['status'] != 0:
         return -1
     vulnQuerySet = vulns['object']
-
     # Filter Linux
     services = vulnQuerySet.values_list('service__name')
 
@@ -274,7 +279,7 @@ def GetCurrentHostVuln(*args,**kwargs):
     if 'hostID' in kwargs:
         hostID = kwargs.get('hostID')
         latestScanTask = ScanTaskModel.objects.filter(ScanInfoScanTask__hostScanned__id=hostID).order_by('-startTime')[0]
-        currentVulns = GetVulns(hostID=hostID, scanID=latestScanTask.id, pageSize= -1)['object']
+        currentVulns = GetVulns(hostID=hostID, scanID=latestScanTask.id, pageSize= -1, skipPaging=True)['object']
         return {'status': 0, 'object': currentVulns}
     else:
         return {'status': -1, 'message': "HostID is required"}

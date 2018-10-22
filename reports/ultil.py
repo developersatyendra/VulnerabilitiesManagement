@@ -259,7 +259,7 @@ def PDFScanReport(report):
     htmlTemplate = get_template(TEMPLATES['scan_vulns'])
 
     # Get Vulnerbilities were discovered by this scan
-    vulns = GetVulns(scanID=scan.id, pageSize=-1)['object']
+    vulns = GetVulns(scanID=scan.id, pageSize=-1, skipPaging=True)['object']
 
     # Get statistic vuln by service
     statVulnScanSrv = VulnStatisticByService(scanID=scan.id, pageSize=-1)
@@ -317,7 +317,7 @@ def PDFScanReport(report):
     host_t = HostModel.objects.filter(id__in=hostIDs)
     vuln_t = []
     for host in host_t:
-        vuln_t.append(GetVulns(hostID=host.id, scanID=scan.id, sortName='levelRisk', sortOrder='desc', pageSize=-1)['object'])
+        vuln_t.append(GetVulns(hostID=host.id, scanID=scan.id, sortName='levelRisk', sortOrder='desc', pageSize=-1, skipPaging=True)['object'])
     # Fill values to template
     context = {
         'css': REPORT_CSS,                              # CSS - Bootstrap
@@ -399,7 +399,7 @@ def PDFProjectReport(report):
     htmlTemplate = get_template(TEMPLATES['project_vulns'])
 
     # Get Vulnerbilities were discovered by this scan
-    vulns = GetVulns(projectID=project.id, pageSize=-1)['object']
+    vulns = GetVulns(projectID=project.id, pageSize=-1, skipPaging=True)['object']
 
     # Get statistic vuln by service
     statVulnScanSrv = VulnStatisticByService(projectID=project.id, pageSize=-1)
@@ -461,7 +461,7 @@ def PDFProjectReport(report):
     )
     for host in host_t:
         latestScanTask = ScanTaskModel.objects.filter(ScanInfoScanTask__hostScanned__id=host.id).order_by('-startTime')[0]
-        currentVuln = GetVulns(hostID=host.id, scanID=latestScanTask.id, sortName='levelRisk', sortOrder='desc', pageSize=-1)['object']
+        currentVuln = GetVulns(hostID=host.id, scanID=latestScanTask.id, sortName='levelRisk', sortOrder='desc', pageSize=-1, skipPaging=True)['object']
         currentVuln = currentVuln.aggregate(
             high=Count('id', filter=Q(levelRisk__gte=LEVEL_HIGH), distinct=True),
             med=Count('id', filter=(Q(levelRisk__gte=LEVEL_MED)&Q(levelRisk__lt=LEVEL_HIGH)),distinct=True),

@@ -7,7 +7,8 @@ from .models import VulnerabilityModel
 from .serializers import VulnSerializer
 from .forms import VulnForm, VulnIDForm
 from .ultil import GetVulns
-
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import permission_required
 
 PAGE_DEFAULT = 1
 NUM_ENTRY_DEFAULT = 50
@@ -18,6 +19,8 @@ NUM_ENTRY_DEFAULT = 50
 #
 
 class APIGetVulnName(APIView):
+
+    @method_decorator(permission_required('vulnerabilities.can_view_vulnerabilitymodel', raise_exception=True))
     def get(self, request):
         if request.GET.get('id'):
             try:
@@ -48,6 +51,8 @@ class APIGetVulnName(APIView):
 #   serviceID: Service to be used to filter
 
 class APIGetVulns(APIView):
+
+    @method_decorator(permission_required('vulnerabilities.view_vulnerabilitymodel', raise_exception=True))
     def get(self, request):
         kw = dict(request.GET)
         retval = GetVulns(**kw)
@@ -68,6 +73,8 @@ class APIGetVulns(APIView):
 #
 
 class APIGetVulnByID(APIView):
+
+    @method_decorator(permission_required('vulnerabilities.view_vulnerabilitymodel', raise_exception=True))
     def get(self, request):
         if request.GET.get('id'):
             id = request.GET.get('id')
@@ -92,6 +99,8 @@ class APIGetVulnByID(APIView):
 #
 
 class APIAddVuln(APIView):
+
+    @method_decorator(permission_required('vulnerabilities.add_vulnerabilitymodel', raise_exception=True))
     def post(self, request):
         vulnForm = VulnForm(request.POST)
         if vulnForm.is_valid():
@@ -109,6 +118,8 @@ class APIAddVuln(APIView):
 #
 
 class APIDeleteVuln(APIView):
+
+    @method_decorator(permission_required('vulnerabilities.delete_vulnerabilitymodel', raise_exception=True))
     def post(self, request):
         vulnForm = VulnIDForm(request.POST)
         if vulnForm.is_valid():
@@ -147,6 +158,8 @@ class APIDeleteVuln(APIView):
 #
 
 class APIUpdateVuln(APIView):
+
+    @method_decorator(permission_required('vulnerabilities.change_vulnerabilitymodel', raise_exception=True))
     def post(self, request):
         if request.POST.get('id'):
             try:
@@ -176,6 +189,8 @@ class APIUpdateVuln(APIView):
 #   limit: page number of curent view
 
 class APIGetCurrentHostVuln(APIView):
+
+    @method_decorator(permission_required('vulnerabilities.view_vulnerabilitymodel', raise_exception=True))
     def get(self, request):
         if request.GET.get('id'):
             try:
@@ -186,7 +201,6 @@ class APIGetCurrentHostVuln(APIView):
             scanTask = ScanTaskModel.objects.filter(ScanInfoScanTask__hostScanned=id).order_by('-startTime')[0]
             retval = GetVulns(scanID=scanTask.id, hostID=id, **dict(request.GET))
             if retval['status'] != 0:
-                print(retval)
                 return Response({'status': retval['status'], 'message': retval['message'], 'detail': retval['detail']})
             dataSerialized = VulnSerializer(retval['object'], many=True)
             data = dict()
