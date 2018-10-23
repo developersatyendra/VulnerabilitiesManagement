@@ -1,11 +1,16 @@
 var rowIDSelected = null;
 var url = window.location.pathname;
 var id = url.split("/")[url.split("/").length -2];
+var __vulnTop = 10;
 $(document).ready(
-    // Bar chart
+    // Draw Charts
     DrawChartScanResult(),
     DrawChartOSStat(),
     DrawChartServiceStat(),
+
+
+    // Fill Br by Scan Name
+    GetScanName(),
     //////////////////////////////////////////
     // Decleare vulns table
     //
@@ -22,7 +27,7 @@ $(document).ready(
                     sortable: false
                 },
                 {
-                    title: "Level Risk",
+                    title: "Risk",
                     width: '10%',
                     field: "levelRisk",
                     align: "center",
@@ -39,7 +44,8 @@ $(document).ready(
                 // }
             ],
             pagination: true,
-            pageList: [5, 10, 20, 50, 100, 200, 'All'],
+            pageSize: 5,
+            pageList: [5],//, 10, 20, 50, 100, 200, 'All'],
             search: false,
             ajax: ajaxRequest,
             queryParams: queryParams,
@@ -55,9 +61,31 @@ $(document).ready(
             // }
         })
     }),
+    // Top vuln DropDown Button
+    $(".dropdown-menu li a").click(function(event){
+        $(this).parents(".dropdown").find('.btn').html('<i class="fa fa-angle-double-up fa-fw"></i>' + $(this).text() + ' <span class="caret"></span>');
+        $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
+        __vulnTop = parseInt($(this).attr('id'));
+        $("#vulntable").bootstrapTable('refresh');
+        event.preventDefault();
+    }),
 );
 
-// Format href for bootstrap table
+// Get Br
+function GetScanName(){
+     $.ajax({
+         type: "GET",
+         url: "/scans/api/getscanname",
+         data: {id: id},
+         dataType: "json",
+         success: function (data) {
+             if (data.status == 0) {
+                 $('#brScan').text(data.object)
+             }
+         },
+     })
+}
+
 // Format Href for bootstrap table
 function HrefFormater(value, row, index) {
     return '<a href="/vuln/' + row.id + '"> ' + row.name +'</a>';
@@ -116,7 +144,7 @@ function ajaxRequest(params) {
             if(data.status == 0){
                 params.success({
                     "rows": data.object.rows,
-                    "total": data.object.length
+                    "total": __vulnTop
                 })
             }
         },
