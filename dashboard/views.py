@@ -45,8 +45,9 @@ def RenderSideBar(request):
             SidebarBtn(False, ' Scan Projects', reverse_lazy('projects:projects'), 'fa fa-clipboard fa-fw'),
             SidebarBtn(False, ' Scan Tasks', reverse_lazy('scans:scans'), 'fa fa-search fa-fw'),
         ]),
-        SidebarBtn(False, ' Vulnerabilities', reverse_lazy('vulnerabilities:vulnerabilities'), 'fa fa-exclamation-triangle fa-fw'),
         SidebarBtn(False, ' Hosts', reverse_lazy('hosts:hosts'), 'fa fa-desktop fa-fw'),
+        SidebarBtn(False, ' Vulnerabilities', reverse_lazy('vulnerabilities:vulnerabilities'),
+                   'fa fa-exclamation-triangle fa-fw'),
         SidebarBtn(False, ' Services', reverse_lazy('services:services'), 'fa fa-cogs fa-fw'),
         SidebarBtn(False, ' Reports', None, 'fa fa-file-pdf-o fa-fw', childBtn= [
             SidebarBtn(False, ' Project Reports', reverse_lazy('reports:projectReport'), 'fa fa-clipboard fa-fw'),

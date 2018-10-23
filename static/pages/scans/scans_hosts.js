@@ -8,13 +8,7 @@ $(document).ready(
     //
     $(function () {
         $("#scanhoststable").bootstrapTable({
-            columns:[
-                {
-                    field: 'state',
-                    checkbox: true,
-                    align: 'center',
-                    valign: 'middle'
-                },
+            columns: [
                 {
                     title: "Hostname",
                     field: "hostName",
@@ -46,28 +40,29 @@ $(document).ready(
                     sortable: true
                 },
                 {
-                  title: "Medium",
-                  field: "med",
-                  align: "center",
-                  valign: "middle",
-                  sortable: true
+                    title: "Medium",
+                    field: "med",
+                    align: "center",
+                    valign: "middle",
+                    sortable: true
                 },
                 {
-                  title: "Low",
-                  field: "low",
-                  align: "center",
-                  valign: "middle",
-                  sortable: true
+                    title: "Low",
+                    field: "low",
+                    align: "center",
+                    valign: "middle",
+                    sortable: true
                 },
                 {
-                  title: "Information",
-                  field: "info",
-                  align: "center",
-                  valign: "middle",
-                  sortable: true
+                    title: "Information",
+                    field: "info",
+                    align: "center",
+                    valign: "middle",
+                    sortable: true
                 },
             ],
             ajax: ajaxRequest,
+            detailView: true,
             queryParamsType: "",
             idField: "id",
             striped: true,
@@ -75,6 +70,76 @@ $(document).ready(
             sidePagination: "server",
             pageList: [5, 10, 20, 50, 100, 200, 'All'],
             search: true,
+            onExpandRow: function (index, row, $detail) {
+                $detail.html('<table></table>').find('table').bootstrapTable({
+                    columns: [{
+                        title: "Vulnerability",
+                        width: '27%',
+                        field: "name",
+                        align: "center",
+                        valign: "middle",
+                        formatter: function (value, row, index) {
+                            return '<a href="/vuln/' + row.id + '"> ' + row.name +'</a>';
+                        },
+                        sortable: true
+                    },
+                        {
+                            title: "Level Risk",
+                            width: '5%',
+                            field: "levelRisk",
+                            align: "center",
+                            valign: "middle",
+                            sortable: true
+                        },
+                        {
+                            title: "CVE",
+                            width: '10%',
+                            field: "cve",
+                            align: "center",
+                            valign: "middle",
+                            sortable: true
+                        },
+                        {
+                            title: "Service",
+                            width: '10%',
+                            field: "service.name",
+                            align: "center",
+                            valign: "middle",
+                            sortable: true
+                        }],
+                    ajax: function ajaxRequest(params) {
+                        $.ajax({
+                            type: "GET",
+                            url: "/vuln/api/getvulns",
+                            data: params.data,
+                            dataType: "json",
+                            success: function (data) {
+                                if (data.status == 0) {
+                                    params.success({
+                                        "rows": data.object.rows,
+                                        "total": data.object.total
+                                    })
+                                }
+                            },
+                            error: function (er) {
+                                params.error(er);
+                            }
+                        });
+                    },
+                    idField: "id",
+                    queryParams: function (params) {
+                        params.scanID = id;
+                        params.hostID = row.id;
+                        return (params);
+                    },
+                    queryParamsType: "",
+                    striped: true,
+                    pagination: true,
+                    sidePagination: "server",
+                    pageList: [5, 10, 20, 50, 100, 200, 'All'],
+                    search: false,
+                })
+            }
         })
     }),
 

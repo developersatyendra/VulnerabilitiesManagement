@@ -9,13 +9,6 @@ $(document).ready(
         $("#relevantvulntable").bootstrapTable({
             columns:[
                 {
-                    field: 'state',
-                    width: '3%',
-                    checkbox: true,
-                    align: 'center',
-                    valign: 'middle'
-                },
-                {
                     title: "Vulnerability",
                     width: '27%',
                     field: "name",

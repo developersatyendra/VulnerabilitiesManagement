@@ -10,12 +10,6 @@ $(document).ready(
         $("#hostRunningService").bootstrapTable({
             columns:[
                 {
-                    field: 'state',
-                    checkbox: true,
-                    align: 'center',
-                    valign: 'middle'
-                },
-                {
                     title: "Service Name",
                     field: "name",
                     align: "center",

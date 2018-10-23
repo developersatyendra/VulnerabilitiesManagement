@@ -9,13 +9,6 @@ $(document).ready(
         $("#vulnHostInvoledtable").bootstrapTable({
             columns:[
                 {
-                    field: 'state',
-                    width: '3%',
-                    checkbox: true,
-                    align: 'center',
-                    valign: 'middle'
-                },
-                {
                     title: "Hostname",
                     width: '30%',
                     field: "hostName",

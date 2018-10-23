@@ -2,9 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7e1e5878-3e63-44a6-b2e6-eb13b43afe37" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/pages/scans/scans_statistics.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/pages/scans/scans_statistics.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/scans/scan_statistics.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/scans/scan_statistics.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dashboard/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/dashboard/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/pages/hosts/host_currentvuln.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/pages/hosts/host_currentvuln.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/pages/hosts/host_runningservice.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/pages/hosts/host_runningservice.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/pages/hosts/host_scantask.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/pages/hosts/host_scantask.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/pages/projects/project_scantasks.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/pages/projects/project_scantasks.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/pages/scans/scans_hosts.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/pages/scans/scans_hosts.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/pages/services/service_relevantvuln.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/pages/services/service_relevantvuln.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/pages/services/service_runonhost.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/pages/services/service_runonhost.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/pages/vulns/vuln_hostinvolved.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/pages/vulns/vuln_hostinvolved.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -160,45 +166,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="scan_statistics.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/templates/scans/scan_statistics.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="62" column="55" selection-start-line="62" selection-start-column="55" selection-end-line="62" selection-end-column="55" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="scans_statistics.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/static/pages/scans/scans_statistics.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-731">
-              <caret line="8" column="27" lean-forward="true" selection-start-line="8" selection-start-column="27" selection-end-line="8" selection-end-column="27" />
-              <folding>
-                <element signature="n#!!block;n#FormattedDate#0" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="scans_hosts.js" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/static/pages/scans/scans_hosts.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="667">
-              <caret line="436" selection-start-line="436" selection-end-line="448" selection-end-column="1" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="scan_detailed.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/static/pages/scans/scan_detailed.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="629">
-              <caret line="343" column="41" lean-forward="true" selection-start-line="343" selection-start-column="41" selection-end-line="343" selection-end-column="41" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="hosts.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/static/pages/hosts/hosts.js">
           <provider selected="true" editor-type-id="text-editor">
@@ -208,29 +175,20 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="vulnerabilities.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/static/pages/vulns/vulnerabilities.js">
+      <file leaf-file-name="service_relevantvuln.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/static/pages/services/service_relevantvuln.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2006">
-              <caret line="118" selection-start-line="118" selection-end-line="118" />
+            <state relative-caret-position="391">
+              <caret line="23" column="36" lean-forward="true" selection-start-line="23" selection-start-column="36" selection-end-line="23" selection-end-column="36" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="vulns.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/templates/vulns/vulns.html">
+      <file leaf-file-name="service_runonhost.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/static/pages/services/service_runonhost.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1581">
-              <caret line="93" column="28" selection-start-line="93" selection-start-column="28" selection-end-line="93" selection-end-column="82" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ultil.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/vulnerabilities/ultil.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4403">
-              <caret line="265" column="18" selection-start-line="265" selection-start-column="18" selection-end-line="265" selection-end-column="18" />
+            <state relative-caret-position="153">
+              <caret line="9" column="21" selection-start-line="9" selection-start-column="21" selection-end-line="9" selection-end-column="21" />
             </state>
           </provider>
         </entry>
@@ -317,14 +275,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/static/pages/projects/project_detailed.js" />
-        <option value="$PROJECT_DIR$/static/pages/reports/report_host.js" />
-        <option value="$PROJECT_DIR$/static/pages/settings/settings_changemypassword.js" />
-        <option value="$PROJECT_DIR$/templates/hosts/host_detailed.html" />
-        <option value="$PROJECT_DIR$/templates/projects/project_detailed.html" />
-        <option value="$PROJECT_DIR$/templates/projects/projects.html" />
-        <option value="$PROJECT_DIR$/templates/scans/scans.html" />
-        <option value="$PROJECT_DIR$/templates/services/services.html" />
         <option value="$PROJECT_DIR$/templates/services/service_detailed.html" />
         <option value="$PROJECT_DIR$/templates/submit/submit.html" />
         <option value="$PROJECT_DIR$/templates/vulns/vuln_detailed.html" />
@@ -345,7 +295,6 @@
         <option value="$PROJECT_DIR$/settings/views.py" />
         <option value="$PROJECT_DIR$/scripts/deploy.py" />
         <option value="$PROJECT_DIR$/accounts/forms.py" />
-        <option value="$PROJECT_DIR$/dashboard/views.py" />
         <option value="$PROJECT_DIR$/scans/views.py" />
         <option value="$PROJECT_DIR$/scans/urls.py" />
         <option value="$PROJECT_DIR$/hosts/forms.py" />
@@ -368,6 +317,15 @@
         <option value="$PROJECT_DIR$/vulnerabilities/apis.py" />
         <option value="$PROJECT_DIR$/templates/scans/scan_statistics.html" />
         <option value="$PROJECT_DIR$/static/pages/scans/scans_statistics.js" />
+        <option value="$PROJECT_DIR$/static/pages/scans/scans_hosts.js" />
+        <option value="$PROJECT_DIR$/static/pages/hosts/host_scantask.js" />
+        <option value="$PROJECT_DIR$/static/pages/hosts/host_currentvuln.js" />
+        <option value="$PROJECT_DIR$/static/pages/hosts/host_runningservice.js" />
+        <option value="$PROJECT_DIR$/dashboard/views.py" />
+        <option value="$PROJECT_DIR$/static/pages/projects/project_scantasks.js" />
+        <option value="$PROJECT_DIR$/static/pages/vulns/vuln_hostinvolved.js" />
+        <option value="$PROJECT_DIR$/static/pages/services/service_runonhost.js" />
+        <option value="$PROJECT_DIR$/static/pages/services/service_relevantvuln.js" />
       </list>
     </option>
   </component>
@@ -402,6 +360,11 @@
             <path>
               <item name="VulnerablititesManagement" type="b2602c69:ProjectViewProjectNode" />
               <item name="VulnerablititesManagement" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="VulnerablititesManagement" type="b2602c69:ProjectViewProjectNode" />
+              <item name="VulnerablititesManagement" type="462c0819:PsiDirectoryNode" />
+              <item name="dashboard" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="VulnerablititesManagement" type="b2602c69:ProjectViewProjectNode" />
@@ -454,6 +417,13 @@
               <item name="static" type="462c0819:PsiDirectoryNode" />
               <item name="pages" type="462c0819:PsiDirectoryNode" />
               <item name="hosts" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="VulnerablititesManagement" type="b2602c69:ProjectViewProjectNode" />
+              <item name="VulnerablititesManagement" type="462c0819:PsiDirectoryNode" />
+              <item name="static" type="462c0819:PsiDirectoryNode" />
+              <item name="pages" type="462c0819:PsiDirectoryNode" />
+              <item name="projects" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="VulnerablititesManagement" type="b2602c69:ProjectViewProjectNode" />
@@ -629,7 +599,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1616" height="886" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
@@ -637,8 +606,8 @@
       <window_info anchor="bottom" id="Version Control" order="8" />
       <window_info anchor="bottom" id="Python Console" order="13" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.32912987" />
-      <window_info anchor="bottom" x="510" y="170" width="579" height="530" id="Terminal" order="10" type="WINDOWED" visible="true" weight="0.4035309" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.204375" />
+      <window_info active="true" anchor="bottom" x="510" y="170" width="579" height="530" id="Terminal" order="10" type="WINDOWED" visible="true" weight="0.4035309" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.204375" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="right" id="Database" order="3" />
       <window_info anchor="right" id="SciView" order="4" />
@@ -715,51 +684,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/scans/forms.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="527">
-          <caret line="31" column="4" selection-start-line="31" selection-start-column="4" selection-end-line="40" selection-end-column="45" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/hosts/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="14" column="22" selection-start-line="14" selection-start-column="19" selection-end-line="14" selection-end-column="27" />
-          <folding>
-            <element signature="e#0#35#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/pages/services/services.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2227">
-          <caret line="181" column="25" selection-start-line="181" selection-start-column="12" selection-end-line="181" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/VulnerablititesManagement/celery.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="15" column="45" selection-start-line="15" selection-start-column="45" selection-end-line="15" selection-end-column="45" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/pages/settings/settings_myaccount.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1650">
-          <caret line="113" column="16" selection-start-line="113" selection-start-column="16" selection-end-line="113" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/registration/login.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="33" column="25" lean-forward="true" selection-start-line="33" selection-start-column="25" selection-end-line="33" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/static/pages/reports/report_host.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="904">
@@ -943,13 +867,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/dashboard/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="37" column="22" selection-start-line="37" selection-start-column="22" selection-end-line="37" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/vulnerabilities/urls.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="210">
@@ -992,6 +909,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-2108">
           <caret line="10" selection-start-line="10" selection-end-line="10" />
+          <folding>
+            <element signature="e#0#40#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1028,13 +948,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/static/pages/vulns/vuln_hostinvolved.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="117" selection-start-line="117" selection-end-line="122" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/hosts/apis.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1564">
@@ -1056,17 +969,13 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/static/pages/hosts/hosts.js">
+    <entry file="file://$PROJECT_DIR$/static/pages/scans/scans_statistics.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="493">
-          <caret line="86" column="12" selection-start-line="86" selection-start-column="12" selection-end-line="86" selection-end-column="54" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/pages/scans/scan_detailed.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="629">
-          <caret line="343" column="41" lean-forward="true" selection-start-line="343" selection-start-column="41" selection-end-line="343" selection-end-column="41" />
+        <state relative-caret-position="-374">
+          <caret line="8" column="27" lean-forward="true" selection-start-line="8" selection-start-column="27" selection-end-line="8" selection-end-column="27" />
+          <folding>
+            <element signature="n#!!block;n#FormattedDate#0" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1077,20 +986,80 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/static/pages/scans/scans_statistics.js">
+    <entry file="file://$PROJECT_DIR$/static/pages/hosts/host_scantask.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-731">
-          <caret line="8" column="27" lean-forward="true" selection-start-line="8" selection-start-column="27" selection-end-line="8" selection-end-column="27" />
-          <folding>
-            <element signature="n#!!block;n#FormattedDate#0" />
-          </folding>
+        <state relative-caret-position="170">
+          <caret line="10" column="22" selection-start-line="10" selection-start-column="22" selection-end-line="10" selection-end-column="22" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/static/pages/scans/scans_hosts.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="667">
-          <caret line="436" selection-start-line="436" selection-end-line="448" selection-end-column="1" />
+        <state relative-caret-position="157">
+          <caret line="64" column="12" selection-start-line="64" selection-start-column="12" selection-end-line="64" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/static/pages/hosts/host_currentvuln.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="10" column="22" selection-start-line="10" selection-start-column="22" selection-end-line="10" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/static/pages/hosts/host_runningservice.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="10" column="21" selection-start-line="10" selection-start-column="21" selection-end-line="10" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dashboard/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="46" column="11" selection-start-line="46" selection-start-column="11" selection-end-line="46" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/static/pages/projects/project_scantasks.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="15" column="22" selection-start-line="15" selection-start-column="22" selection-end-line="15" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/static/pages/vulns/vuln_hostinvolved.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="19" column="17" lean-forward="true" selection-start-line="19" selection-start-column="17" selection-end-line="19" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/static/pages/scans/scan_detailed.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="629">
+          <caret line="343" column="41" lean-forward="true" selection-start-line="343" selection-start-column="41" selection-end-line="343" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/static/pages/hosts/hosts.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="493">
+          <caret line="86" column="12" selection-start-line="86" selection-start-column="12" selection-end-line="86" selection-end-column="54" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/static/pages/services/service_runonhost.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="9" column="21" selection-start-line="9" selection-start-column="21" selection-end-line="9" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/static/pages/services/service_relevantvuln.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="391">
+          <caret line="23" column="36" lean-forward="true" selection-start-line="23" selection-start-column="36" selection-end-line="23" selection-end-column="36" />
         </state>
       </provider>
     </entry>

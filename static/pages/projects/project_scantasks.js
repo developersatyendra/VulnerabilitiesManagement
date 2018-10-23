@@ -15,13 +15,6 @@ $(document).ready(
         $("#scanstable").bootstrapTable({
             columns:[[
                 {
-                    field: 'state',
-                    checkbox: true,
-                    align: 'center',
-                    valign: 'middle',
-                    rowspan: 2
-                },
-                {
                     title: "Scan Task",
                     field: "name",
                     align: "center",
