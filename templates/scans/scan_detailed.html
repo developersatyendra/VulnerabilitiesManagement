@@ -2,7 +2,7 @@
 
 {% block css %}
     {% load staticfiles %}
-    <title>Scans management - Scans</title>
+    <title>Scans management - Scans - Details</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
@@ -12,18 +12,6 @@
 
     <!-- Custom CSS -->
     <link href="{% static 'dist/css/sb-admin-2.css' %}" rel="stylesheet">
-
-    <!-- Morris Charts CSS -->
-    <link href="{% static 'vendor/morrisjs/morris.css' %}" rel="stylesheet">
-
-    <!-- DataTables CSS -->
-    <link href="{% static 'vendor/datatables-plugins/datatables.css' %}" rel="stylesheet">
-
-    <!-- DataTables Responsive CSS -->
-    <link href=" {% static 'vendor/datatables-responsive/dataTables.responsive.css' %}" rel="stylesheet">
-
-    <!--Datatable-checkboxes-->
-    <link href="{% static  'vendor/datatables-plugins/DataTables-checkboxes/css/dataTables.checkboxes.css' %}" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="{% static 'vendor/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
@@ -88,7 +76,7 @@
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <i class="fa fa-info-circle fa-info fa-fw" aria-hidden="true"></i> Scan Task Information
-                            {% if perms.scans %}
+                            {% if perms.scans.change_scantaskmodel or perms.scans.delete_scantaskmodel %}
                             <div class="pull-right">
                                 <div class="dropdown">
                                     <button class="btn btn-default dropdown-toggle btn-xs" type="button" data-toggle="dropdown">

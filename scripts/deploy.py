@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User, Group, Permission
 from django.db.models import Q
 
-PERMS_APPS = ['projects', 'scans', 'vulnerabilities', 'hosts', 'services', 'submit']
+PERMS_APPS = ['projects', 'scans', 'vulnerabilities', 'hosts', 'services', 'submit', 'reports']
 
 #########################
 # Check if superuser is exist

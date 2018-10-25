@@ -10,6 +10,8 @@ from rest_framework.response import Response
 from django.core.paginator import Paginator
 from wsgiref.util import FileWrapper
 from os import remove
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import permission_required
 
 PAGE_DEFAULT = 1
 NUM_ENTRY_DEFAULT = 50

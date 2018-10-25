@@ -2,7 +2,7 @@
 
 {% block css %}
     {% load staticfiles %}
-    <title>Scans management - Services</title>
+    <title>Scans management - Services - Details</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css'%}" rel="stylesheet">
@@ -12,18 +12,6 @@
 
     <!-- Custom CSS -->
     <link href="{% static 'dist/css/sb-admin-2.css'%}" rel="stylesheet">
-
-    <!-- Morris Charts CSS -->
-    <link href="{% static 'vendor/morrisjs/morris.css'%}" rel="stylesheet">
-
-    <!-- DataTables CSS -->
-{#    <link href="{% static 'vendor/datatables-plugins/dataTables.css' %}" rel="stylesheet">#}
-
-    <!-- DataTables Responsive CSS -->
-    <link href=" {% static 'vendor/datatables-responsive/dataTables.responsive.css'%}" rel="stylesheet">
-
-    <!--Datatable-checkboxes-->
-    <link href="{% static  'vendor/datatables-plugins/DataTables-checkboxes/css/dataTables.checkboxes.css'%}" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="{% static 'vendor/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
@@ -86,7 +74,7 @@
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <i class="fa fa-info-circle fa-info fa-fw" aria-hidden="true"></i> Service Information
-                            {% if perms.services %}
+                            {% if perms.services.change_servicemodel or perms.services.delete_servicemodel %}
                             <div class="pull-right">
                                 <div class="dropdown">
                                     <button class="btn btn-default dropdown-toggle btn-xs" type="button" data-toggle="dropdown">
@@ -221,12 +209,6 @@
 
     <!-- Metis Menu Plugin JavaScript -->
     <script src="{% static 'vendor/metisMenu/metisMenu.min.js'%}"></script>
-
-    <!-- DataTables JavaScript -->
-{#    <script src="{% static 'vendor/datatables/js/jquery.dataTables.min.js' %}"></script>#}
-{#    <script src="{% static  'vendor/datatables/js/dataTables.bootstrap.min.js'%}"></script>#}
-{#    <script src="{% static 'vendor/datatables-responsive/dataTables.responsive.js' %}"></script>#}
-{#    <script src="{% static 'vendor/datatables-plugins/DataTables-checkboxes/js/dataTables.checkboxes.js' %}"></script>#}
 
     <!-- Custom Theme JavaScript -->
     <script src="{% static 'dist/js/sb-admin-2.js'%}"></script>

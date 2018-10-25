@@ -20,7 +20,7 @@ NUM_ENTRY_DEFAULT = 50
 
 class APIGetVulnName(APIView):
 
-    @method_decorator(permission_required('vulnerabilities.can_view_vulnerabilitymodel', raise_exception=True))
+    @method_decorator(permission_required('vulnerabilities.view_vulnerabilitymodel', raise_exception=True))
     def get(self, request):
         if request.GET.get('id'):
             try:

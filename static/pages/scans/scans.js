@@ -59,6 +59,7 @@ $(document).ready(
                   sortable: true
                 }
             ],
+            showExport: true,
             ajax: ajaxRequest,
             queryParamsType: "",
             idField: "id",

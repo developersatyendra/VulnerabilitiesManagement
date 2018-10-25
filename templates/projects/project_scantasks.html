@@ -2,7 +2,7 @@
 
 {% block css %}
     {% load staticfiles %}
-    <title>Scans management - Services</title>
+    <title>Scans management - Project - Scan Tasks</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
@@ -12,18 +12,6 @@
 
     <!-- Custom CSS -->
     <link href="{% static 'dist/css/sb-admin-2.css' %}" rel="stylesheet">
-
-    <!-- Morris Charts CSS -->
-    <link href="{% static 'vendor/morrisjs/morris.css' %}" rel="stylesheet">
-
-    <!-- DataTables CSS -->
-{#    <link href="{% static 'vendor/datatables-plugins/dataTables.css' %}" rel="stylesheet">#}
-
-    <!-- DataTables Responsive CSS -->
-    <link href=" {% static 'vendor/datatables-responsive/dataTables.responsive.css' %}" rel="stylesheet">
-
-    <!--Datatable-checkboxes-->
-    <link href="{% static  'vendor/datatables-plugins/DataTables-checkboxes/css/dataTables.checkboxes.css' %}" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="{% static 'vendor/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
@@ -161,6 +149,8 @@
 
     <!-- Bootstrap-table JavaScript -->
     <script src="{% static 'vendor/bootstrap-table/js/bootstrap-table.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap-table/js/bootstrap-table-export.js' %}"></script>
+    <script src="{% static 'vendor/table-export/tableExport.min.js' %}"></script>
 
     <!-- Bootstrap-datetimepicker JavaScript -->
     <script src="{% static 'vendor/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js'%}"></script>

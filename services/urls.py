@@ -15,6 +15,7 @@ urlpatterns = [
 
     # APIs
     path('api/getservices', apis.APIGetServices.as_view(), name='APIGetServices'),
+    path('api/getservicename', apis.APIGetServiceName.as_view(), name='APIgetservicename'),
     path('api/getservicebyid', apis.APIGetServicesByID.as_view(), name='APIGetServiceByID'),
     path('api/getservicevulnstat', apis.APIServiceVulnStatistic.as_view(), name='APIGetServiceVulnStat'),
     path('api/addservice', apis.APIAddService.as_view(), name='APIAddService'),

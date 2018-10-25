@@ -80,6 +80,7 @@ $(document).ready(
                     sortable: true
                 }
             ]],
+            showExport: true,
             ajax: ajaxRequest,
             detailView: true,
             idField: "id",

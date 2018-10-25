@@ -55,8 +55,7 @@ $(document).ready(
                     sortable: true
                 }
             ],
-            // url: "/vuln/api/getvulns",
-            // method: "get",
+            showExport: true,
             ajax: ajaxRequest,
             idField: "id",
             queryParamsType: "",

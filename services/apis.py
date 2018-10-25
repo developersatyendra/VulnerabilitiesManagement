@@ -1,5 +1,3 @@
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from rest_framework.permissions import IsAuthenticated
 from django.utils.datastructures import MultiValueDictKeyError
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -13,11 +11,31 @@ from projects.models import ScanProjectModel
 from .models import ServiceModel
 from .serializers import ServiceSerializer
 from .forms import ServiceForm, ServiceIDForm
-
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import permission_required
 
 PAGE_DEFAULT = 1
 NUM_ENTRY_DEFAULT = 50
 
+
+class APIGetServiceName(APIView):
+
+    @method_decorator(permission_required('services.view_servicemodel', raise_exception=True))
+    def get(self, request):
+        if request.GET.get('id'):
+            try:
+                id = int(request.GET.get('id'))
+            except (ValueError, TypeError):
+                return Response({'status': '-1', 'message': 'Value error',
+                                 'detail': {"id": [{"message": "ID is not integer", "code": "value error"}]}})
+            try:
+                name = ServiceModel.objects.get(pk=id).name
+            except ServiceModel.DoesNotExist:
+                return Response({'status': '-1', 'message': 'Vuln does not exist'})
+            return Response({'status': 0, 'object': name})
+        else:
+            return Response({'status': '-1', 'message': 'fields are required',
+                             'detail': {"id": [{"message": "ID is required", "code": "required"}]}})
 
 #
 # APIGetServices get services from these params:
@@ -30,6 +48,8 @@ NUM_ENTRY_DEFAULT = 50
 #   vulnID: vuln to be used to filter
 
 class APIGetServices(APIView):
+
+    @method_decorator(permission_required('services.view_servicemodel', raise_exception=True))
     def get(self, request):
         # Advanced Filter
         if request.GET.get('hostID'):
@@ -107,6 +127,8 @@ class APIGetServices(APIView):
 #
 
 class APIGetServicesByID(APIView):
+
+    @method_decorator(permission_required('services.view_servicemodel', raise_exception=True))
     def get(self, request):
         if request.GET.get('id'):
             id = request.GET.get('id')
@@ -129,6 +151,8 @@ class APIGetServicesByID(APIView):
 #
 
 class APIAddService(APIView):
+
+    @method_decorator(permission_required('services.add_servicemodel', raise_exception=True))
     def post(self, request):
         serviceForm = ServiceForm(request.POST)
         if serviceForm.is_valid():
@@ -148,6 +172,8 @@ class APIAddService(APIView):
 #
 
 class APIDeleteService(APIView):
+
+    @method_decorator(permission_required('services.delete_servicemodel', raise_exception=True))
     def post(self, request):
         serviceForm = ServiceIDForm(request.POST)
         if serviceForm.is_valid():
@@ -185,6 +211,8 @@ class APIDeleteService(APIView):
 #
 
 class APIUpdateService(APIView):
+
+    @method_decorator(permission_required('services.change_servicemodel', raise_exception=True))
     def post(self, request):
         if request.POST.get('id'):
             try:
@@ -206,6 +234,8 @@ class APIUpdateService(APIView):
 
 
 class APIServiceVulnStatistic(APIView):
+
+    @method_decorator(permission_required('services.view_servicemodel', raise_exception=True))
     def get(self, request):
         serviceIDs= None
         vulnIDs = None

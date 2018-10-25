@@ -44,6 +44,7 @@ $(document).ready(
                     sortable: true
                 }
             ],
+            showExport: true,
             ajax: ajaxRequest,
             idField: "id",
             queryParams: queryParams,

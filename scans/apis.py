@@ -11,6 +11,8 @@ from .forms import ScanIDForm, ScanAttachmentForm, ScanAddForm
 from rest_framework.parsers import MultiPartParser, FormParser, FileUploadParser
 from os import remove as RemoveFile
 from datetime import datetime, timedelta
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import permission_required
 
 PAGE_DEFAULT = 1
 NUM_ENTRY_DEFAULT = 50
@@ -31,6 +33,8 @@ LEVEL_INFO = 0
 #
 
 class APIGetScanName(APIView):
+
+    @method_decorator(permission_required('scans.view_scantaskmodel', raise_exception=True))
     def get(self, request):
         if request.GET.get('id'):
             try:
@@ -62,6 +66,7 @@ class APIGetScanName(APIView):
 
 class APIGetScansVuln(APIView):
 
+    @method_decorator(permission_required('scans.view_scantaskmodel', raise_exception=True))
     def get(self, request):
         params = dict()
         projectID = request.GET.getlist("projectID", None)
@@ -138,6 +143,8 @@ class APIGetScansVuln(APIView):
 #   dayRange: range of day to filter
 
 class APIGetScans(APIView):
+
+    @method_decorator(permission_required('scans.view_scantaskmodel', raise_exception=True))
     def get(self, request):
         scanTask = ScanTaskModel.objects.all()
 
@@ -243,6 +250,8 @@ class APIGetScans(APIView):
 #
 
 class APIGetScanByID(APIView):
+
+    @method_decorator(permission_required('scans.view_scantaskmodel', raise_exception=True))
     def get(self, request):
         if request.GET.get('id'):
             id = request.GET.get('id')
@@ -268,7 +277,7 @@ class APIGetScanByID(APIView):
 #
 
 class APIAddScan(APIView):
-
+    @method_decorator(permission_required('scans.add_scantaskmodel', raise_exception=True))
     def post(self, request, format=None):
         scanAddForm = ScanAddForm(request.POST)
         if scanAddForm.is_valid():
@@ -290,6 +299,8 @@ class APIAddScan(APIView):
 #
 
 class APIDeleteScan(APIView):
+
+    @method_decorator(permission_required('scans.delete_scantaskmodel', raise_exception=True))
     def post(self, request):
         print(request.POST)
         scanForm = ScanIDForm(request.POST)
@@ -330,6 +341,8 @@ class APIDeleteScan(APIView):
 #
 
 class APIUpdateScan(APIView):
+
+    @method_decorator(permission_required('scans.change_scantaskmodel', raise_exception=True))
     def post(self, request):
         print(request.POST)
         if request.POST.get('id'):
@@ -358,6 +371,8 @@ class APIUpdateScan(APIView):
 #
 
 class APIGetScanAttachment(APIView):
+
+    @method_decorator(permission_required('scans.view_scantaskmodel', raise_exception=True))
     def get(self, request):
         if request.GET.get('id'):
             id = request.GET.get('id')
@@ -385,6 +400,7 @@ class APIGetScanAttachment(APIView):
 class APIAddAttachment(APIView):
     parser_classes = (MultiPartParser, FormParser, FileUploadParser,)
 
+    @method_decorator(permission_required('scans.change_scantaskmodel', raise_exception=True))
     def post(self, request):
         if request.POST.get('id'):
             try:
@@ -422,6 +438,7 @@ class APIAddAttachment(APIView):
 
 class APIDeleteAttachment(APIView):
 
+    @method_decorator(permission_required('scans.delete_scantaskmodel', raise_exception=True))
     def post(self, request):
         if request.POST.get('id'):
             try:

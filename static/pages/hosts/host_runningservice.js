@@ -42,6 +42,7 @@ $(document).ready(
             ],
             // url: "/services/api/getservices",
             // method: "get",
+            showExport: true,
             ajax: ajaxRequest,
             idField: "id",
             queryParams: queryParams,
