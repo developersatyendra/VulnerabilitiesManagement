@@ -10,7 +10,7 @@ class SettingsView(TemplateView):
     def get(self, request, *args, **kwargs):
         sidebarHtml = RenderSideBar(request)
         context = {'sidebar': sidebarHtml}
-        return render(request, 'dashboard.html', context)
+        return render(request, 'dashboard/dashboard.html', context)
 
 
 class MyAccountView(TemplateView):

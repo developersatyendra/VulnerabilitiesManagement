@@ -1,10 +1,9 @@
 from rest_framework.views import APIView
 from django.http import HttpResponse
-from .models import ReportModel
 from .forms import *
 from .serializers import ReportSerializer
 from .tasks import ProcessGenerateReportTask
-from django.db.models import Q, Count, F
+from django.db.models import Q
 from django.contrib.auth.models import User
 from rest_framework.response import Response
 from django.core.paginator import Paginator
@@ -23,6 +22,7 @@ NUM_ENTRY_DEFAULT = 50
 #   APIGetReports(mode, [projectID, scanID, hostID], [searchText], [sortName], [sortOrder])
 class APIGetReports(APIView):
 
+    @method_decorator(permission_required('reports.view_reportmodel', raise_exception=True))
     def get(self, request):
         # Get mode value and define query
         if request.GET.get('mode'):
@@ -116,6 +116,7 @@ class APIGetReports(APIView):
 
 class APIGetReportByID(APIView):
 
+    @method_decorator(permission_required('reports.view_reportmodel', raise_exception=True))
     def get(self, request):
         if request.GET.get('id'):
             id = request.GET.get('id')
@@ -133,6 +134,7 @@ class APIGetReportByID(APIView):
 
 class APIAddReport(APIView):
 
+    @method_decorator(permission_required('reports.add_reportmodel', raise_exception=True))
     def post(self, request):
         mode = request.POST.get('mode')
         print(mode)
@@ -178,6 +180,7 @@ class APIAddReport(APIView):
 
 class APIDeleteReport(APIView):
 
+    @method_decorator(permission_required('reports.delete_reportmodel', raise_exception=True))
     def post(self, request):
         reportID = request.POST.get('id', None)
         if reportID:
@@ -210,6 +213,7 @@ class APIDeleteReport(APIView):
 
 class APIGetReportFile(APIView):
 
+    @method_decorator(permission_required('reports.view_reportmodel', raise_exception=True))
     def get(self, request):
         reportID = request.GET.get('id', None)
         if reportID:

@@ -2,22 +2,34 @@ from django.utils.datastructures import MultiValueDictKeyError
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.core.paginator import Paginator
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.contrib.auth.models import User
-from .models import ScanProjectModel
-from .serializers import ProjectSerializer
+from .serializers import *
 from .forms import ProjectForm, ProjectIDForm
-
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import permission_required
+from django.conf import settings
+from .ultil import *
 
 PAGE_DEFAULT = 1
 NUM_ENTRY_DEFAULT = 50
+# High is >= LEVEL_HIGH
+LEVEL_HIGH = getattr(settings, 'LEVEL_HIGH')
 
+# Med is >= LEVEL_MED AND < LEVEL_HIGH
+LEVEL_MED = getattr(settings, 'LEVEL_MED')
+
+# Low is > LEVEL_INFO AND < LEVEL_MED
+# Info is = LEVEL_INFO
+LEVEL_INFO = getattr(settings, 'LEVEL_INFO')
 
 ######################################################
 #   APIGetProjectName get Name of Project from id
 #
 
 class APIGetProjectName(APIView):
+
+    @method_decorator(permission_required('projects.view_scanprojectmodel', raise_exception=True))
     def get(self, request):
         try:
             id = int(request.GET.get('id'))
@@ -41,18 +53,14 @@ class APIGetProjectName(APIView):
 
 
 class APIGetProjects(APIView):
+
+    @method_decorator(permission_required('projects.view_scanprojectmodel', raise_exception=True))
     def get(self, request):
-        # Filter by search keyword
-        if request.GET.get('search'):
-            search = request.GET.get('searchText')
-            # Query on Projects Model
-            query = Q(name__icontains=search) |\
-                    Q(createDate__icontains=search) | \
-                    Q(updateDate__icontains=search) | \
-                    Q(description__icontains=search)
-            querySet = ScanProjectModel.objects.filter(query)
-        else:
-            querySet = ScanProjectModel.objects.all()
+        retval = GetProject(**request.GET)
+        if retval['status'] !=0:
+            return  Response({'status': retval['status'], 'message': retval['message']})
+        querySet = retval['object']
+
         numObject = querySet.count()
         # Get sort order
         if request.GET.get('sortOrder') == 'asc':
@@ -97,6 +105,8 @@ class APIGetProjects(APIView):
 #
 
 class APIGetProjectByID(APIView):
+
+    @method_decorator(permission_required('projects.view_scanprojectmodel', raise_exception=True))
     def get(self, request):
         if request.GET.get('id'):
             id = request.GET.get('id')
@@ -116,12 +126,38 @@ class APIGetProjectByID(APIView):
 
 
 ######################################################
+# APIGetProjectVuln get projects's vulns
+#
+
+class APIGetProjectVulns(APIView):
+
+    @method_decorator(permission_required('projects.view_scanprojectmodel', raise_exception=True))
+    def get(self, request):
+        retval = GetProject(**request.GET)
+        if retval['status'] !=0:
+            return Response({'status': retval['status'], 'message': retval['message']})
+        projects = retval['object']
+        projects = projects.annotate(
+            high=Count('ScanProjectScanTask__ScanInfoScanTask__vulnFound', filter=Q(ScanProjectScanTask__ScanInfoScanTask__vulnFound__levelRisk__gte=LEVEL_HIGH)),
+            med=Count('ScanProjectScanTask__ScanInfoScanTask__vulnFound', filter=(Q(ScanProjectScanTask__ScanInfoScanTask__vulnFound__levelRisk__gte=LEVEL_MED) & Q(
+                ScanProjectScanTask__ScanInfoScanTask__vulnFound__levelRisk__lt=LEVEL_HIGH))),
+            low=Count('ScanProjectScanTask__ScanInfoScanTask__vulnFound', filter=Q(ScanProjectScanTask__ScanInfoScanTask__vulnFound__levelRisk__gt=LEVEL_INFO) & Q(
+                ScanProjectScanTask__ScanInfoScanTask__vulnFound__levelRisk__lt=LEVEL_MED)),
+            info=Count('ScanProjectScanTask__ScanInfoScanTask__vulnFound', filter=Q(ScanProjectScanTask__ScanInfoScanTask__vulnFound__levelRisk=LEVEL_INFO)),
+            numScanTasks=Count('ScanProjectScanTask', distinct=True),
+        )
+        dataSerialized = ProjectVulnSerializer(projects, many=True)
+        return Response({'status': '0', 'object': dataSerialized.data})
+
+######################################################
 # APIAddProject add new project
 # return {'status': '-1'} if id not found
 # return Vuln object if it's success
 #
 
 class APIAddProject(APIView):
+
+    @method_decorator(permission_required('projects.add_scanprojectmodel', raise_exception=True))
     def post(self, request):
         projectForm = ProjectForm(request.POST)
         if projectForm.is_valid():
@@ -141,6 +177,8 @@ class APIAddProject(APIView):
 #
 
 class APIDeleteProject(APIView):
+
+    @method_decorator(permission_required('projects.delete_scanprojectmodel', raise_exception=True))
     def post(self, request):
         projectForm = ProjectIDForm(request.POST)
         if projectForm.is_valid():
@@ -180,6 +218,8 @@ class APIDeleteProject(APIView):
 #
 
 class APIUpdateProject(APIView):
+
+    @method_decorator(permission_required('projects.change_scanprojectmodel', raise_exception=True))
     def post(self, request):
         if request.POST.get('id'):
             try:

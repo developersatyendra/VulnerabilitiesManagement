@@ -13,19 +13,19 @@ from os import remove as RemoveFile
 from datetime import datetime, timedelta
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import permission_required
+from django.conf import settings
 
 PAGE_DEFAULT = 1
 NUM_ENTRY_DEFAULT = 50
 
-# High is >= LEVEL_HIGH
-LEVEL_HIGH = 7
+LEVEL_HIGH = getattr(settings, 'LEVEL_HIGH')
 
 # Med is >= LEVEL_MED AND < LEVEL_HIGH
-LEVEL_MED = 4
+LEVEL_MED = getattr(settings, 'LEVEL_MED')
 
 # Low is > LEVEL_INFO AND < LEVEL_MED
 # Info is = LEVEL_INFO
-LEVEL_INFO = 0
+LEVEL_INFO = getattr(settings, 'LEVEL_INFO')
 
 
 ######################################################

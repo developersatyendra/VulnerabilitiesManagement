@@ -77,16 +77,22 @@
                         <!-- /.panel-heading -->
                         <div class="panel-body" >
                             <div id="toolbar">
+                                {% if perms.reports.add_reportmodel  or perms.reports.delete_reportmodel %}
                                 <div class="dropdown">
                                     <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
                                         <i class="fa fa-gear fa-fw"></i>Actions
                                         <span class="caret"></span>
                                     </button>
                                     <ul class="dropdown-menu">
+                                        {% if perms.reports.add_reportmodel %}
                                         <li id="add"><a href="#" data-toggle="modal" data-target="#addReportModal"><i class="fa fa-plus fa-fw"></i> Request Report</a></li>
+                                        {% endif %}
+                                        {% if perms.reports.delete_reportmodel %}
                                         <li id="delete" class="disabled"><a href="#" ><i class="fa fa-trash-o fa-fw"></i> Delete Reports</a></li>
+                                        {% endif %}
                                     </ul>
                                 </div>
+                                {% endif %}
                             </div>
                             <table id="reporttable" data-toolbar="#toolbar"></table>
                             <!-- /.table-responsive -->

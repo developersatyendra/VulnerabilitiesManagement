@@ -9,7 +9,7 @@ class DashboardView(TemplateView):
         sidebarHtml = RenderSideBar(request)
         sidebarActive = 'dashboard'
         context = {'sidebarActive': sidebarActive, 'sidebar': sidebarHtml}
-        return render(request, 'dashboard.html', context)
+        return render(request, 'dashboard/dashboard.html', context)
 
 
 class SidebarBtn(object):

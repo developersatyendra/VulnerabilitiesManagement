@@ -7,10 +7,10 @@ from .ultil import GetHostsVuln
 from django.contrib.auth.models import User
 from rest_framework.views import APIView
 from django.core.paginator import Paginator
-from django.db.models import Q, Count, F
+from django.db.models import Q
 from rest_framework.response import Response
-from rest_framework.permissions import DjangoModelPermissions, IsAdminUser
-
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import permission_required
 
 
 PAGE_DEFAULT = 1
@@ -32,7 +32,8 @@ LEVEL_INFO = 0
 #
 
 class APIGetHostName(APIView):
-    permission_classes = (IsAdminUser,)
+
+    @method_decorator(permission_required('hosts.view_hostmodel', raise_exception=True))
     def get(self, request):
         if request.GET.get('id'):
             try:
@@ -62,6 +63,8 @@ class APIGetHostName(APIView):
 #   serviceID: Service to be used to filter
 
 class APIGetHostsVuln(APIView):
+
+    @method_decorator(permission_required('hosts.view_hostmodel', raise_exception=True))
     def get(self, request):
         params = dict()
         projectID = request.GET.getlist("projectID", None)
@@ -139,6 +142,8 @@ class APIGetHostsVuln(APIView):
 #   serviceID: Service to be used to filter
 
 class APIGetHosts(APIView):
+
+    @method_decorator(permission_required('hosts.view_hostmodel', raise_exception=True))
     def get(self, request):
         scanTask = ScanTaskModel.objects.all()
 
@@ -239,6 +244,8 @@ class APIGetHosts(APIView):
 #
 
 class APIGetHostsByID(APIView):
+
+    @method_decorator(permission_required('hosts.view_hostmodel', raise_exception=True))
     def get(self, request):
         if request.GET.get('id'):
             id = request.GET.get('id')
@@ -266,6 +273,8 @@ class APIGetHostsByID(APIView):
 #   serviceID: Service to be used to filter
 
 class APIGetHostsOS(APIView):
+
+    @method_decorator(permission_required('hosts.view_hostmodel', raise_exception=True))
     def get(self, request):
         scanTask = ScanTaskModel.objects.all()
 
@@ -366,6 +375,8 @@ class APIGetHostsOS(APIView):
 #
 
 class APIAddHost(APIView):
+
+    @method_decorator(permission_required('hosts.add_hostmodel', raise_exception=True))
     def post(self, request):
         hostForm = HostForm(request.POST)
         if hostForm.is_valid():
@@ -386,6 +397,8 @@ class APIAddHost(APIView):
 #
 
 class APIDeleteHost(APIView):
+
+    @method_decorator(permission_required('hosts.delete_hostmodel', raise_exception=True))
     def post(self, request):
         hostForm = HostIDForm(request.POST)
         if hostForm.is_valid():
@@ -425,6 +438,8 @@ class APIDeleteHost(APIView):
 #
 
 class APIUpdateHost(APIView):
+
+    @method_decorator(permission_required('hosts.change_hostmodel', raise_exception=True))
     def post(self, request):
         if request.POST.get('id'):
             try:

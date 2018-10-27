@@ -13,6 +13,7 @@ urlpatterns = [
     path('<int:id>/scantasks', login_required(views.ProjectsScanTaskView.as_view(), redirect_field_name=LOGIN_URL), name='projectsscantaskview'),
 
     # APIs
+    path('api/getprojectvulns', apis.APIGetProjectVulns.as_view(), name='getprojectvulns'),
     path('api/getprojectname', apis.APIGetProjectName.as_view(), name='getprojectname'),
     path('api/getprojects', apis.APIGetProjects.as_view(), name='getprojects'),
     path('api/getprojectbyid', apis.APIGetProjectByID.as_view(), name='APIgethostbyid'),
