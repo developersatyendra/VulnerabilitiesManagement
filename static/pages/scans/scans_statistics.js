@@ -197,7 +197,7 @@ function DrawChartScanResult(){
                     {
                         label: 'Low',
                         data: dataset_low,
-                        backgroundColor: '#fdfc25' // yellow
+                        backgroundColor: '#F2B705' // yellow
                     },
                     {
                         label: 'Medium',

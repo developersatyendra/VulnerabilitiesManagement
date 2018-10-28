@@ -282,18 +282,18 @@ table.dataTable thead .sorting:after {
 }
 
 .panel-yellow {
-  border-color: #fdfc25;
+  border-color: #F2B705;
 }
 .panel-yellow > .panel-heading {
-  border-color: #fdfc25;
+  border-color: #F2B705;
   color: white;
-  background-color: #fdfc25;
+  background-color: #F2B705;
 }
 .panel-yellow > a {
-  color: #fdfc25;
+  color: #F2B705;
 }
 .panel-yellow > a:hover {
-  color: #fdfc25;
+  color: #F2B705;
 }
 
 .panel-orange {

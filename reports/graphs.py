@@ -12,7 +12,7 @@ BAR_WIDTH = 0.4
 # PIE Constant
 PIE_EXPLODE = 0.05
 # Red, Yellow, Green, Blue
-COLORS = ['#bf0404', '#df7416', '#fdfc25', '#4B98FF', '#ff9999', '#66b3ff', '#99ff99', '#ffcc99',]
+COLORS = ['#bf0404', '#df7416', '#F2B705', '#4B98FF', '#ff9999', '#66b3ff', '#99ff99', '#ffcc99',]
 COLORS_GRADIENT = ['#4B98FF', '#3F80D6', '#366EB8', '#2D5C99', '#28528A', '#24497A', '#214370', '#172F4F', '#12253D', '#0D1B2E', '#08111C', '#04090F', '#03060A']
 
 
@@ -170,16 +170,3 @@ def RenderStackBarChart(data, labels=[], labely='', labelx='', xticks=[]):
     pyplot.clf()
     pyplot.close(fig)
     return '<img src="data:image/png;base64, {}">'.format(base64.b64encode(image.getvalue()).decode())
-
-
-if __name__ == '__main__':
-
-    data = [1, 1, 18, 20, 20, 9]
-    tags = ['HTTPS', 'HTTP', 'SSH', 'NetBios', 'FTP', 'VNC']
-    strRet = RenderBarChart(data, tags, labely='Vulnerabilities') + RenderDonutChart(data, tags)
-    print(strRet)
-
-    data_t = [[1, 2, 50, 15, 24], [2, 15, 27, 11, 9], [9, 1, 2, 3, 5], [10, 11, 12, 13, 55]]
-    B = ['scan_1', 'scan_2', 'scan_3', 'scan_4', 'scan_5']
-    A = ['High', 'Medium', 'Low', 'Information']
-    print(RenderStackBarChart(data_t, labels=A, xticks=B, labely='Vulnerabilities'))

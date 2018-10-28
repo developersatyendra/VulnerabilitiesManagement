@@ -2,7 +2,7 @@ from django.utils.datastructures import MultiValueDictKeyError
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.core.paginator import Paginator
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.contrib.auth.models import User
 from hosts.models import HostModel
 from vulnerabilities.models import VulnerabilityModel
@@ -252,7 +252,7 @@ class APIServiceVulnStatistic(APIView):
             except ScanTaskModel.DoesNotExist:
                 return Response({'status': '-1', 'message': 'Scan not found error',
                                  'detail': {"scanID": [{"message": "Scan does not exist", "code": "exist error"}]}})
-            serviceIDs = scanTask.ScanInfoScanTask.distinct().values_list('vulnFound__service', flat=True)
+
             vulnIDs = scanTask.ScanInfoScanTask.distinct().values_list('vulnFound', flat=True)
 
         # hostID process
@@ -266,7 +266,6 @@ class APIServiceVulnStatistic(APIView):
             except HostModel.DoesNotExist:
                 return Response({'status': '-1', 'message': 'Host not found error',
                                  'detail': {"hostID": [{"message": "Host does not exist", "code": "exist error"}]}})
-            serviceIDs = host.ScanInfoHost.distinct().values_list('vulnFound__service', flat=True)
             vulnIDs = host.ScanInfoHost.distinct().values_list('vulnFound', flat=True)
 
         # projectID process
@@ -283,20 +282,28 @@ class APIServiceVulnStatistic(APIView):
                                  'detail': {"projectID": [{"message": "Project does not exist", "code": "exist error"}]}})
             scanInfoID = project.ScanProjectScanTask.values_list('ScanInfoScanTask')
             scanInfo = ScanInfoModel.objects.filter(id__in=scanInfoID).distinct()
-            serviceIDs = scanInfo.values_list('vulnFound__service', flat=True)
             vulnIDs = scanInfo.values_list('vulnFound', flat=True)
 
-        if serviceIDs and vulnIDs:
-            serviceQuerySet = ServiceModel.objects.filter(id__in=serviceIDs)
+        if vulnIDs:
             vulnQuerySet = VulnerabilityModel.objects.filter(id__in=vulnIDs)
-            object_data = []
-            for service in serviceQuerySet:
-                count = 0
-                for vuln in vulnQuerySet:
-                    if vuln.service.id == service.id:
-                        count = count + 1
-                object_data.append({'name': service.name,'port': service.port, 'vuln': count})
-            return Response({'status': 0, 'object': object_data})
-
         else:
-            return Response({'status': '-1', 'message': 'statsBy is required',})
+            vulnQuerySet = VulnerabilityModel.objects.all()
+        if request.GET.get('topObj'):
+            try:
+                topObj = int(request.GET.get('topObj'))
+            except (ValueError, TypeError) as e:
+                return Response({'status': '-1', 'message': 'Value error',
+                                 'detail': {"hostID": [{"message": "Top Obj is not integer", "code": "value error"}]}})
+            statVals = vulnQuerySet.values('service').annotate(count=Count('service')).values('service__name',
+                                                                                              'service__port',
+                                                                                              'count').order_by(
+                '-count')[:topObj]
+        else:
+            statVals = vulnQuerySet.values('service').annotate(count=Count('service')).values('service__name',
+                                                                                              'service__port',
+                                                                                              'count').order_by(
+                '-count')
+        object_data = []
+        for statVal in statVals:
+            object_data.append({'name': statVal['service__name'], 'port': statVal['service__port'], 'vuln': statVal['count']})
+        return Response({'status': 0, 'object': object_data})

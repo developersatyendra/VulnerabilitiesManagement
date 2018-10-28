@@ -1,15 +1,12 @@
 var rowIDSelected = null;
 var url = window.location.pathname;
-var id = url.split("/")[url.split("/").length -2];
 var __vulnTop = 10;
 $(document).ready(
     // Draw Charts
     DrawChartProjectVuln(),
     DrawChartOSStat(),
+    DrawChartServiceStat(),
 
-
-    // Fill Br by Scan Name
-    GetScanName(),
     //////////////////////////////////////////
     // Decleare vulns table
     //
@@ -112,7 +109,6 @@ function FormattedDate(input) {
     return month + '/' + day + '/' + year + ' ' + hours + ':' + minutes +':'+seconds+ ' ' + ampm;
 }
 function queryParams(params) {
-    params.scanID = id;
     params.pageSize =5;
     return(params);
 }
@@ -197,7 +193,7 @@ function DrawChartProjectVuln(){
                     {
                         label: 'Low',
                         data: dataset_low,
-                        backgroundColor: '#fdfc25' // yellow
+                        backgroundColor: '#F2B705' // yellow
                     },
                     {
                         label: 'Medium',
@@ -282,48 +278,48 @@ function DrawChartOSStat(){
         });
     })
 }
-//
-// function DrawChartServiceStat(){
-//     function GetData() {
-//         return $.ajax({
-//             url:'/services/api/getservicevulnstat?scanID='+id,
-//             method: "GET",
-//             success: function (data) {
-//                 if(data.status ==0)
-//                     rawData = data.object;
-//             }
-//         });
-//     }
-//     $.when(GetData()).done(function (results){
-//         if(results.status <0)
-//             return -1;
-//         var rawData = results.object;
-//         var labels = [];
-//         var dataset = [];
-//         for(i=0; i<rawData.length;i++){
-//             labels.push(rawData[i].name + ' - '+rawData[i].port);
-//             dataset.push(rawData[i].vuln);
-//         }
-//
-//         var ctx = document.getElementById("vulnStatBySrv").getContext("2d");
-//         new Chart(ctx, {
-//             type: 'bar',
-//             data: {
-//                 labels: labels ,
-//                 datasets: [
-//                     {
-//                         data: dataset,
-//                         backgroundColor: '#4B98FF'
-//                     }]
-//             },
-//             options: {
-//                 legend: {display: false},
-//                 responsive: true,
-//                 title: {
-//                     display: true,
-//                     text: 'Statistics of vulnerabilities by services'
-//                 }
-//             }
-//         });
-//     })
-// }
+
+function DrawChartServiceStat(){
+    function GetData() {
+        return $.ajax({
+            url:'/services/api/getservicevulnstat',
+            method: "GET",
+            success: function (data) {
+                if(data.status ==0)
+                    rawData = data.object;
+            }
+        });
+    }
+    $.when(GetData()).done(function (results){
+        if(results.status <0)
+            return -1;
+        var rawData = results.object;
+        var labels = [];
+        var dataset = [];
+        for(i=0; i<rawData.length;i++){
+            labels.push(rawData[i].name + ' - '+rawData[i].port);
+            dataset.push(rawData[i].vuln);
+        }
+
+        var ctx = document.getElementById("vulnStatBySrv").getContext("2d");
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels ,
+                datasets: [
+                    {
+                        data: dataset,
+                        backgroundColor: '#4B98FF'
+                    }]
+            },
+            options: {
+                legend: {display: false},
+                responsive: true,
+                title: {
+                    display: true,
+                    text: 'Statistics of vulnerabilities by services'
+                }
+            }
+        });
+    })
+}

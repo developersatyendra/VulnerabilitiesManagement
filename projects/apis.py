@@ -224,9 +224,9 @@ class APIUpdateProject(APIView):
         if request.POST.get('id'):
             try:
                 id = int(request.POST.get('id'))
-            except ValueError:
-                return Response({'status': '-1', 'message': 'Value error',
-                                 'detail': {"id": [{"message": "ID is not integer", "code": "value error"}]}})
+            except TypeError:
+                return Response({'status': '-1', 'message': 'Type Error',
+                                 'detail': {"id": [{"message": "ID is not integer", "code": "Type error"}]}})
             projectObj = ScanProjectModel.objects.get(pk=id)
             projectForm = ProjectForm(request.POST, instance=projectObj)
         else:
