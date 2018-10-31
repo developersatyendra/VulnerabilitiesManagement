@@ -2,7 +2,9 @@ from django.utils.datastructures import MultiValueDictKeyError
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from services.models import ServiceModel
+from django.db.models import Q, Max
 from scans.models import ScanTaskModel, ScanInfoModel
+from hosts.models import HostModel
 from .models import VulnerabilityModel
 from .serializers import VulnSerializer
 from .forms import VulnForm, VulnIDForm
@@ -210,42 +212,3 @@ class APIGetCurrentHostVuln(APIView):
         else:
             return Response({'status': '-1', 'message': 'fields are required',
                              'detail': {"id": [{"message": "ID is required", "code": "required"}]}})
-
-
-class APIGetCurrentVulnStats(APIView):
-
-    @method_decorator(permission_required('vulnerabilities.view_vulnerabilitymodel', raise_exception=True))
-    def get(self, request):
-        scanInfoQuery = ScanInfoModel.objects.all()
-        if request.GET.get('HostID'):
-            try:
-                hostID = int(request.GET.get('HostID'))
-            except TypeError:
-                return Response({'status': '-1', 'message': 'Type error',
-                                 'detail': {"id": [{"message": "Host ID is not integer", "code": "Type error"}]}})
-            scanInfoQuery.filter(hostScanned=hostID)
-
-        if request.GET.get('ScanID'):
-            try:
-                scanID = int(request.GET.get('ScanID'))
-            except TypeError:
-                return Response({'status': '-1', 'message': 'Type error',
-                                 'detail': {"id": [{"message": "Scan ID is not integer", "code": "Type error"}]}})
-            scanInfoQuery.filter(scanTask=scanID)
-
-        if request.GET.get('ProjectID'):
-            try:
-                projectID = int(request.GET.get('ProjectID'))
-            except TypeError:
-                return Response({'status': '-1', 'message': 'Type error',
-                                 'detail': {"id": [{"message": "Project ID is not integer", "code": "Type error"}]}})
-            scanInfoQuery.filter(scanTask__scanProject=projectID)
-        scanInfoQuery.order_by('-scanTask__startTime').distinct('hostScanned').aggregate(
-        high = Count('ScanInfoScanTask__vulnFound', filter=Q(ScanInfoScanTask__vulnFound__levelRisk__gte=LEVEL_HIGH)),
-        med = Count('ScanInfoScanTask__vulnFound', filter=(Q(ScanInfoScanTask__vulnFound__levelRisk__gte=LEVEL_MED) & Q(
-            ScanInfoScanTask__vulnFound__levelRisk__lt=LEVEL_HIGH))),
-        low = Count('ScanInfoScanTask__vulnFound', filter=Q(ScanInfoScanTask__vulnFound__levelRisk__gt=LEVEL_INFO) & Q(
-            ScanInfoScanTask__vulnFound__levelRisk__lt=LEVEL_MED)),
-        info = Count('ScanInfoScanTask__vulnFound', filter=Q(ScanInfoScanTask__vulnFound__levelRisk=LEVEL_INFO)))
-
-

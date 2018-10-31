@@ -1,9 +1,8 @@
 from django.utils.datastructures import MultiValueDictKeyError
-from scans.models import ScanTaskModel, ScanInfoModel
 from .models import HostModel
 from .forms import HostForm, HostIDForm
 from .serializers import HostSerializer, HostVulnSerializer, HostOSSerializer
-from .ultil import GetHostsVuln
+from .ultil import GetHostsVuln, GetHosts, GetHostsCurrentVuln
 from django.contrib.auth.models import User
 from rest_framework.views import APIView
 from django.core.paginator import Paginator
@@ -16,20 +15,9 @@ from django.contrib.auth.decorators import permission_required
 PAGE_DEFAULT = 1
 NUM_ENTRY_DEFAULT = 50
 
-# High is >= LEVEL_HIGH
-LEVEL_HIGH = 7
 
-# Med is >= LEVEL_MED AND < LEVEL_HIGH
-LEVEL_MED = 4
-
-# Low is > LEVEL_INFO AND < LEVEL_MED
-# Info is = LEVEL_INFO
-LEVEL_INFO = 0
-
-
-######################################################
-#   APIGetHostName get Name of Host from id
-#
+#   APIGetHostName get hostname  from id of hosts
+#   Params: (id)
 
 class APIGetHostName(APIView):
 
@@ -51,156 +39,81 @@ class APIGetHostName(APIView):
                              'detail': {"id": [{"message": "ID is required", "code": "required"}]}})
 
 
-# APIGetHostsVuln get host with vuln from these params:
-#   searchText: Search content
-#   sortName: Name of column is applied sort
-#   sortOrder: sort entry by order 'asc' or 'desc'
-#   pageSize: number of entry per page
-#   pageNumber: page number of curent view
-#   projectID: project to be used to filter
-#   scanID: ScanTask to be used to filter
-#   vulnID: Vuln to be used to filter
-#   serviceID: Service to be used to filter
+# APIGetHostsVuln get host and number of vulnerability [H, M, L, I]:
+#   Params: (
+#               Object Filter: [projectID], [scanID], [hostID], [vulnID], [serviceID],
+#               Content Filter: [searchText], [sortOrder], [sortName], [pageSize], [pageNumber])
+
 
 class APIGetHostsVuln(APIView):
 
     @method_decorator(permission_required('hosts.view_hostmodel', raise_exception=True))
     def get(self, request):
-        params = dict()
-        projectID = request.GET.getlist("projectID", None)
-        scanID = request.GET.getlist("scanID", None)
-        serviceID = request.GET.getlist("serviceID", None)
-        vulnID = request.GET.getlist("vulnID", None)
-        searchText = request.GET.get('searchText', None)
-        sortOrder = request.GET.get('sortOrder')
-        sortName = request.GET.get('sortName')
-        
-        if projectID:
-            params['projectID'] = projectID
-        
-        if scanID:
-            params['scanID'] = scanID
-        
-        if serviceID:
-            params['serviceID'] = serviceID
+        kwarguments = dict()
+        for kw in request.GET:
+            kwarguments[kw] = request.GET.get(kw)
 
-        if vulnID:
-            params['vulnID'] = vulnID
-        
-        if searchText:
-            params['searchText'] = searchText
-        
-        if sortOrder:
-            params['sortOrder'] = sortOrder
+        retval = GetHostsVuln(**kwarguments)
 
-        if sortName:
-            params['sortName'] = sortName
-
-        retval = GetHostsVuln(**params)
-
-        if retval['status'] == 0:
-            if request.GET.get('pageNumber'):
-                try:
-                    page = int(request.GET.get('pageNumber'))
-                except TypeError:
-                    page = PAGE_DEFAULT
-            else:
-                page = PAGE_DEFAULT
-
-            # Get Page Size
-            if request.GET.get('pageSize'):
-                try:
-                    numEntry = int(request.GET.get('pageSize'))
-                except TypeError:
-                    numEntry = NUM_ENTRY_DEFAULT
-                # IF Page size is 'ALL'
-                if str(numEntry).lower() == 'all' or numEntry == -1:
-                    numEntry = retval['total']
-            else:
-                numEntry = NUM_ENTRY_DEFAULT
-            querySetPaged = Paginator(retval['object'], numEntry)
-            dataPaged = querySetPaged.get_page(page)
-            dataSerialized = HostVulnSerializer(dataPaged, many=True)
-            object = {
-                'total': retval['total'],
-                'rows': dataSerialized.data
-            }
-            return Response({'status': 0, 'object': object})
-        else:
+        if retval['status'] != 0:
             return Response(retval)
 
+        if request.GET.get('pageNumber'):
+            try:
+                page = int(request.GET.get('pageNumber'))
+            except TypeError:
+                page = PAGE_DEFAULT
+        else:
+            page = PAGE_DEFAULT
 
-# APIGetHosts get host from these params:
-#   searchText: Search content
-#   sortName: Name of column is applied sort
-#   sortOrder: sort entry by order 'asc' or 'desc'
-#   pageSize: number of entry per page
-#   pageNumber: page number of curent view
-#   projectID: project to be used to filter
-#   scanID: ScanTask to be used to filter
-#   vulnID: Vuln to be used to filter
-#   serviceID: Service to be used to filter
+        # Get Page Size
+        if request.GET.get('pageSize'):
+            try:
+                numEntry = int(request.GET.get('pageSize'))
+            except TypeError:
+                numEntry = NUM_ENTRY_DEFAULT
+            # IF Page size is 'ALL'
+            if str(numEntry).lower() == 'all' or numEntry == '-1':
+                numEntry = retval['total']
+        else:
+            numEntry = NUM_ENTRY_DEFAULT
+        querySetPaged = Paginator(retval['object'], numEntry)
+        dataPaged = querySetPaged.get_page(page)
+        dataSerialized = HostVulnSerializer(dataPaged, many=True)
+        object = {
+            'total': retval['total'],
+            'rows': dataSerialized.data
+        }
+        return Response({'status': 0, 'object': object})
 
-class APIGetHosts(APIView):
+
+# APIGetHostsVuln get host and number of vulnerability [H, M, L, I]:
+#   Params: (
+#               Object Filter: [projectID], [scanID], [hostID], [vulnID], [serviceID],
+#               Content Filter: [searchText], [sortOrder], [sortName], [pageSize], [pageNumber])
+
+class APIGetHostsCurrentVuln(APIView):
 
     @method_decorator(permission_required('hosts.view_hostmodel', raise_exception=True))
     def get(self, request):
-        scanTask = ScanTaskModel.objects.all()
-
-        ######################################################
-        # Adv Filter
-        #
-        # Filter by project
-        if request.GET.get('projectID'):
-            try:
-                projectID = int(request.GET.get('projectID'))
-            except ValueError:
-                return Response({'status': -1, 'message': "projectID is not integer"})
-            scanTask = scanTask.filter(scanProject=projectID)
-
-        # Filter by scanTask
-        if request.GET.get('scanID'):
-            try:
-                scanID = int(request.GET.get('scanID'))
-            except ValueError:
-                return Response({'status': -1, 'message': "scanID is not integer"})
-            scanTask = scanTask.filter(id=scanID)
-
-        # Get ScanInfo
-        scanInfoIDs = scanTask.values_list('ScanInfoScanTask', flat=True).distinct()
-        scanInfo = ScanInfoModel.objects.filter(id__in=scanInfoIDs)
-
-        # Filter by vulnID
-        if request.GET.get('vulnID'):
-            try:
-                vulnID = int(request.GET.get('vulnID'))
-            except ValueError:
-                return Response({'status': -1, 'message': "vulnID is not integer"})
-            scanInfo = scanInfo.filter(vulnFound=vulnID)
-
-        hostID = scanInfo.values_list('hostScanned', flat=True)
-        host = HostModel.objects.filter(id__in=hostID)
-        # Filter by serviceID
-        if request.GET.get('serviceID'):
-            try:
-                serviceID = int(request.GET.get('serviceID'))
-            except ValueError:
-                return Response({'status': -1, 'message': "serviceID is not integer"})
-            host = host.filter(services=serviceID)
-
+        kwarguments = dict()
+        for kw in request.GET:
+            kwarguments[kw] = request.GET.get(kw)
+        retval = GetHostsCurrentVuln(**kwarguments)
+        if retval['status'] != 0:
+            return Response(retval)
+        hosts = retval['object']
 
         # Filter by search keyword
         if request.GET.get('searchText'):
             search = request.GET.get('searchText')
-            query = Q(ipAddr__icontains=search)\
-                    | Q(hostName__icontains=search)\
-                    | Q(osName__icontains=search) \
-                    | Q(osVersion__icontains=search) \
-                    | Q(description__icontains=search)
-            host = host.filter(query)
+            query = Q(ipAddr__icontains=search) \
+                    | Q(hostName__icontains=search) \
+                    | Q(scanName__icontains=search)
+            hosts = hosts.filter(query)
 
         # get total
-        numObject = host.count()
+        numObject = hosts.count()
         # Get sort order
         if request.GET.get('sortOrder') == 'asc':
             sortString = ''
@@ -212,7 +125,7 @@ class APIGetHosts(APIView):
             sortString = sortString + request.GET.get('sortName')
         else:
             sortString = sortString + 'id'
-        querySet = host.order_by(sortString)
+        querySet = hosts.order_by(sortString)
 
         # Get Page Number
         if request.GET.get('pageNumber'):
@@ -224,24 +137,88 @@ class APIGetHosts(APIView):
         if request.GET.get('pageSize'):
             numEntry = request.GET.get('pageSize')
             # IF Page size is 'ALL'
-            if numEntry.lower() == 'all' or numEntry == -1:
+            if numEntry.lower() == 'all' or numEntry == '-1':
                 numEntry = numObject
         else:
             numEntry = NUM_ENTRY_DEFAULT
-        querySetPaged = Paginator(querySet, int(numEntry))
+        try:
+            querySetPaged = Paginator(querySet, int(numEntry))
+        except (ValueError, TypeError) as e:
+            return Response({'status': -1, 'message': str(e)})
+        dataPaged = querySetPaged.get_page(page)
+        return Response({'status': 0, 'object': dataPaged.object_list})
+
+
+# APIGetHosts get host from these params:
+#   Params: (
+#               Object Filter: [projectID], [scanID], [hostID], [vulnID], [serviceID],
+#               Content Filter: [searchText], [sortOrder], [sortName], [pageSize], [pageNumber])
+
+class APIGetHosts(APIView):
+
+    @method_decorator(permission_required('hosts.view_hostmodel', raise_exception=True))
+    def get(self, request):
+        kwarguments = dict()
+        for kw in request.GET:
+            kwarguments[kw] = request.GET.get(kw)
+        retval = GetHosts(**kwarguments)
+        if retval['status'] != 0:
+            return Response(retval)
+        hosts = retval['object']
+
+        # Filter by search keyword
+        if request.GET.get('searchText'):
+            search = request.GET.get('searchText')
+            query = Q(ipAddr__icontains=search)\
+                    | Q(hostName__icontains=search)\
+                    | Q(osName__icontains=search) \
+                    | Q(osVersion__icontains=search) \
+                    | Q(description__icontains=search)
+            hosts = hosts.filter(query)
+
+        # get total
+        numObject = hosts.count()
+        # Get sort order
+        if request.GET.get('sortOrder') == 'asc':
+            sortString = ''
+        else:
+            sortString = '-'
+
+        # Get sort filed
+        if request.GET.get('sortName'):
+            sortString = sortString + request.GET.get('sortName')
+        else:
+            sortString = sortString + 'id'
+        querySet = hosts.order_by(sortString)
+
+        # Get Page Number
+        if request.GET.get('pageNumber'):
+            page = request.GET.get('pageNumber')
+        else:
+            page = PAGE_DEFAULT
+
+        # Get Page Size
+        if request.GET.get('pageSize'):
+            numEntry = request.GET.get('pageSize')
+            # IF Page size is 'ALL'
+            if numEntry.lower() == 'all' or numEntry == '-1':
+                numEntry = numObject
+        else:
+            numEntry = NUM_ENTRY_DEFAULT
+        try:
+            querySetPaged = Paginator(querySet, int(numEntry))
+        except (ValueError, TypeError) as e:
+            return Response({'status':-1, 'message': str(e)})
         dataPaged = querySetPaged.get_page(page)
         dataSerialized = HostSerializer(dataPaged, many=True)
         data = dict()
         data["total"] = numObject
         data['rows'] = dataSerialized.data
-        return Response({'status': 0, 'object':data})
+        return Response({'status': 0, 'object': data})
 
 
-#
-# APIGetHostsByID get hosts from ids
-# return {'retVal': '-1'} if id not found
-# return Host object if it's success
-#
+#   APIGetHostsByID get host  from id of hosts
+#   Params: (id)
 
 class APIGetHostsByID(APIView):
 
@@ -261,64 +238,22 @@ class APIGetHostsByID(APIView):
                              'detail': {"id": [{"message": "ID is required", "code": "required"}]}})
 
 
-# APIGetHosts get host from these params:
-#   searchText: Search content
-#   sortName: Name of column is applied sort
-#   sortOrder: sort entry by order 'asc' or 'desc'
-#   pageSize: number of entry per page
-#   pageNumber: page number of curent view
-#   projectID: project to be used to filter
-#   scanID: ScanTask to be used to filter
-#   vulnID: Vuln to be used to filter
-#   serviceID: Service to be used to filter
+# APIGetHostsOS get Operating System info from these params:
+#   Params: (
+#               Object Filter: [projectID], [scanID], [hostID], [vulnID], [serviceID],
+#               Content Filter: [searchText], [sortOrder], [sortName], [pageSize], [pageNumber])
 
 class APIGetHostsOS(APIView):
 
     @method_decorator(permission_required('hosts.view_hostmodel', raise_exception=True))
     def get(self, request):
-        scanTask = ScanTaskModel.objects.all()
-
-        ######################################################
-        # Adv Filter
-        #
-        # Filter by project
-        if request.GET.get('projectID'):
-            try:
-                projectID = int(request.GET.get('projectID'))
-            except ValueError:
-                return Response({'status': -1, 'message': "projectID is not integer"})
-            scanTask = scanTask.filter(scanProject=projectID)
-
-        # Filter by scanTask
-        if request.GET.get('scanID'):
-            try:
-                scanID = int(request.GET.get('scanID'))
-            except ValueError:
-                return Response({'status': -1, 'message': "scanID is not integer"})
-            scanTask = scanTask.filter(id=scanID)
-
-        # Get ScanInfo
-        scanInfoIDs = scanTask.values_list('ScanInfoScanTask', flat=True).distinct()
-        scanInfo = ScanInfoModel.objects.filter(id__in=scanInfoIDs)
-
-        # Filter by vulnID
-        if request.GET.get('vulnID'):
-            try:
-                vulnID = int(request.GET.get('vulnID'))
-            except ValueError:
-                return Response({'status': -1, 'message': "vulnID is not integer"})
-            scanInfo = scanInfo.filter(vulnFound=vulnID)
-
-        hostID = scanInfo.values_list('hostScanned', flat=True)
-        host = HostModel.objects.filter(id__in=hostID)
-        # Filter by serviceID
-        if request.GET.get('serviceID'):
-            try:
-                serviceID = int(request.GET.get('serviceID'))
-            except ValueError:
-                return Response({'status': -1, 'message': "serviceID is not integer"})
-            host = host.filter(services=serviceID)
-
+        kwarguments = dict()
+        for kw in request.GET:
+            kwarguments[kw] = request.GET.get(kw)
+        retval = GetHosts(**kwarguments)
+        if retval['status'] != 0:
+            return Response(retval)
+        hosts = retval['object']
 
         # Filter by search keyword
         if request.GET.get('searchText'):
@@ -328,10 +263,10 @@ class APIGetHostsOS(APIView):
                     | Q(osName__icontains=search) \
                     | Q(osVersion__icontains=search) \
                     | Q(description__icontains=search)
-            host = host.filter(query)
+            hosts = hosts.filter(query)
 
         # get total
-        numObject = host.count()
+        numObject = hosts.count()
         # Get sort order
         if request.GET.get('sortOrder') == 'asc':
             sortString = ''
@@ -343,7 +278,7 @@ class APIGetHostsOS(APIView):
             sortString = sortString + request.GET.get('sortName')
         else:
             sortString = sortString + 'id'
-        querySet = host.order_by(sortString)
+        querySet = hosts.order_by(sortString)
 
         # Get Page Number
         if request.GET.get('pageNumber'):
@@ -355,24 +290,23 @@ class APIGetHostsOS(APIView):
         if request.GET.get('pageSize'):
             numEntry = request.GET.get('pageSize')
             # IF Page size is 'ALL'
-            if numEntry.lower() == 'all' or numEntry == -1:
+            if numEntry.lower() == 'all' or numEntry == '-1':
                 numEntry = numObject
         else:
             numEntry = NUM_ENTRY_DEFAULT
-        querySetPaged = Paginator(querySet, int(numEntry))
+        try:
+            querySetPaged = Paginator(querySet, int(numEntry))
+        except (ValueError, TypeError) as e:
+            return Response({'status': -1, 'message': str(e)})
         dataPaged = querySetPaged.get_page(page)
         dataSerialized = HostOSSerializer(dataPaged, many=True)
         data = dict()
         data["total"] = numObject
         data['rows'] = dataSerialized.data
-        return Response({'status': 0, 'object':data})
+        return Response({'status': 0, 'object': data})
 
 
-#
-# APIAddHost add new Host
-# return {'retVal': '-1'} if id not found
-# return Host object if it's success
-#
+# APIAddHost Add new Host to DB
 
 class APIAddHost(APIView):
 
@@ -389,12 +323,7 @@ class APIAddHost(APIView):
             return Response({'status': '-1', 'message': 'Form is invalid', 'detail': hostForm.errors})
 
 
-
-#
-# APIDeleteHost delete existing Host
-# return {'retVal': '-1'} if id not found
-# return number of Host object deleted if it's success
-#
+# APIAddHost delete Host in DB
 
 class APIDeleteHost(APIView):
 
@@ -431,11 +360,7 @@ class APIDeleteHost(APIView):
             return Response({'status': '-1', 'message': 'Form is invalid', 'detail': {hostForm.errors}})
 
 
-#
-# APIUpdateService delete existing host
-# return {'notification': 'error_msg'} if id not found
-# return host object if it's success
-#
+# APIAddHost Update Host in DB
 
 class APIUpdateHost(APIView):
 

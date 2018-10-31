@@ -17,6 +17,65 @@ LEVEL_MED = 4
 LEVEL_INFO = 0
 
 
+def GetScans(*args, **kwargs):
+    scanQuery = Q()
+
+    # Project Filter
+    projectID = kwargs.get('projectID', None)
+    if projectID:
+        try:
+            projectID = int(projectID)
+        except (ValueError, TypeError) as e:
+            return {'status': -1, 'message': str(e)}
+        scanQuery = Q(scanProject=projectID)
+
+    # Scan Filter
+    scanID = kwargs.get('scanID', None)
+    if scanID:
+        try:
+            scanID = int(scanID)
+        except (ValueError, TypeError) as e:
+            return {'status': -1, 'message': str(e)}
+        scanQuery = scanQuery & Q(id=scanID)
+
+    # Host Filter
+    hostID = kwargs.get('hostID', None)
+    if hostID:
+        try:
+            hostID = int(hostID)
+        except (ValueError, TypeError) as e:
+            return {'status': -1, 'message': str(e)}
+        scanQuery = scanQuery & Q(ScanInfoScanTask__hostScanned=hostID)
+
+    # Vuln Filter
+    vulnID = kwargs.get('vulnID', None)
+    if vulnID:
+        try:
+            vulnID = int(vulnID)
+        except (ValueError, TypeError) as e:
+            return {'status': -1, 'message': str(e)}
+        scanQuery = scanQuery & Q(ScanInfoScanTask__vulnFound=vulnID)
+
+    # Serivce Filter
+    serviceID = kwargs.get('serviceID', None)
+    if serviceID:
+        try:
+            serviceID = int(serviceID)
+        except (ValueError, TypeError) as e:
+            return {'status': -1, 'message': str(e)}
+        tempQuery = Q(ScanInfoScanTask__vulnFound__service=serviceID) | Q(ScanInfoScanTask__hostScanned__services=serviceID)
+        scanQuery = scanQuery & tempQuery
+
+    scans = ScanTaskModel.objects.filter(scanQuery).distinct()
+
+    # Check if need for serialize
+    serializer = kwargs.get('serializer', None)
+    if serializer:
+        serializedData = serializer(scans, many=True)
+        return {'status': 0, 'object': serializedData.data}
+    return {'status': 0, 'object': scans}
+
+
 ######################################################
 #   APIGetScansVuln get scan with vulnerabilities from these params:
 #   searchText: Search content

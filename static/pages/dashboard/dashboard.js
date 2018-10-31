@@ -157,7 +157,7 @@ function DrawChartProjectVuln(){
         var dataset_med = [];
         var dataset_low = [];
         var dataset_info = [];
-
+        var dataset_numScanTasks = [];
         var sumHigh = 0;
         var sumMed = 0;
         var sumLow = 0;
@@ -173,6 +173,7 @@ function DrawChartProjectVuln(){
             dataset_med.push(rawData[i].med);
             dataset_low.push(rawData[i].low);
             dataset_info.push(rawData[i].info);
+            dataset_numScanTasks.push(rawData[i].numScanTasks);
         }
         $('#panel-high').text(sumHigh);
         $('#panel-med').text(sumMed);
@@ -186,36 +187,69 @@ function DrawChartProjectVuln(){
                 labels: labels,
                 datasets: [
                     {
+                        label: 'Scan Task',
+                        data: dataset_numScanTasks,
+                        // backgroundColor: '#bf0404' // red,
+                        borderColor: '#72767A', // gray
+                        yAxisID: 'rightY',
+                        type: 'line',
+                        fill: false,
+                    },
+                    {
                         label: 'Information',
                         data: dataset_info,
+                        yAxisID: 'leftY',
                         backgroundColor: '#4B98FF' // blue
                     },
                     {
                         label: 'Low',
                         data: dataset_low,
+                        yAxisID: 'leftY',
                         backgroundColor: '#F2B705' // yellow
                     },
                     {
                         label: 'Medium',
                         data: dataset_med,
+                        yAxisID: 'leftY',
                         backgroundColor: '#df7416' // orange
                     },
                     {
                         label: 'High',
                         data: dataset_high,
+                        yAxisID: 'leftY',
                         backgroundColor: '#bf0404' // red
                     }
-                    ]
+                ]
             },
             options: {
-                legend: {display: false},
+                legend: {
+                    display: true,
+                    position: 'bottom'
+                },
                 title: {
                     display: true,
                     text: 'Project Overview'
                 },
                 scales: {
-                    xAxes: [{ stacked: true }],
-                    yAxes: [{ stacked: true }]
+                    xAxes: [
+                        {
+                            stacked: true
+                        }
+                    ],
+                    yAxes: [
+                        {
+                            id: 'leftY',
+                            // type: 'linear',
+                            position: 'left',
+                            stacked: true
+                        },
+                        {
+                            id: 'rightY',
+                            // type: 'linear',
+                            position: 'right',
+                            // stacked: true
+                        }
+                    ]
                 }
             }
         });
@@ -269,7 +303,10 @@ function DrawChartOSStat(){
                     }]
             },
             options: {
-                legend: {display: false},
+                legend: {
+                    display: true,
+                    position: 'bottom'
+                },
                 title: {
                     display: true,
                     text: 'OS Statistic'

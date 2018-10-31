@@ -23,9 +23,9 @@ LEVEL_MED = getattr(settings, 'LEVEL_MED')
 # Info is = LEVEL_INFO
 LEVEL_INFO = getattr(settings, 'LEVEL_INFO')
 
-######################################################
-#   APIGetProjectName get Name of Project from id
-#
+
+#   APIGetProjectName get project name from id
+#   Params: (id)
 
 class APIGetProjectName(APIView):
 
@@ -43,20 +43,21 @@ class APIGetProjectName(APIView):
         return Response({'status': 0, 'object':name})
 
 
-######################################################
-#   APIGetProjects get Projects from these params:
-#   searchText: Search content
-#   sortName: Name of column is applied sort
-#   sortOrder: sort entry by order 'asc' or 'desc'
-#   pageSize: number of entry per page
-#   pageNumber: page number of curent view
+# APIGetProjects get projects from these params:
+#   Params: (
+#               Object Filter: [projectID], [scanID], [hostID], [vulnID], [serviceID],
+#               Content Filter: [searchText], [sortOrder], [sortName], [pageSize], [pageNumber])
 
 
 class APIGetProjects(APIView):
 
     @method_decorator(permission_required('projects.view_scanprojectmodel', raise_exception=True))
     def get(self, request):
-        retval = GetProject(**request.GET)
+        kwarguments = dict()
+        for kw in request.GET:
+            kwarguments[kw] = request.GET.get(kw)
+        retval = GetProject(**kwarguments)
+
         if retval['status'] !=0:
             return  Response({'status': retval['status'], 'message': retval['message']})
         querySet = retval['object']
@@ -98,11 +99,8 @@ class APIGetProjects(APIView):
         return Response({'status': 0, 'object': data})
 
 
-######################################################
-# APIGetProjectByID get project from id
-# return {'status': '-1'} if something wrong
-# return project object if it's success
-#
+#   APIGetProjectByID get project from id
+#   Params: (id)
 
 class APIGetProjectByID(APIView):
 
@@ -125,15 +123,19 @@ class APIGetProjectByID(APIView):
                              'detail': {"id": [{"message": "ID is required", "code": "required"}]}})
 
 
-######################################################
-# APIGetProjectVuln get projects's vulns
-#
+# APIGetProjectVulns get projects and number of vulnerability [H, M, L, I]:
+#   Params: (
+#               Object Filter: [projectID], [scanID], [hostID], [vulnID], [serviceID],
+#               Content Filter: [searchText], [sortOrder], [sortName], [pageSize], [pageNumber])
 
 class APIGetProjectVulns(APIView):
 
     @method_decorator(permission_required('projects.view_scanprojectmodel', raise_exception=True))
     def get(self, request):
-        retval = GetProject(**request.GET)
+        kwarguments = dict()
+        for kw in request.GET:
+            kwarguments[kw] = request.GET.get(kw)
+        retval = GetProject(**kwarguments)
         if retval['status'] !=0:
             return Response({'status': retval['status'], 'message': retval['message']})
         projects = retval['object']

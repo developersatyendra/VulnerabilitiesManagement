@@ -40,7 +40,7 @@ class SidebarBtn(object):
 
 def RenderSideBar(request):
     sidebar = [
-        SidebarBtn(False, ' Dashboard', reverse_lazy('dashboard:dashboard'), 'fa fa-dashboard fa-fw'),
+        SidebarBtn(False, ' Dashboard', reverse_lazy('dashboard:dashboard'), 'fa fa-bar-chart-o fa-fw'),
         SidebarBtn(False, ' Scan', None, 'fa fa-search fa-fw', childBtn= [
             SidebarBtn(False, ' Scan Projects', reverse_lazy('projects:projects'), 'fa fa-clipboard fa-fw'),
             SidebarBtn(False, ' Scan Tasks', reverse_lazy('scans:scans'), 'fa fa-search fa-fw'),

@@ -17,6 +17,7 @@ urlpatterns = [
     # APIs
     path('api/gethostname', apis.APIGetHostName.as_view(), name='APIgethostname'),
     path('api/gethostsvuln', apis.APIGetHostsVuln.as_view(), name='APIgethostsvuln'),
+    path('api/gethostscurrentvuln', apis.APIGetHostsCurrentVuln.as_view(), name='APIgethostscurrentvuln'),
     path('api/gethosts', apis.APIGetHosts.as_view(), name='APIgethosts'),
     path('api/gethostsos', apis.APIGetHostsOS.as_view(), name='APIgethostsOS'),
     path('api/gethostbyid', apis.APIGetHostsByID.as_view(), name='APIgethostbyid'),
