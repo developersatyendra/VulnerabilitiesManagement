@@ -47,8 +47,6 @@ class APIGetProjectName(APIView):
 #   Params: (
 #               Object Filter: [projectID], [scanID], [hostID], [vulnID], [serviceID],
 #               Content Filter: [searchText], [sortOrder], [sortName], [pageSize], [pageNumber])
-
-
 class APIGetProjects(APIView):
 
     @method_decorator(permission_required('projects.view_scanprojectmodel', raise_exception=True))
@@ -86,7 +84,7 @@ class APIGetProjects(APIView):
         if request.GET.get('pageSize'):
             numEntry = request.GET.get('pageSize')
             # IF Page size is 'ALL'
-            if numEntry.lower() == 'all' or numEntry == -1:
+            if numEntry.lower() == 'all' or numEntry == '-1':
                 numEntry = numObject
         else:
             numEntry = NUM_ENTRY_DEFAULT
@@ -101,7 +99,6 @@ class APIGetProjects(APIView):
 
 #   APIGetProjectByID get project from id
 #   Params: (id)
-
 class APIGetProjectByID(APIView):
 
     @method_decorator(permission_required('projects.view_scanprojectmodel', raise_exception=True))
@@ -127,7 +124,6 @@ class APIGetProjectByID(APIView):
 #   Params: (
 #               Object Filter: [projectID], [scanID], [hostID], [vulnID], [serviceID],
 #               Content Filter: [searchText], [sortOrder], [sortName], [pageSize], [pageNumber])
-
 class APIGetProjectVulns(APIView):
 
     @method_decorator(permission_required('projects.view_scanprojectmodel', raise_exception=True))
@@ -151,12 +147,8 @@ class APIGetProjectVulns(APIView):
         dataSerialized = ProjectVulnSerializer(projects, many=True)
         return Response({'status': '0', 'object': dataSerialized.data})
 
-######################################################
-# APIAddProject add new project
-# return {'status': '-1'} if id not found
-# return Vuln object if it's success
-#
 
+# APIAddProject add new project
 class APIAddProject(APIView):
 
     @method_decorator(permission_required('projects.add_scanprojectmodel', raise_exception=True))
@@ -172,12 +164,7 @@ class APIAddProject(APIView):
             return Response({'status': '-1', 'message': 'Form is invalid', 'detail': projectForm.errors})
 
 
-######################################################
 # APIDeleteProjects delete existing projects
-# return {'retVal': '-1'} if id not found
-# return {'retVal': 'Num of Success on Deleting'} if it's success
-#
-
 class APIDeleteProject(APIView):
 
     @method_decorator(permission_required('projects.delete_scanprojectmodel', raise_exception=True))
@@ -213,12 +200,7 @@ class APIDeleteProject(APIView):
             return Response({'status': '-1', 'message': 'Form is invalid', 'detail': {projectForm.errors}})
 
 
-######################################################
 # APIUpdateProject update project
-# return {'notification': 'error_msg'} if id not found
-# return Project object if it's success
-#
-
 class APIUpdateProject(APIView):
 
     @method_decorator(permission_required('projects.change_scanprojectmodel', raise_exception=True))

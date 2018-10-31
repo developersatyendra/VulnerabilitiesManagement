@@ -10,4 +10,4 @@ class VulnerabilityModel(models.Model):
     observation = models.CharField(verbose_name='Observation of Vulnerability', max_length=5000, blank=True)
     recommendation = models.CharField(verbose_name='Recommendation of Vulnerability', max_length=5000, blank=True)
     cve = models.CharField(verbose_name='CVE of Vulnerability', max_length=24, blank=True)
-    service = models.ForeignKey(to=ServiceModel, on_delete=models.CASCADE)
+    service = models.ForeignKey(to=ServiceModel, on_delete=models.CASCADE, related_name="ServiceVulnerability")

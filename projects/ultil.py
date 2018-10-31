@@ -2,6 +2,19 @@ from django.db.models import Q, F, Max
 from .serializers import *
 from hosts.ultil import GetHosts
 import dateutil.parser
+from django.conf import settings
+
+PAGE_DEFAULT = 1
+NUM_ENTRY_DEFAULT = 50
+
+LEVEL_HIGH = getattr(settings, 'LEVEL_HIGH')
+
+# Med is >= LEVEL_MED AND < LEVEL_HIGH
+LEVEL_MED = getattr(settings, 'LEVEL_MED')
+
+# Low is > LEVEL_INFO AND < LEVEL_MED
+# Info is = LEVEL_INFO
+LEVEL_INFO = getattr(settings, 'LEVEL_INFO')
 
 
 def GetProject(*args, **kwargs):
@@ -87,10 +100,10 @@ def GetProject(*args, **kwargs):
 # APIGetHostsVuln get host with vuln from these params:
 
 def GetProjectVuln(*args, **kwargs):
-    retvul = GetProject(**kwargs)
-    if retvul['status'] != 0:
-        return {'status': retvul['status'], 'message': retvul['message']}
-    projectQuery = retvul['object'].distinct()
+    retval = GetProject(**kwargs)
+    if retval['status'] != 0:
+        return {'status': retval['status'], 'message': retval['message']}
+    projectQuery = retval['object'].distinct()
 
     for project in projectQuery:
         hosts = GetHosts(projectID=project.id)

@@ -4,20 +4,19 @@ from .serializers import HostSerializer, HostVulnSerializer
 from django.core.paginator import Paginator
 from django.db.models import Q, Count, F, Max
 from rest_framework.response import Response
-
-
+from django.conf import settings
 
 PAGE_DEFAULT = 1
 NUM_ENTRY_DEFAULT = 50
 
-# High is >= LEVEL_HIGH
-LEVEL_HIGH = 7
+LEVEL_HIGH = getattr(settings, 'LEVEL_HIGH')
 
 # Med is >= LEVEL_MED AND < LEVEL_HIGH
-LEVEL_MED = 4
+LEVEL_MED = getattr(settings, 'LEVEL_MED')
 
-# Low is > LEVEL_INFO AND < LEVEL_MED # Info is = LEVEL_INFO
-LEVEL_INFO = 0
+# Low is > LEVEL_INFO AND < LEVEL_MED
+# Info is = LEVEL_INFO
+LEVEL_INFO = getattr(settings, 'LEVEL_INFO')
 
 
 def GetHosts(*args, **kwargs):
@@ -79,13 +78,12 @@ def GetHosts(*args, **kwargs):
 
 
 # APIGetHostsVuln get host with vuln from these params:
-
 def GetHostsVuln(*args, **kwargs):
-    retvul = GetHosts(**kwargs)
-    if retvul['status'] != 0:
-        return {'status': retvul['status'], 'message': retvul['message']}
+    retval = GetHosts(**kwargs)
+    if retval['status'] != 0:
+        return {'status': retval['status'], 'message': retval['message']}
 
-    hostQuery = retvul['object'].distinct()
+    hostQuery = retval['object'].distinct()
     hostQuery = hostQuery.annotate(
             high=Count('ScanInfoHost__vulnFound', filter=Q(ScanInfoHost__vulnFound__levelRisk__gte=LEVEL_HIGH), distinct=True),
             med=Count('ScanInfoHost__vulnFound', filter=(Q(ScanInfoHost__vulnFound__levelRisk__gte=LEVEL_MED)&Q(ScanInfoHost__vulnFound__levelRisk__lt=LEVEL_HIGH)),distinct=True),
@@ -129,10 +127,10 @@ def GetHostsVuln(*args, **kwargs):
 
 
 def GetHostsCurrentVuln(*args, **kwargs):
-    retvul = GetHosts(**kwargs)
-    if retvul['status'] != 0:
-        return {'status': retvul['status'], 'message': retvul['message']}
-    hostQuery = retvul['object']
+    retval = GetHosts(**kwargs)
+    if retval['status'] != 0:
+        return {'status': retval['status'], 'message': retval['message']}
+    hostQuery = retval['object']
 
     hostQuery = hostQuery.distinct()
     scanInfoIDs = hostQuery.annotate(currentDate=Max('ScanInfoHost__scanTask__startTime')).filter(ScanInfoHost__scanTask__startTime=F('currentDate')).values_list('id', flat=True)

@@ -16,10 +16,8 @@ PAGE_DEFAULT = 1
 NUM_ENTRY_DEFAULT = 50
 
 
-######################################################
-#   APIGetVulnName get Name of Vuln from id
-#
-
+#   APIGetVulnName get vulnerability name from id
+#   Params: (id)
 class APIGetVulnName(APIView):
 
     @method_decorator(permission_required('vulnerabilities.view_vulnerabilitymodel', raise_exception=True))

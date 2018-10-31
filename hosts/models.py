@@ -12,7 +12,7 @@ class HostModel(models.Model):
     description = models.CharField(verbose_name='Description of Host', max_length=128, blank=True)
     dateCreated = models.DateTimeField(auto_now_add=True)
     dateUpdate = models.DateTimeField(auto_now=True)
-    services = models.ManyToManyField(ServiceModel)
+    services = models.ManyToManyField(ServiceModel, related_name='ServiceHost')
 
     def __str__(self):
         return self.hostName + ' - ' + self.ipAddr

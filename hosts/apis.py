@@ -18,7 +18,6 @@ NUM_ENTRY_DEFAULT = 50
 
 #   APIGetHostName get hostname  from id of hosts
 #   Params: (id)
-
 class APIGetHostName(APIView):
 
     @method_decorator(permission_required('hosts.view_hostmodel', raise_exception=True))
@@ -43,8 +42,6 @@ class APIGetHostName(APIView):
 #   Params: (
 #               Object Filter: [projectID], [scanID], [hostID], [vulnID], [serviceID],
 #               Content Filter: [searchText], [sortOrder], [sortName], [pageSize], [pageNumber])
-
-
 class APIGetHostsVuln(APIView):
 
     @method_decorator(permission_required('hosts.view_hostmodel', raise_exception=True))
@@ -91,7 +88,6 @@ class APIGetHostsVuln(APIView):
 #   Params: (
 #               Object Filter: [projectID], [scanID], [hostID], [vulnID], [serviceID],
 #               Content Filter: [searchText], [sortOrder], [sortName], [pageSize], [pageNumber])
-
 class APIGetHostsCurrentVuln(APIView):
 
     @method_decorator(permission_required('hosts.view_hostmodel', raise_exception=True))
@@ -153,7 +149,6 @@ class APIGetHostsCurrentVuln(APIView):
 #   Params: (
 #               Object Filter: [projectID], [scanID], [hostID], [vulnID], [serviceID],
 #               Content Filter: [searchText], [sortOrder], [sortName], [pageSize], [pageNumber])
-
 class APIGetHosts(APIView):
 
     @method_decorator(permission_required('hosts.view_hostmodel', raise_exception=True))
@@ -219,7 +214,6 @@ class APIGetHosts(APIView):
 
 #   APIGetHostsByID get host  from id of hosts
 #   Params: (id)
-
 class APIGetHostsByID(APIView):
 
     @method_decorator(permission_required('hosts.view_hostmodel', raise_exception=True))
@@ -242,7 +236,6 @@ class APIGetHostsByID(APIView):
 #   Params: (
 #               Object Filter: [projectID], [scanID], [hostID], [vulnID], [serviceID],
 #               Content Filter: [searchText], [sortOrder], [sortName], [pageSize], [pageNumber])
-
 class APIGetHostsOS(APIView):
 
     @method_decorator(permission_required('hosts.view_hostmodel', raise_exception=True))
@@ -307,7 +300,6 @@ class APIGetHostsOS(APIView):
 
 
 # APIAddHost Add new Host to DB
-
 class APIAddHost(APIView):
 
     @method_decorator(permission_required('hosts.add_hostmodel', raise_exception=True))
@@ -324,7 +316,6 @@ class APIAddHost(APIView):
 
 
 # APIAddHost delete Host in DB
-
 class APIDeleteHost(APIView):
 
     @method_decorator(permission_required('hosts.delete_hostmodel', raise_exception=True))
@@ -361,7 +352,6 @@ class APIDeleteHost(APIView):
 
 
 # APIAddHost Update Host in DB
-
 class APIUpdateHost(APIView):
 
     @method_decorator(permission_required('hosts.change_hostmodel', raise_exception=True))

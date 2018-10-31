@@ -41,7 +41,7 @@ class SidebarBtn(object):
 def RenderSideBar(request):
     sidebar = [
         SidebarBtn(False, ' Dashboard', reverse_lazy('dashboard:dashboard'), 'fa fa-bar-chart-o fa-fw'),
-        SidebarBtn(False, ' Scan', None, 'fa fa-search fa-fw', childBtn= [
+        SidebarBtn(False, ' Scans', None, 'fa fa-search fa-fw', childBtn= [
             SidebarBtn(False, ' Scan Projects', reverse_lazy('projects:projects'), 'fa fa-clipboard fa-fw'),
             SidebarBtn(False, ' Scan Tasks', reverse_lazy('scans:scans'), 'fa fa-search fa-fw'),
         ]),
@@ -55,7 +55,7 @@ def RenderSideBar(request):
             SidebarBtn(False, ' Host Reports', reverse_lazy('reports:hostReport'), 'fa fa-desktop fa-fw'),
         ]),
         SidebarBtn(False, ' Submit', reverse_lazy('submit:submit'), 'fa fa-upload fa-fw'),
-        SidebarBtn(False, ' Settings', reverse_lazy('settings:settings'), 'fa fa-sliders fa-fw',childBtn= [
+        SidebarBtn(False, ' Settings', None, 'fa fa-sliders fa-fw',childBtn= [
             SidebarBtn(False, ' My Account', reverse_lazy('settings:MyAccount'), 'fa fa-user fa-fw'),
             SidebarBtn(False, ' Account Management', reverse_lazy('settings:AccountManagement'), 'fa fa-users fa-fw', permissions=['user.can_view_user', 'user.can_add_user', 'user.can_change_user']),
         ]),

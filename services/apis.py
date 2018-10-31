@@ -13,11 +13,13 @@ from .serializers import ServiceSerializer
 from .forms import ServiceForm, ServiceIDForm
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import permission_required
+from .ultil import GetServices
 
 PAGE_DEFAULT = 1
 NUM_ENTRY_DEFAULT = 50
 
-
+#   APIGetServiceName get service name from id
+#   Params: (id)
 class APIGetServiceName(APIView):
 
     @method_decorator(permission_required('services.view_servicemodel', raise_exception=True))
@@ -37,52 +39,25 @@ class APIGetServiceName(APIView):
             return Response({'status': '-1', 'message': 'fields are required',
                              'detail': {"id": [{"message": "ID is required", "code": "required"}]}})
 
-#
-# APIGetServices get services from these params:
-#   searchText: Search content
-#   sortName: Name of column is applied sort
-#   sortOrder: sort entry by order 'asc' or 'desc'
-#   pageSize: number of entry per page
-#   pageNumber: page number of curent view
-#   hostID: host to be used to filter
-#   vulnID: vuln to be used to filter
 
+# APIGetServices get services:
+#   Params: (
+#               Object Filter: [projectID], [scanID], [hostID], [vulnID], [serviceID],
+#               Content Filter: [searchText], [sortOrder], [sortName], [pageSize], [pageNumber])
 class APIGetServices(APIView):
 
     @method_decorator(permission_required('services.view_servicemodel', raise_exception=True))
     def get(self, request):
-        # Advanced Filter
-        if request.GET.get('hostID'):
-            try:
-                hostID = int(request.GET.get('hostID'))
-            except ValueError:
-                return Response({'status': -1, 'message': "hostID is not integer"})
-            try:
-                serviceObjs = HostModel.objects.get(pk=hostID).services.all()
-            except HostModel.DoesNotExist:
-                return Response({'status': -1, 'message': "Host is not existed"})
-        elif request.GET.get('vulnID'):
-            try:
-                vulnID = int(request.GET.get('vulnID'))
-            except ValueError:
-                return Response({'status': -1, 'message': "vulnID is not integer"})
-            try:
-                serviceObjs = VulnerabilityModel.objects.get(pk=vulnID).service
-            except VulnerabilityModel.DoesNotExist:
-                return Response({'status': -1, 'message': "Vulnerability is not existed"})
-            serviceSerializer = ServiceSerializer(serviceObjs, many=False)
-            return Response({'status': 0, 'object': serviceSerializer.data})
-        else:
-            serviceObjs = ServiceModel.objects.all()
-
-        # Filter by search keyword
-        if request.GET.get('searchText'):
-            search = request.GET.get('searchText')
-            query = Q(name__icontains=search) | Q(port__icontains=search) | Q(description__icontains=search)
-            serviceObjs = serviceObjs.filter(query)
+        kwarguments = dict()
+        for kw in request.GET:
+            kwarguments[kw] = request.GET.get(kw)
+        retval = GetServices(**kwarguments)
+        if retval['status'] != 0:
+            return Response(retval)
+        services = retval['object']
 
         # get total
-        numObject = serviceObjs.count()
+        numObject = services.count()
 
         # Get sort order
         if request.GET.get('sortOrder') == 'asc':
@@ -95,7 +70,7 @@ class APIGetServices(APIView):
             sortString = sortString + request.GET.get('sortName')
         else:
             sortString = sortString + 'id'
-        querySet = serviceObjs.order_by(sortString)
+        querySet = services.order_by(sortString)
 
         # Get Page Number
         if request.GET.get('pageNumber'):
@@ -107,7 +82,7 @@ class APIGetServices(APIView):
         if request.GET.get('pageSize'):
             numEntry = request.GET.get('pageSize')
             # IF Page size is 'ALL'
-            if numEntry.lower() == 'all' or numEntry == -1:
+            if numEntry.lower() == 'all' or numEntry == '-1':
                 numEntry = numObject
         else:
             numEntry = NUM_ENTRY_DEFAULT
@@ -120,12 +95,8 @@ class APIGetServices(APIView):
         return Response({"status":0, "object":data})
 
 
-#
-# APIGetServicesByID get services from id
-# return {'retVal': '-1'} if id not found
-# return service object if it's success
-#
-
+#   APIGetServicesByID get service from id
+#   Params: (id)
 class APIGetServicesByID(APIView):
 
     @method_decorator(permission_required('services.view_servicemodel', raise_exception=True))
@@ -144,12 +115,7 @@ class APIGetServicesByID(APIView):
                              'detail': {"id": [{"message": "ID is required", "code": "required"}]}})
 
 
-#
 # APIAddService add new service
-# return {'retVal': '-1'} if id not found
-# return service object if it's success
-#
-
 class APIAddService(APIView):
 
     @method_decorator(permission_required('services.add_servicemodel', raise_exception=True))
@@ -165,12 +131,7 @@ class APIAddService(APIView):
             return Response({'status': '-1', 'message': 'Form is invalid', 'detail': serviceForm.errors})
 
 
-#
 # APIDeleteService delete existing service
-# return {'retVal': '-1'} if id not found
-# return service object if it's success
-#
-
 class APIDeleteService(APIView):
 
     @method_decorator(permission_required('services.delete_servicemodel', raise_exception=True))
@@ -204,12 +165,7 @@ class APIDeleteService(APIView):
             return Response({'status': '-1', 'message': 'Form is invalid.', 'detail': {serviceForm.errors}})
 
 
-#
 # APIUpdateService delete existing service
-# return {'notification': 'error_msg'} if id not found
-# return service object if it's success
-#
-
 class APIUpdateService(APIView):
 
     @method_decorator(permission_required('services.change_servicemodel', raise_exception=True))
