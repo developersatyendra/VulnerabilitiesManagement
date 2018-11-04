@@ -105,7 +105,7 @@ function queryParams(params) {
 function ajaxRequest(params) {
     $.ajax({
         type: "GET",
-        url: "/vuln/api/getvulns",
+        url: "/vuln/api/getcurrentglobalvuln",
         data: params.data,
         dataType: "json",
         success: function(data) {

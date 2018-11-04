@@ -13,6 +13,8 @@ urlpatterns = [
     
     # APIs
     path('api/getcurrenthostvuln', apis.APIGetCurrentHostVuln.as_view(), name='APIgetcurrenthostvuln'),
+    path('api/getcurrentprojectvuln', apis.APIGetCurrentProjectVuln.as_view(), name='APIgetcurrentprojectvuln'),
+    path('api/getcurrentglobalvuln', apis.APIGetCurrentGlobalVuln.as_view(), name='APIgetcurrentglobalvuln'),
     path('api/getvulnname', apis.APIGetVulnName.as_view(), name='APIgetvulnname'),
     path('api/getvulns', apis.APIGetVulns.as_view(), name='APIgetvulns'),
     path('api/getvulnbyid', apis.APIGetVulnByID.as_view(), name='APIgetvulnbyid'),

@@ -1,10 +1,12 @@
 from django.core.paginator import Paginator
-from django.db.models import Q
+from django.db.models import Q, Max, F
 from .models import VulnerabilityModel
 from django.db.models import Count, Case, When, IntegerField
 import operator
 from functools import reduce
-from scans.models import ScanTaskModel
+from scans.models import ScanTaskModel, ScanInfoModel
+from hosts.models import HostModel
+from hosts.ultil import GetHosts
 
 
 PAGE_DEFAULT = 1
@@ -124,3 +126,29 @@ def GetCurrentHostVuln(*args,**kwargs):
         return {'status': 0, 'object': currentVulns}
     else:
         return {'status': -1, 'message': "HostID is required"}
+
+
+def GetCurrentProjectVuln(*args,**kwargs):
+    projectID = kwargs.get('projectID', None)
+    if projectID:
+        retval = GetHosts(ProjectID=projectID)
+        if retval['status'] != 0:
+            return retval
+
+        hostQuery = retval['object'].distinct()
+        scanInfoIDs = hostQuery.annotate(currentDate=Max('ScanInfoHost__scanTask__startTime')).filter(
+            ScanInfoHost__scanTask__startTime=F('currentDate')).values_list('ScanInfoHost__id', flat=True)
+        vulnIDs = ScanInfoModel.objects.filter(id__in=scanInfoIDs).values_list('vulnFound', flat=True)
+        vulns = VulnerabilityModel.objects.filter(id__in=vulnIDs).distinct().order_by('-levelRisk')
+        return {'status': 0, 'object': vulns}
+    else:
+        return {'status': -1, 'message': "projectID is required"}
+
+
+def GetCurrentGobalVuln(*args,**kwargs):
+    hostQuery = HostModel.objects.all()
+    scanInfoIDs = hostQuery.annotate(currentDate=Max('ScanInfoHost__scanTask__startTime')).filter(
+        ScanInfoHost__scanTask__startTime=F('currentDate')).values_list('ScanInfoHost__id', flat=True)
+    vulnIDs = ScanInfoModel.objects.filter(id__in=scanInfoIDs).values_list('vulnFound', flat=True)
+    vulns = VulnerabilityModel.objects.filter(id__in=vulnIDs).distinct().order_by('-levelRisk')
+    return {'status': 0, 'object': vulns}

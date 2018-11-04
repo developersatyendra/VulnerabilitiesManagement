@@ -133,3 +133,39 @@ def GetProjectVuln(*args, **kwargs):
     else:
         projectVul = sorted(projectVul, key=itemgetter('high', 'med', 'low', 'info'), reverse=True)
     return {'status': 0, 'object': projectVul}
+
+
+# GetProjectVuln get project with vuln from these params:
+def GetProjectVuln(*args, **kwargs):
+    retval = GetProject(**kwargs)
+    if retval['status'] != 0:
+        return {'status': retval['status'], 'message': retval['message']}
+    projectQuery = retval['object'].distinct()
+
+    projectVul = []
+    for project in projectQuery:
+        retval = GetHostsCurrentVuln(projectID=project.id)
+        if retval['status'] != 0:
+            return retval
+        totalVuln = retval['object'].aggregate(High=Sum('high'), Med=Sum('med'), Low=Sum('low'), Info=Sum('info'))
+        numScanTasks = ScanTaskModel.objects.filter(scanProject=project).count()
+        projectVul.append({
+            'id': project.id,
+            'name': project.name,
+            'numScanTasks':numScanTasks,
+            'high': totalVuln['High'] if totalVuln['High'] else 0,
+            'med': totalVuln['Med'] if totalVuln['Med'] else 0,
+            'low': totalVuln['Low'] if totalVuln['Low'] else 0,
+            'info': totalVuln['Info'] if totalVuln['Info'] else 0
+        })
+    sortName = kwargs.get('sortName', None)
+    if sortName and sortName in ['id', 'name', 'high', 'med', 'low', 'info']:
+        sortOrder = kwargs.get('sortOrder', None)
+        if sortOrder =='asc':
+            reverse = False
+        else:
+            reverse = True
+        projectVul = sorted(projectVul, key=itemgetter(sortName), reverse=reverse)
+    else:
+        projectVul = sorted(projectVul, key=itemgetter('high', 'med', 'low', 'info'), reverse=True)
+    return {'status': 0, 'object': projectVul}

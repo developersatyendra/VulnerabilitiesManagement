@@ -9,7 +9,7 @@ from django.core.paginator import Paginator
 from .models import VulnerabilityModel
 from .serializers import VulnSerializer
 from .forms import VulnForm, VulnIDForm
-from .ultil import GetVulns, GetCurrentHostVuln
+from .ultil import GetVulns, GetCurrentHostVuln, GetCurrentProjectVuln, GetCurrentGobalVuln
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import permission_required
 
@@ -207,6 +207,132 @@ class APIGetCurrentHostVuln(APIView):
         for kw in request.GET:
             kwarguments[kw] = request.GET.get(kw)
         retval = GetCurrentHostVuln(**kwarguments)
+        if retval['status'] != 0:
+            return Response({'status': retval['status'], 'message': retval['message']})
+        vulns = retval['object']
+        searchText = request.GET.get('searchText', None)
+        if searchText:
+            querySearch = Q(description__icontains=search) \
+                          | Q(name__icontains=search) \
+                          | Q(observation__icontains=search) \
+                          | Q(recommendation__icontains=search) \
+                          | Q(cve__icontains=search) \
+                          | Q(levelRisk__icontains=search) \
+                          | Q(service__name__icontains=search)
+            vulns = vulns.filter(querySearch)
+        numObject = vulns.count()
+
+        # Get sort order
+        if request.GET.get('sortOrder') == 'asc':
+            sortString = ''
+        else:
+            sortString = '-'
+
+        # Get sort filed
+        if request.GET.get('sortName'):
+            sortString = sortString + request.GET.get('sortName')
+        else:
+            sortString = sortString + 'levelRisk'
+        vulns = vulns.order_by(sortString)
+
+        # Get Page Number
+        if request.GET.get('pageNumber'):
+            page = request.GET.get('pageNumber')
+        else:
+            page = PAGE_DEFAULT
+
+        # Get Page Size
+        if request.GET.get('pageSize'):
+            numEntry = request.GET.get('pageSize')
+            # IF Page size is 'ALL'
+            if numEntry.lower() == 'all' or numEntry == '-1':
+                numEntry = numObject
+        else:
+            numEntry = NUM_ENTRY_DEFAULT
+        try:
+            querySetPaged = Paginator(vulns, int(numEntry))
+        except (ValueError, TypeError) as e:
+            return Response({'status': -1, 'message': str(e)})
+        dataPaged = querySetPaged.get_page(page)
+        dataSerialized = VulnSerializer(dataPaged, many=True)
+        data = dict()
+        data["total"] = numObject
+        data['rows'] = dataSerialized.data
+        return Response({'status': 0, 'object': data})
+
+
+# APIGetCurrentProjectVuln get existing vulns on specific project:
+class APIGetCurrentProjectVuln(APIView):
+
+    @method_decorator(permission_required('vulnerabilities.view_vulnerabilitymodel', raise_exception=True))
+    def get(self, request):
+        kwarguments = dict()
+        for kw in request.GET:
+            kwarguments[kw] = request.GET.get(kw)
+        retval = GetCurrentProjectVuln(**kwarguments)
+        if retval['status'] != 0:
+            return Response({'status': retval['status'], 'message': retval['message']})
+        vulns = retval['object']
+        searchText = request.GET.get('searchText', None)
+        if searchText:
+            querySearch = Q(description__icontains=search) \
+                          | Q(name__icontains=search) \
+                          | Q(observation__icontains=search) \
+                          | Q(recommendation__icontains=search) \
+                          | Q(cve__icontains=search) \
+                          | Q(levelRisk__icontains=search) \
+                          | Q(service__name__icontains=search)
+            vulns = vulns.filter(querySearch)
+        numObject = vulns.count()
+
+        # Get sort order
+        if request.GET.get('sortOrder') == 'asc':
+            sortString = ''
+        else:
+            sortString = '-'
+
+        # Get sort filed
+        if request.GET.get('sortName'):
+            sortString = sortString + request.GET.get('sortName')
+        else:
+            sortString = sortString + 'levelRisk'
+        vulns = vulns.order_by(sortString)
+
+        # Get Page Number
+        if request.GET.get('pageNumber'):
+            page = request.GET.get('pageNumber')
+        else:
+            page = PAGE_DEFAULT
+
+        # Get Page Size
+        if request.GET.get('pageSize'):
+            numEntry = request.GET.get('pageSize')
+            # IF Page size is 'ALL'
+            if numEntry.lower() == 'all' or numEntry == '-1':
+                numEntry = numObject
+        else:
+            numEntry = NUM_ENTRY_DEFAULT
+        try:
+            querySetPaged = Paginator(vulns, int(numEntry))
+        except (ValueError, TypeError) as e:
+            return Response({'status': -1, 'message': str(e)})
+        dataPaged = querySetPaged.get_page(page)
+        dataSerialized = VulnSerializer(dataPaged, many=True)
+        data = dict()
+        data["total"] = numObject
+        data['rows'] = dataSerialized.data
+        return Response({'status': 0, 'object': data})
+
+
+# APIGetCurrentProjectVuln get existing vulns on specific project:
+class APIGetCurrentGlobalVuln(APIView):
+
+    @method_decorator(permission_required('vulnerabilities.view_vulnerabilitymodel', raise_exception=True))
+    def get(self, request):
+        kwarguments = dict()
+        for kw in request.GET:
+            kwarguments[kw] = request.GET.get(kw)
+        retval = GetCurrentGobalVuln(**kwarguments)
         if retval['status'] != 0:
             return Response({'status': retval['status'], 'message': retval['message']})
         vulns = retval['object']
