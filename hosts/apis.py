@@ -100,28 +100,8 @@ class APIGetHostsCurrentVuln(APIView):
             return Response(retval)
         hosts = retval['object']
 
-        # Filter by search keyword
-        if request.GET.get('searchText'):
-            search = request.GET.get('searchText')
-            query = Q(ipAddr__icontains=search) \
-                    | Q(hostName__icontains=search) \
-                    | Q(scanName__icontains=search)
-            hosts = hosts.filter(query)
-
         # get total
         numObject = hosts.count()
-        # Get sort order
-        if request.GET.get('sortOrder') == 'asc':
-            sortString = ''
-        else:
-            sortString = '-'
-
-        # Get sort filed
-        if request.GET.get('sortName'):
-            sortString = sortString + request.GET.get('sortName')
-        else:
-            sortString = sortString + 'id'
-        querySet = hosts.order_by(sortString)
 
         # Get Page Number
         if request.GET.get('pageNumber'):
@@ -138,11 +118,15 @@ class APIGetHostsCurrentVuln(APIView):
         else:
             numEntry = NUM_ENTRY_DEFAULT
         try:
-            querySetPaged = Paginator(querySet, int(numEntry))
+            querySetPaged = Paginator(hosts, int(numEntry))
         except (ValueError, TypeError) as e:
             return Response({'status': -1, 'message': str(e)})
         dataPaged = querySetPaged.get_page(page)
-        return Response({'status': 0, 'object': dataPaged.object_list})
+
+        data = dict()
+        data["total"] = numObject
+        data['rows'] = dataPaged.object_list
+        return Response({'status': 0, 'object': data})
 
 
 # APIGetHosts get host from these params:

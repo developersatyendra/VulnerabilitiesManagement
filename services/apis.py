@@ -13,7 +13,7 @@ from .serializers import ServiceSerializer
 from .forms import ServiceForm, ServiceIDForm
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import permission_required
-from .ultil import GetServices
+from .ultil import GetServices, GetServicesVuln
 
 PAGE_DEFAULT = 1
 NUM_ENTRY_DEFAULT = 50
@@ -189,77 +189,41 @@ class APIUpdateService(APIView):
             return Response({'status': '-1', 'message': 'Form is invalid', 'detail': serviceForm.errors})
 
 
-class APIServiceVulnStatistic(APIView):
+class APIServicesVuln(APIView):
 
     @method_decorator(permission_required('services.view_servicemodel', raise_exception=True))
     def get(self, request):
-        serviceIDs= None
-        vulnIDs = None
+        kwarguments = dict()
+        for kw in request.GET:
+            kwarguments[kw] = request.GET.get(kw)
+        retval = GetServicesVuln(**kwarguments)
+        if retval['status'] != 0:
+            return Response(retval)
+        servicesVuln = retval['object']
+        servicesVuln = servicesVuln.filter(Q(high__gt=0)|Q(med__gt=0)|Q(low__gt=0)|Q(info__gt=0))
 
-        # scanID process
-        if request.GET.get('scanID'):
-            scanID = request.GET.get('scanID')
-            try:
-                scanTask = ScanTaskModel.objects.get(id=scanID)
-                print(scanTask)
-            except (ValueError, TypeError) as e:
-                return Response({'status': '-1', 'message': 'Value error',
-                                 'detail': {"scanID": [{"message": "ID is not integer", "code": "value error"}]}})
-            except ScanTaskModel.DoesNotExist:
-                return Response({'status': '-1', 'message': 'Scan not found error',
-                                 'detail': {"scanID": [{"message": "Scan does not exist", "code": "exist error"}]}})
-
-            vulnIDs = scanTask.ScanInfoScanTask.distinct().values_list('vulnFound', flat=True)
-
-        # hostID process
-        elif request.GET.get('hostID'):
-            hostID = request.GET.get('hostID')
-            try:
-                host = HostModel.objects.get(id=hostID)
-            except (ValueError, TypeError) as e:
-                return Response({'status': '-1', 'message': 'Value error',
-                                 'detail': {"hostID": [{"message": "ID is not integer", "code": "value error"}]}})
-            except HostModel.DoesNotExist:
-                return Response({'status': '-1', 'message': 'Host not found error',
-                                 'detail': {"hostID": [{"message": "Host does not exist", "code": "exist error"}]}})
-            vulnIDs = host.ScanInfoHost.distinct().values_list('vulnFound', flat=True)
-
-        # projectID process
-        elif request.GET.get('projectID'):
-            projectID = request.GET.get('projectID')
-            try:
-                project = ScanProjectModel.objects.get(id=projectID)
-
-            except (ValueError, TypeError) as e:
-                return Response({'status': '-1', 'message': 'Value error',
-                                 'detail': {"projectID": [{"message": "ID is not integer", "code": "value error"}]}})
-            except ScanProjectModel.DoesNotExist:
-                return Response({'status': '-1', 'message': 'Project not found error',
-                                 'detail': {"projectID": [{"message": "Project does not exist", "code": "exist error"}]}})
-            scanInfoID = project.ScanProjectScanTask.values_list('ScanInfoScanTask')
-            scanInfo = ScanInfoModel.objects.filter(id__in=scanInfoID).distinct()
-            vulnIDs = scanInfo.values_list('vulnFound', flat=True)
-
-        if vulnIDs:
-            vulnQuerySet = VulnerabilityModel.objects.filter(id__in=vulnIDs)
+        numObject = servicesVuln.count()
+        # Get Page Number
+        if request.GET.get('pageNumber'):
+            page = request.GET.get('pageNumber')
         else:
-            vulnQuerySet = VulnerabilityModel.objects.all()
-        if request.GET.get('topObj'):
-            try:
-                topObj = int(request.GET.get('topObj'))
-            except (ValueError, TypeError) as e:
-                return Response({'status': '-1', 'message': 'Value error',
-                                 'detail': {"hostID": [{"message": "Top Obj is not integer", "code": "value error"}]}})
-            statVals = vulnQuerySet.values('service').annotate(count=Count('service')).values('service__name',
-                                                                                              'service__port',
-                                                                                              'count').order_by(
-                '-count')[:topObj]
+            page = PAGE_DEFAULT
+
+        # Get Page Size
+        if request.GET.get('pageSize'):
+            numEntry = request.GET.get('pageSize')
+            # IF Page size is 'ALL'
+            if numEntry.lower() == 'all' or numEntry == '-1':
+                numEntry = numObject
         else:
-            statVals = vulnQuerySet.values('service').annotate(count=Count('service')).values('service__name',
-                                                                                              'service__port',
-                                                                                              'count').order_by(
-                '-count')
-        object_data = []
-        for statVal in statVals:
-            object_data.append({'name': statVal['service__name'], 'port': statVal['service__port'], 'vuln': statVal['count']})
-        return Response({'status': 0, 'object': object_data})
+            numEntry = NUM_ENTRY_DEFAULT
+        try:
+            querySetPaged = Paginator(servicesVuln, int(numEntry))
+        except (ValueError, TypeError) as e:
+            return Response({'status': -1, 'message': str(e)})
+        dataPaged = querySetPaged.get_page(page)
+
+        data = dict()
+        data["total"] = numObject
+        data['rows'] = dataPaged.object_list
+        return Response({"status": 0, "object": data})

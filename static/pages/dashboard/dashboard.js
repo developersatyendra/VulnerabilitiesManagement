@@ -44,7 +44,7 @@ $(document).ready(
         })
     }),
     // Top vuln DropDown Button
-    $(".dropdown-menu li a").click(function(event){
+    $(".choice li a").click(function(event){
         $(this).parents(".dropdown").find('.btn').html('<i class="fa fa-angle-double-up fa-fw"></i>' + $(this).text() + ' <span class="caret"></span>');
         $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
         __vulnTop = parseInt($(this).attr('id'));
@@ -53,20 +53,6 @@ $(document).ready(
     }),
 );
 
-// Get Br
-function GetScanName(){
-     $.ajax({
-         type: "GET",
-         url: "/scans/api/getscanname",
-         data: {id: id},
-         dataType: "json",
-         success: function (data) {
-             if (data.status == 0) {
-                 $('#brScan').text(data.object)
-             }
-         },
-     })
-}
 
 // Format Href for bootstrap table
 function HrefFormater(value, row, index) {
@@ -110,6 +96,7 @@ function FormattedDate(input) {
 }
 function queryParams(params) {
     params.pageSize =5;
+    params.sortOrder='desc';
     return(params);
 }
 //////////////////////////////////////////
@@ -151,7 +138,7 @@ function DrawChartProjectVuln(){
     $.when(GetData()).done(function (results){
         if(results.status <0)
             return -1;
-        var rawData = results.object;
+        var rawData = results.object.rows;
         var labels = [];
         var dataset_high = [];
         var dataset_med = [];
@@ -319,7 +306,7 @@ function DrawChartOSStat(){
 function DrawChartServiceStat(){
     function GetData() {
         return $.ajax({
-            url:'/services/api/getservicevulnstat',
+            url:'/services/api/getservicesvuln?sortName=total',
             method: "GET",
             success: function (data) {
                 if(data.status ==0)
@@ -330,12 +317,12 @@ function DrawChartServiceStat(){
     $.when(GetData()).done(function (results){
         if(results.status <0)
             return -1;
-        var rawData = results.object;
+        var rawData = results.object.rows;
         var labels = [];
         var dataset = [];
         for(i=0; i<rawData.length;i++){
             labels.push(rawData[i].name + ' - '+rawData[i].port);
-            dataset.push(rawData[i].vuln);
+            dataset.push(rawData[i].total);
         }
 
         var ctx = document.getElementById("vulnStatBySrv").getContext("2d");

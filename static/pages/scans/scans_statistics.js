@@ -62,7 +62,7 @@ $(document).ready(
         })
     }),
     // Top vuln DropDown Button
-    $(".dropdown-menu li a").click(function(event){
+    $(".choice li a").click(function(event){
         $(this).parents(".dropdown").find('.btn').html('<i class="fa fa-angle-double-up fa-fw"></i>' + $(this).text() + ' <span class="caret"></span>');
         $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
         __vulnTop = parseInt($(this).attr('id'));
@@ -286,7 +286,7 @@ function DrawChartOSStat(){
 function DrawChartServiceStat(){
     function GetData() {
         return $.ajax({
-            url:'/services/api/getservicevulnstat?scanID='+id,
+            url:'/services/api/getservicesvuln?sortName=total&scanID='+id,
             method: "GET",
             success: function (data) {
                 if(data.status ==0)
@@ -297,12 +297,12 @@ function DrawChartServiceStat(){
     $.when(GetData()).done(function (results){
         if(results.status <0)
             return -1;
-        var rawData = results.object;
+        var rawData = results.object.rows;
         var labels = [];
         var dataset = [];
         for(i=0; i<rawData.length;i++){
             labels.push(rawData[i].name + ' - '+rawData[i].port);
-            dataset.push(rawData[i].vuln);
+            dataset.push(rawData[i].total);
         }
 
         var ctx = document.getElementById("vulnStatBySrv").getContext("2d");

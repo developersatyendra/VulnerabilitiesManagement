@@ -5,6 +5,7 @@ from datetime import datetime
 from django.template.loader import get_template
 from django.conf import settings
 from hosts.models import HostModel
+from services.ultil import GetServicesVuln
 from scans.models import ScanTaskModel
 from projects.models import ScanProjectModel
 import tempfile
@@ -145,13 +146,15 @@ def PDFHostReport(report):
     vulns = GetCurrentHostVuln(hostID=host.id, pageSize=-1)['object']
 
     # Get statistic vuln by service
-    statVulnHostSrv = VulnStatisticByService(hostID=host.id, pageSize=-1)
+    statVulnHostSrvs = GetServicesVuln(hostID=host.id)
+    if statVulnHostSrvs['status'] !=0:
+        return statVulnHostSrvs['status']
     serviceName = []
     serviceVuln = []
-    result = sorted(statVulnHostSrv.items(), key=lambda t: t[1], reverse=True)
-    for name, vuln in result:
-        serviceName.append(name)
-        serviceVuln.append(vuln)
+    vulnsSrvs = statVulnHostSrvs['object'].order_by('-total')
+    for vuln in vulnsSrvs:
+        serviceName.append(vuln['name'])
+        serviceVuln.append(vuln['total'])
     graph_serivce = RenderDonutChart(serviceVuln, serviceName)
 
     # categorize vulns by group high, med, low, info
@@ -259,16 +262,18 @@ def PDFScanReport(report):
     htmlTemplate = get_template(TEMPLATES['scan_vulns'])
 
     # Get Vulnerbilities were discovered by this scan
-    vulns = GetVulns(scanID=scan.id, pageSize=-1, skipPaging=True)['object']
+    vulns = GetVulns(scanID=scan.id)['object'].order_by('-levelRisk')
 
     # Get statistic vuln by service
-    statVulnScanSrv = VulnStatisticByService(scanID=scan.id, pageSize=-1)
+    statVulnScanSrvs = GetServicesVuln(scanID=scan.id)
+    if statVulnScanSrvs['status'] !=0:
+        return statVulnScanSrvs['status']
     serviceName = []
     serviceVuln = []
-    result = sorted(statVulnScanSrv.items(), key=lambda t: t[1], reverse=True)
-    for name, vuln in result:
-        serviceName.append(name)
-        serviceVuln.append(vuln)
+    vulnsSrvs = statVulnScanSrvs['object'].order_by('-total')
+    for vuln in vulnsSrvs:
+        serviceName.append(vuln['name'])
+        serviceVuln.append(vuln['total'])
     graph_serivce = RenderDonutChart(serviceVuln, serviceName)
 
     # Get statistic vuln by OS
@@ -317,7 +322,7 @@ def PDFScanReport(report):
     host_t = HostModel.objects.filter(id__in=hostIDs)
     vuln_t = []
     for host in host_t:
-        vuln_t.append(GetVulns(hostID=host.id, scanID=scan.id, sortName='levelRisk', sortOrder='desc', pageSize=-1, skipPaging=True)['object'])
+        vuln_t.append(GetVulns(hostID=host.id, scanID=scan.id)['object'].order_by('-levelRisk'))
     # Fill values to template
     context = {
         'css': REPORT_CSS,                              # CSS - Bootstrap
@@ -399,16 +404,18 @@ def PDFProjectReport(report):
     htmlTemplate = get_template(TEMPLATES['project_vulns'])
 
     # Get Vulnerbilities were discovered by this scan
-    vulns = GetVulns(projectID=project.id, pageSize=-1, skipPaging=True)['object']
+    vulns = GetVulns(projectID=project.id)['object'].order_by('-levelRisk')
 
     # Get statistic vuln by service
-    statVulnScanSrv = VulnStatisticByService(projectID=project.id, pageSize=-1)
+    statVulnScanSrvs = GetServicesVuln(projectID=project.id)
+    if statVulnScanSrvs['status'] !=0:
+        return statVulnScanSrvs['status']
     serviceName = []
     serviceVuln = []
-    result = sorted(statVulnScanSrv.items(), key=lambda t: t[1], reverse=True)
-    for name, vuln in result:
-        serviceName.append(name)
-        serviceVuln.append(vuln)
+    vulnsSrvs = statVulnScanSrvs['object'].order_by('-total')
+    for vuln in vulnsSrvs:
+        serviceName.append(vuln['name'])
+        serviceVuln.append(vuln['total'])
     graph_serivce = RenderDonutChart(serviceVuln, serviceName)
 
     # Get statistic vuln by OS
@@ -461,7 +468,7 @@ def PDFProjectReport(report):
     )
     for host in host_t:
         latestScanTask = ScanTaskModel.objects.filter(ScanInfoScanTask__hostScanned__id=host.id).order_by('-startTime')[0]
-        currentVuln = GetVulns(hostID=host.id, scanID=latestScanTask.id, sortName='levelRisk', sortOrder='desc', pageSize=-1, skipPaging=True)['object']
+        currentVuln = GetVulns(hostID=host.id, scanID=latestScanTask.id)['object'].order_by('-levelRisk')
         currentVuln = currentVuln.aggregate(
             high=Count('id', filter=Q(levelRisk__gte=LEVEL_HIGH), distinct=True),
             med=Count('id', filter=(Q(levelRisk__gte=LEVEL_MED)&Q(levelRisk__lt=LEVEL_HIGH)),distinct=True),

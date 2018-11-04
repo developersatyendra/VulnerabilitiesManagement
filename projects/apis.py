@@ -131,21 +131,38 @@ class APIGetProjectVulns(APIView):
         kwarguments = dict()
         for kw in request.GET:
             kwarguments[kw] = request.GET.get(kw)
-        retval = GetProject(**kwarguments)
+        retval = GetProjectVuln(**kwarguments)
         if retval['status'] !=0:
             return Response({'status': retval['status'], 'message': retval['message']})
+
         projects = retval['object']
-        projects = projects.annotate(
-            high=Count('ScanProjectScanTask__ScanInfoScanTask__vulnFound', filter=Q(ScanProjectScanTask__ScanInfoScanTask__vulnFound__levelRisk__gte=LEVEL_HIGH)),
-            med=Count('ScanProjectScanTask__ScanInfoScanTask__vulnFound', filter=(Q(ScanProjectScanTask__ScanInfoScanTask__vulnFound__levelRisk__gte=LEVEL_MED) & Q(
-                ScanProjectScanTask__ScanInfoScanTask__vulnFound__levelRisk__lt=LEVEL_HIGH))),
-            low=Count('ScanProjectScanTask__ScanInfoScanTask__vulnFound', filter=Q(ScanProjectScanTask__ScanInfoScanTask__vulnFound__levelRisk__gt=LEVEL_INFO) & Q(
-                ScanProjectScanTask__ScanInfoScanTask__vulnFound__levelRisk__lt=LEVEL_MED)),
-            info=Count('ScanProjectScanTask__ScanInfoScanTask__vulnFound', filter=Q(ScanProjectScanTask__ScanInfoScanTask__vulnFound__levelRisk=LEVEL_INFO)),
-            numScanTasks=Count('ScanProjectScanTask', distinct=True),
-        )
-        dataSerialized = ProjectVulnSerializer(projects, many=True)
-        return Response({'status': '0', 'object': dataSerialized.data})
+        numObject = len(projects)
+
+        # PageSize
+        pageSize = request.GET.get('pageSize', None)
+        if pageSize:
+            try:
+                pageSize = int(pageSize)
+            except (TypeError, ValueError) as e:
+                return Response({'status': -1, 'message': str(e)})
+        else:
+            pageSize = NUM_ENTRY_DEFAULT
+        # PageNumber
+        pageNumber = request.GET.get('pageNumber', None)
+        if pageNumber:
+            try:
+                pageNumber = int(pageNumber)
+            except (TypeError, ValueError) as e:
+                return Response({'status': -1, 'message': str(e)})
+        else:
+            pageNumber = PAGE_DEFAULT
+
+        # Pagination
+        projectPage = projects[pageSize*(pageNumber-1):pageSize*pageNumber]
+        data = dict()
+        data["total"] = numObject
+        data['rows'] = projectPage
+        return Response({'status': '0', 'object': data})
 
 
 # APIAddProject add new project

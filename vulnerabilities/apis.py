@@ -5,10 +5,11 @@ from services.models import ServiceModel
 from django.db.models import Q, Max
 from scans.models import ScanTaskModel, ScanInfoModel
 from hosts.models import HostModel
+from django.core.paginator import Paginator
 from .models import VulnerabilityModel
 from .serializers import VulnSerializer
 from .forms import VulnForm, VulnIDForm
-from .ultil import GetVulns
+from .ultil import GetVulns, GetCurrentHostVuln
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import permission_required
 
@@ -38,40 +39,71 @@ class APIGetVulnName(APIView):
                              'detail': {"id": [{"message": "ID is required", "code": "required"}]}})
 
 
-######################################################
-# APIGetVulns get vulns from these params:
-#   searchText: Search content
-#   sortName: Name of column is applied sort
-#   sortOrder: sort entry by order 'asc' or 'desc'
-#   pageSize: number of entry per page
-#   pageNumber: page number of curent view
-#   projectID: project to be used to filter
-#   scanID: ScanTask to be used to filter
-#   hostID: Vuln to be used to filter
-#   serviceID: Service to be used to filter
-
+# APIGetVulns get vulns
 class APIGetVulns(APIView):
 
     @method_decorator(permission_required('vulnerabilities.view_vulnerabilitymodel', raise_exception=True))
     def get(self, request):
-        kw = dict(request.GET)
-        retval = GetVulns(**kw)
+        kwarguments = dict()
+        for kw in request.GET:
+            kwarguments[kw] = request.GET.get(kw)
+        retval = GetVulns(**kwarguments)
         if retval['status'] != 0:
-            return Response({'status': retval['status'], 'message': retval['message'], 'detail': retval['detail']})
+            return Response({'status': retval['status'], 'message': retval['message']})
+        vulns = retval['object']
+        searchText = request.GET.get('searchText', None)
+        if searchText:
+            querySearch = Q(description__icontains=search) \
+                             | Q(name__icontains=search) \
+                             | Q(observation__icontains=search) \
+                             | Q(recommendation__icontains=search) \
+                             | Q(cve__icontains=search) \
+                             | Q(levelRisk__icontains=search) \
+                             | Q(service__name__icontains=search)
+            vulns = vulns.filter(querySearch)
+        numObject = vulns.count()
 
-        dataSerialized = VulnSerializer(retval['object'], many=True)
+        # Get sort order
+        if request.GET.get('sortOrder') == 'asc':
+            sortString = ''
+        else:
+            sortString = '-'
+
+        # Get sort filed
+        if request.GET.get('sortName'):
+            sortString = sortString + request.GET.get('sortName')
+        else:
+            sortString = sortString + 'levelRisk'
+        vulns = vulns.order_by(sortString)
+
+        # Get Page Number
+        if request.GET.get('pageNumber'):
+            page = request.GET.get('pageNumber')
+        else:
+            page = PAGE_DEFAULT
+
+        # Get Page Size
+        if request.GET.get('pageSize'):
+            numEntry = request.GET.get('pageSize')
+            # IF Page size is 'ALL'
+            if numEntry.lower() == 'all' or numEntry == '-1':
+                numEntry = numObject
+        else:
+            numEntry = NUM_ENTRY_DEFAULT
+        try:
+            querySetPaged = Paginator(vulns, int(numEntry))
+        except (ValueError, TypeError) as e:
+            return Response({'status': -1, 'message': str(e)})
+        dataPaged = querySetPaged.get_page(page)
+        dataSerialized = VulnSerializer(dataPaged, many=True)
         data = dict()
-        data["total"] = retval['total']
+        data["total"] = numObject
         data['rows'] = dataSerialized.data
         return Response({'status':0, 'object':data})
 
 
-#
 # APIGetVulnsByID get vulns from id
-# return {'retVal': '-1'} if id not found
-# return vuln object if it's success
-#
-
+#   Params: (id)
 class APIGetVulnByID(APIView):
 
     @method_decorator(permission_required('vulnerabilities.view_vulnerabilitymodel', raise_exception=True))
@@ -94,10 +126,6 @@ class APIGetVulnByID(APIView):
 
 
 # APIAddVuln add new Vulnerability
-# return {'retVal': '-1'} if id not found
-# return Vuln object if it's success
-#
-
 class APIAddVuln(APIView):
 
     @method_decorator(permission_required('vulnerabilities.add_vulnerabilitymodel', raise_exception=True))
@@ -111,12 +139,7 @@ class APIAddVuln(APIView):
             return Response({'status': '-1', 'message': 'Form is invalid', 'detail': vulnForm.errors})
 
 
-#
 # APIDeleteVuln delete existing vulnerability
-# return {'retVal': '-1'} if id not found
-# return {'retVal': 'Num of Success on Deleting'} if it's success
-#
-
 class APIDeleteVuln(APIView):
 
     @method_decorator(permission_required('vulnerabilities.delete_vulnerabilitymodel', raise_exception=True))
@@ -151,12 +174,7 @@ class APIDeleteVuln(APIView):
             return Response({'status': '-1', 'message': 'Form is invalid', 'detail': {vulnForm.errors}})
 
 
-#
 # APIUpdateVuln update vulnerability
-# return {'notification': 'error_msg'} if id not found
-# return Vuln object if it's success
-#
-
 class APIUpdateVuln(APIView):
 
     @method_decorator(permission_required('vulnerabilities.change_vulnerabilitymodel', raise_exception=True))
@@ -180,33 +198,64 @@ class APIUpdateVuln(APIView):
             return Response({'status': '-1', 'message': 'Form is invalid', 'detail': vulnForm.errors})
 
 
-#
 # APIGetCurrentHostVuln get existing vulns on specific host:
-#   search: Search content
-#   sort: Name of column is applied sort
-#   order: sort entry by order 'asc' or 'desc'
-#   offset: number of entry per page
-#   limit: page number of curent view
-
 class APIGetCurrentHostVuln(APIView):
 
     @method_decorator(permission_required('vulnerabilities.view_vulnerabilitymodel', raise_exception=True))
     def get(self, request):
-        if request.GET.get('id'):
-            try:
-                id = int(request.GET.get('id'))
-            except TypeError:
-                return Response({'status': '-1', 'message': 'Value error',
-                                 'detail': {"id": [{"message": "ID is not integer", "code": "value error"}]}})
-            scanTask = ScanTaskModel.objects.filter(ScanInfoScanTask__hostScanned=id).order_by('-startTime')[0]
-            retval = GetVulns(scanID=scanTask.id, hostID=id, **dict(request.GET))
-            if retval['status'] != 0:
-                return Response({'status': retval['status'], 'message': retval['message'], 'detail': retval['detail']})
-            dataSerialized = VulnSerializer(retval['object'], many=True)
-            data = dict()
-            data["total"] = retval['total']
-            data['rows'] = dataSerialized.data
-            return Response({'status': 0, 'object': data})
+        kwarguments = dict()
+        for kw in request.GET:
+            kwarguments[kw] = request.GET.get(kw)
+        retval = GetCurrentHostVuln(**kwarguments)
+        if retval['status'] != 0:
+            return Response({'status': retval['status'], 'message': retval['message']})
+        vulns = retval['object']
+        searchText = request.GET.get('searchText', None)
+        if searchText:
+            querySearch = Q(description__icontains=search) \
+                          | Q(name__icontains=search) \
+                          | Q(observation__icontains=search) \
+                          | Q(recommendation__icontains=search) \
+                          | Q(cve__icontains=search) \
+                          | Q(levelRisk__icontains=search) \
+                          | Q(service__name__icontains=search)
+            vulns = vulns.filter(querySearch)
+        numObject = vulns.count()
+
+        # Get sort order
+        if request.GET.get('sortOrder') == 'asc':
+            sortString = ''
         else:
-            return Response({'status': '-1', 'message': 'fields are required',
-                             'detail': {"id": [{"message": "ID is required", "code": "required"}]}})
+            sortString = '-'
+
+        # Get sort filed
+        if request.GET.get('sortName'):
+            sortString = sortString + request.GET.get('sortName')
+        else:
+            sortString = sortString + 'levelRisk'
+        vulns = vulns.order_by(sortString)
+
+        # Get Page Number
+        if request.GET.get('pageNumber'):
+            page = request.GET.get('pageNumber')
+        else:
+            page = PAGE_DEFAULT
+
+        # Get Page Size
+        if request.GET.get('pageSize'):
+            numEntry = request.GET.get('pageSize')
+            # IF Page size is 'ALL'
+            if numEntry.lower() == 'all' or numEntry == '-1':
+                numEntry = numObject
+        else:
+            numEntry = NUM_ENTRY_DEFAULT
+        try:
+            querySetPaged = Paginator(vulns, int(numEntry))
+        except (ValueError, TypeError) as e:
+            return Response({'status': -1, 'message': str(e)})
+        dataPaged = querySetPaged.get_page(page)
+        dataSerialized = VulnSerializer(dataPaged, many=True)
+        data = dict()
+        data["total"] = numObject
+        data['rows'] = dataSerialized.data
+        return Response({'status': 0, 'object': data})

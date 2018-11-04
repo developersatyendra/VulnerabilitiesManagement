@@ -144,7 +144,9 @@ function ajaxRequest(params) {
 //
 function queryParams(params) {
     // params.advFilter = "projectID";
-    params.id = id;
+    params.hostID = id;
+    params.sortName='levelRisk';
+    params.sortOrder='desc';
     return(params);
     // return {advFilter: 'projectID', advFilterValue: id};
 }

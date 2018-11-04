@@ -57,6 +57,7 @@ $(document).ready(
             ],
             showExport: true,
             ajax: ajaxRequest,
+            queryParams: queryParams,
             idField: "id",
             queryParamsType: "",
             striped: true,
@@ -281,6 +282,11 @@ $(document).ready(
 // Format Href for bootstrap table
 function HrefFormater(value, row, index) {
     return '<a href="' + row.id + '"> ' + row.name +'</a>';
+}
+
+function queryParams(params) {
+    params.sortOrder='desc';
+    return(params);
 }
 
 //////////////////////////////////////////

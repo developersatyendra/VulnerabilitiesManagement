@@ -39,4 +39,4 @@ class ScanInfoModel(models.Model):
     scanTask = models.ForeignKey(to=ScanTaskModel, on_delete=models.CASCADE, related_name="ScanInfoScanTask")
 
     def __str__(self):
-        return self.hostScanned.hostName
+        return self.hostScanned.hostName + ' - ' + self.hostScanned.ipAddr

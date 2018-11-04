@@ -1,9 +1,6 @@
 from .models import HostModel
 from scans.models import ScanInfoModel
-from .serializers import HostSerializer, HostVulnSerializer
-from django.core.paginator import Paginator
 from django.db.models import Q, Count, F, Max
-from rest_framework.response import Response
 from django.conf import settings
 
 PAGE_DEFAULT = 1
@@ -133,7 +130,7 @@ def GetHostsCurrentVuln(*args, **kwargs):
     hostQuery = retval['object']
 
     hostQuery = hostQuery.distinct()
-    scanInfoIDs = hostQuery.annotate(currentDate=Max('ScanInfoHost__scanTask__startTime')).filter(ScanInfoHost__scanTask__startTime=F('currentDate')).values_list('id', flat=True)
+    scanInfoIDs = hostQuery.annotate(currentDate=Max('ScanInfoHost__scanTask__startTime')).filter(ScanInfoHost__scanTask__startTime=F('currentDate')).values_list('ScanInfoHost__id', flat=True)
     querySet = ScanInfoModel.objects.filter(id__in=scanInfoIDs).values('hostScanned').annotate(
         high=Count('vulnFound', filter=Q(vulnFound__levelRisk__gte=LEVEL_HIGH), distinct=True),
         med=Count('vulnFound', filter=(Q(vulnFound__levelRisk__gte=LEVEL_MED)&Q(vulnFound__levelRisk__lt=LEVEL_HIGH)),distinct=True),
