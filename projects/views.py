@@ -43,3 +43,13 @@ class ProjectsScanTaskView(TemplateView):
             'form': form,
         }
         return render(request, self.template, context)
+
+class ProjectsStatisticsView(TemplateView):
+    template = 'projects/project_statistics.html'
+
+    def get(self, request, *args, **kwargs):
+        sidebarHtml = RenderSideBar(request)
+        context = {
+            'sidebar': sidebarHtml,
+        }
+        return render(request, self.template, context)

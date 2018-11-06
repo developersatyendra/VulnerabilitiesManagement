@@ -129,6 +129,8 @@ function FormattedDate(input) {
 function queryParams(params) {
     params.scanID = id;
     params.pageSize =5;
+    params.sortName='levelRisk';
+    params.sortOrder = 'desc';
     return(params);
 }
 //////////////////////////////////////////

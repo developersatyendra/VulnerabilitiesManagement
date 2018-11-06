@@ -8,12 +8,12 @@ LOGIN_URL = getattr(settings, 'LOGIN_URL')
 app_name = 'hosts'
 urlpatterns = [
     path('', login_required(views.HostsView.as_view(), redirect_field_name=LOGIN_URL), name='hosts'),
-    path('<int:id>/', login_required(views.HostDetailView.as_view(), redirect_field_name=LOGIN_URL), name='hostDetail'),
+    path('<int:id>/', login_required(views.HostStatisticsView.as_view(), redirect_field_name=LOGIN_URL), name='hostDetail'),
     path('<int:id>/detailed', login_required(views.HostDetailView.as_view(), redirect_field_name=LOGIN_URL), name='hostDetail'),
     path('<int:id>/scantask', login_required(views.HostScanTaskView.as_view(), redirect_field_name=LOGIN_URL), name='hostDetail'),
     path('<int:id>/currentvuln', login_required(views.HostCurrentVulnView.as_view(), redirect_field_name=LOGIN_URL), name='hostDetail'),
     path('<int:id>/runningservice', login_required(views.HostRunningServiceView.as_view(), redirect_field_name=LOGIN_URL), name='hostrunningservice'),
-
+    path('<int:id>/statistics', login_required(views.HostStatisticsView.as_view(), redirect_field_name=LOGIN_URL), name='hoststatisticsview'),
     # APIs
     path('api/gethostname', apis.APIGetHostName.as_view(), name='APIgethostname'),
     path('api/gethostsvuln', apis.APIGetHostsVuln.as_view(), name='APIgethostsvuln'),

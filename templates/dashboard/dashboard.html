@@ -114,25 +114,6 @@
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <i class="fa fa-bar-chart-o fa-fw"></i> Project Overview
-                            <div class="pull-right">
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-                                        Actions
-                                        <span class="caret"></span>
-                                    </button>
-                                    <ul class="dropdown-menu pull-right" role="menu">
-                                        <li><a href="#">Action</a>
-                                        </li>
-                                        <li><a href="#">Another action</a>
-                                        </li>
-                                        <li><a href="#">Something else here</a>
-                                        </li>
-                                        <li class="divider"></li>
-                                        <li><a href="#">Separated link</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
@@ -184,7 +165,7 @@
                                         <i class="fa fa-angle-double-up fa-fw"></i> Top 10
                                         <span class="caret"></span>
                                     </button>
-                                    <ul class="dropdown-menu pull-right choice">
+                                    <ul class="dropdown-menu pull-right vulntop">
                                         <li id="edit"><a href="#" id="5"><i class="fa fa-angle-double-up fa-fw"></i> Top 5</a></li>
                                         <li id="delete"><a href="#" id="10"><i class="fa fa-angle-double-up fa-fw"></i> Top 10</a></li>
                                         <li id="delete"><a href="#" id="15"><i class="fa fa-angle-double-up fa-fw"></i> Top 15</a></li>
@@ -195,6 +176,52 @@
                         <!-- /.panel-heading -->
                         <div class="panel-body">
                             <table id="vulntable" data-pagination="false"></table>
+                            <!-- /.table-responsive -->
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+            </div>
+            <!-- /.row -->
+            <div class="row row-equal">
+                <div class="col-lg-8 col-equal">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-bar-chart fa-fw" aria-hidden="true"></i>
+                            Recent Scanning Tasks
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body" >
+                            <canvas id="recentScanningTask" height="400px" width="800px"></canvas>
+                            <!-- /.table-responsive -->
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <div class="col-lg-4 col-equal">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-table fa-fw" aria-hidden="true"></i>
+                            Top Hosts With Highest Risk
+                            <div class="pull-right">
+                                <div class="dropdown">
+                                    <button class="btn btn-default dropdown-toggle btn-xs" type="button" data-toggle="dropdown" aria-expanded="true">
+                                        <i class="fa fa-angle-double-up fa-fw"></i> Top 10
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu pull-right hosttop">
+                                        <li id="edit"><a href="#" id="5"><i class="fa fa-angle-double-up fa-fw"></i> Top 5</a></li>
+                                        <li id="delete"><a href="#" id="10"><i class="fa fa-angle-double-up fa-fw"></i> Top 10</a></li>
+                                        <li id="delete"><a href="#" id="15"><i class="fa fa-angle-double-up fa-fw"></i> Top 15</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <table id="hosttable" data-pagination="false"></table>
                             <!-- /.table-responsive -->
                         </div>
                         <!-- /.panel-body -->

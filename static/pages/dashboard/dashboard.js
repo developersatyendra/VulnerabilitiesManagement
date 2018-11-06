@@ -1,11 +1,13 @@
 var rowIDSelected = null;
 var url = window.location.pathname;
 var __vulnTop = 10;
+var __hostTop = 10;
 $(document).ready(
     // Draw Charts
     DrawChartProjectVuln(),
     DrawChartOSStat(),
     DrawChartServiceStat(),
+    DrawChartRecentScan(),
 
     //////////////////////////////////////////
     // Decleare vulns table
@@ -43,12 +45,76 @@ $(document).ready(
             sidePagination: "server",
         })
     }),
+    $(function () {
+        $("#hosttable").bootstrapTable({
+            columns:[
+                {
+                    title: "Hostname",
+                    width: '60%',
+                    field: "name",
+                    align: "center",
+                    valign: "middle",
+                    formatter: HrefHostFormater,
+                    sortable: false
+                },
+                {
+                    title: "High",
+                    width: '10%',
+                    field: "high",
+                    align: "center",
+                    valign: "middle",
+                    sortable: false
+                },
+                {
+                    title: "Med",
+                    width: '10%',
+                    field: "med",
+                    align: "center",
+                    valign: "middle",
+                    sortable: false
+                },
+                {
+                    title: "Low",
+                    width: '10%',
+                    field: "low",
+                    align: "center",
+                    valign: "middle",
+                    sortable: false
+                },
+                {
+                    title: "Info",
+                    width: '10%',
+                    field: "info",
+                    align: "center",
+                    valign: "middle",
+                    sortable: false
+                }
+            ],
+            pagination: true,
+            pageSize: 5,
+            pageList: [5],//, 10, 20, 50, 100, 200, 'All'],
+            search: false,
+            ajax: ajaxHostRequest,
+            queryParams: queryParams,
+            idField: "id",
+            queryParamsType: "",
+            striped: true,
+            sidePagination: "server",
+        })
+    }),
     // Top vuln DropDown Button
-    $(".choice li a").click(function(event){
+    $(".vulntop li a").click(function(event){
         $(this).parents(".dropdown").find('.btn').html('<i class="fa fa-angle-double-up fa-fw"></i>' + $(this).text() + ' <span class="caret"></span>');
         $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
         __vulnTop = parseInt($(this).attr('id'));
         $("#vulntable").bootstrapTable('refresh');
+        event.preventDefault();
+    }),
+    $(".hosttop li a").click(function(event){
+        $(this).parents(".dropdown").find('.btn').html('<i class="fa fa-angle-double-up fa-fw"></i>' + $(this).text() + ' <span class="caret"></span>');
+        $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
+        __hostTop = parseInt($(this).attr('id'));
+        $("#hosttable").bootstrapTable('refresh');
         event.preventDefault();
     }),
 );
@@ -57,6 +123,9 @@ $(document).ready(
 // Format Href for bootstrap table
 function HrefFormater(value, row, index) {
     return '<a href="/vuln/' + row.id + '"> ' + row.name +'</a>';
+}
+function HrefHostFormater(value, row, index) {
+    return '<a href="/hosts/' + row.id + '"> ' + row.hostName + '<br>' +row.ipAddr +'</a>';
 }
 
 // Format Datetime for bootstrap table
@@ -121,6 +190,27 @@ function ajaxRequest(params) {
         }
     });
 }
+
+function ajaxHostRequest(params) {
+    $.ajax({
+        type: "GET",
+        url: "/hosts/api/gethostscurrentvuln",
+        data: params.data,
+        dataType: "json",
+        success: function(data) {
+            if(data.status == 0){
+                params.success({
+                    "rows": data.object.rows,
+                    "total": __hostTop
+                })
+            }
+        },
+       error: function (er) {
+            params.error(er);
+        }
+    });
+}
+
 
 
 //////////////////////////////////////////
@@ -342,6 +432,75 @@ function DrawChartServiceStat(){
                 title: {
                     display: true,
                     text: 'Statistics of vulnerabilities by services'
+                }
+            }
+        });
+    })
+}
+
+function DrawChartRecentScan(){
+    function GetData() {
+        return $.ajax({
+            url:'/scans/api/getscansvulns?sortName=startTime&pageSize=15',
+            success: function (data) {
+                if(data.status ==0)
+                    rawData = data.rows;
+            }
+        });
+    }
+    $.when(GetData()).done(function (results){
+        if(results.status <0)
+            return -1;
+        var rawData = results.object.rows;
+        var labels = [];
+        var dataset_high = [];
+        var dataset_med = [];
+        var dataset_low = [];
+        var dataset_info = [];
+        for(i=0; i<rawData.length;i++){
+            labels.push(rawData[i].name);
+            dataset_high.push(rawData[i].high);
+            dataset_med.push(rawData[i].med);
+            dataset_low.push(rawData[i].low);
+            dataset_info.push(rawData[i].info);
+        }
+        var ctx = document.getElementById("recentScanningTask").getContext("2d");
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Information',
+                        data: dataset_info,
+                        backgroundColor: '#4B98FF' // blue
+                    },
+                    {
+                        label: 'Low',
+                        data: dataset_low,
+                        backgroundColor: '#F2B705' // yellow
+                    },
+                    {
+                        label: 'Medium',
+                        data: dataset_med,
+                        backgroundColor: '#df7416' // orange
+                    },
+                    {
+                        label: 'High',
+                        data: dataset_high,
+                        backgroundColor: '#bf0404' // red
+                    }
+                    ]
+            },
+            options: {
+                legend: {display: false},
+                title: {
+                    display: true,
+                    text: 'Recent Scanning Tasks'
+                },
+                scales: {
+                    xAxes: [{ stacked: true }],
+                    yAxes: [{ stacked: true }]
                 }
             }
         });

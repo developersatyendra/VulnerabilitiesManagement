@@ -40,3 +40,10 @@ class AccountManagementView(TemplateView):
                    'resetPasswordForm': resetPasswordForm
                    }
         return render(request, self.template, context)
+
+
+class AboutView(TemplateView):
+    def get(self, request, *args, **kwargs):
+        sidebarHtml = RenderSideBar(request)
+        context = {'sidebar': sidebarHtml}
+        return render(request, 'settings/settings_about.html', context)

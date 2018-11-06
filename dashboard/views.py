@@ -58,6 +58,7 @@ def RenderSideBar(request):
         SidebarBtn(False, ' Settings', None, 'fa fa-sliders fa-fw',childBtn= [
             SidebarBtn(False, ' My Account', reverse_lazy('settings:MyAccount'), 'fa fa-user fa-fw'),
             SidebarBtn(False, ' Account Management', reverse_lazy('settings:AccountManagement'), 'fa fa-users fa-fw', permissions=['user.can_view_user', 'user.can_add_user', 'user.can_change_user']),
+            SidebarBtn(False, ' About Information', reverse_lazy('settings:About'), 'fa fa-info fa-fw'),
         ]),
     ]
     sidebarHtml = ''

@@ -74,7 +74,7 @@ $(document).ready(
                     align: "center",
                     valign: "middle",
                     formatter: PermissionFormatter,
-                    sortable: true
+                    sortable: false
                 }
             ],
             ajax: ajaxRequest,

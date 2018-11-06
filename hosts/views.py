@@ -66,3 +66,13 @@ class HostRunningServiceView(TemplateView):
             'sidebar': sidebarHtml,
         }
         return render(request, self.template, context)
+
+class HostStatisticsView(TemplateView):
+    template = 'hosts/host_statistics.html'
+
+    def get(self, request, *args, **kwargs):
+        sidebarHtml = RenderSideBar(request)
+        context = {
+            'sidebar': sidebarHtml,
+        }
+        return render(request, self.template, context)

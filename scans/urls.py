@@ -8,7 +8,7 @@ LOGIN_URL = getattr(settings, 'LOGIN_URL')
 app_name='scans'
 urlpatterns = [
     path('', login_required(views.ScansView.as_view(), redirect_field_name=LOGIN_URL), name='scans'),
-    path('<int:id>/', login_required(views.ScansDetailView.as_view(), redirect_field_name=LOGIN_URL), name='scanDetail'),
+    path('<int:id>/', login_required(views.ScanStatisticsView.as_view(), redirect_field_name=LOGIN_URL), name='scanDetail'),
     path('<int:id>/detailed', login_required(views.ScansDetailView.as_view(), redirect_field_name=LOGIN_URL), name='scanDetail'),
     path('<int:id>/hostscanned', login_required(views.ScanHostsView.as_view(), redirect_field_name=LOGIN_URL), name='scanHostsview'),
     path('<int:id>/statistics', login_required(views.ScanStatisticsView.as_view(), redirect_field_name=LOGIN_URL), name='scanStatisticsview'),
