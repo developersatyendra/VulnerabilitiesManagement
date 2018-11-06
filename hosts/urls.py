@@ -24,4 +24,6 @@ urlpatterns = [
     path('api/addhost', apis.APIAddHost.as_view(), name='APIaddhost'),
     path('api/deletehost', apis.APIDeleteHost.as_view(), name='APIdeletehost'),
     path('api/updatehost', apis.APIUpdateHost.as_view(), name='APIupdatehost'),
+    path('api/addrunningservice', apis.APIAddRunningService.as_view(), name='APIaddrunningservice'),
+    path('api/removerunningservice', apis.APIRemoveRunningService.as_view(), name='APIremoverunningservice'),
 ]

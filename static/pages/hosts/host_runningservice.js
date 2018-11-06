@@ -2,13 +2,20 @@ var rowIDSelected = null;
 var url = window.location.pathname;
 var id = url.split("/")[2];
 $(document).ready(
-
+    getHostName(),
     //
     // Declear serivces table
     //
     $(function () {
         $("#hostRunningService").bootstrapTable({
             columns:[
+                {
+                    field: 'state',
+                    checkbox: true,
+                    width: '3%',
+                    align: 'center',
+                    valign: 'middle'
+                },
                 {
                     title: "Service Name",
                     field: "name",
@@ -54,7 +61,115 @@ $(document).ready(
             search: true,
         })
     }),
-    getHostName()
+    // Enable save button
+    $('#id_service').change(function () {
+       $('#saveAddBtn').attr('disabled', false);
+    }),
+
+    // Add running serivce
+    $("#addRunningSerivceForm").submit(function(e){
+        var data = $(this).serializeArray();
+        data.push({name: "id", value: id});
+        data = $.param(data);
+        $.post("/hosts/api/addrunningservice", data, function(data){
+            var notification = $("#retMsgAdd");
+            var closebtn = '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>';
+            notification.removeClass("hidden");
+            if(data.status != 0){
+                notification.html("Error: "+data.message + '.');
+                notification.removeClass("alert-info");
+                notification.addClass("alert-danger");
+            }
+            else{
+                notification.html("The new running serivce is added.");
+                notification.removeClass("alert-danger");
+                notification.addClass("alert-info");
+
+                // Disable Save Edit Button
+                $('#saveAddBtn').attr('disabled', true);
+            }
+            notification.append(closebtn);
+            $("#hostRunningService").bootstrapTable('refresh');
+        });
+        e.preventDefault();
+    }),
+    $("#addRunningServiceModel").on("hidden.bs.modal", function () {
+        $("#retMsgAdd").addClass("hidden");
+    }),
+
+    //
+    // Confirm delete Running Service
+    //
+    $("#confirmDelete").click(function () {
+        // Get csrf_token
+        var csrf_token = $('meta[name="csrf-token"]').attr('content');
+
+        // Create array contains Host ids
+        var dataTable = $("#hostRunningService").bootstrapTable('getSelections');
+            var ids = new Array();
+            for(i=0; i < dataTable.length; i++){
+                ids.push(dataTable[i].id);
+            }
+        // Create array
+        var data = [];
+        data.push({name: "services", value: ids});
+        data.push({name: "id", value: id});
+        data.push({name: "csrfmiddlewaretoken", value: csrf_token});
+        $.post('/hosts/api/removerunningservice', $.param(data),
+             function(returnedData){
+                if(returnedData.status == 0){
+                    $('#warningOnDeleteModal').modal('hide');
+                    $("#hostRunningService").bootstrapTable('refresh');
+
+                    $('#msgInfo').text(returnedData.message);
+                    $('#infoModal').modal('show');
+                }
+        }, 'json');
+        $('#warningOnDeleteModal').modal('hide')
+    }),
+
+    //////////////////////////////////////////
+    // When the close does. Hide it instead of remove it with Dom
+    //
+    $('.alert').on('close.bs.alert', function (e) {
+        $(this).addClass("hidden");
+        e.preventDefault();
+    }),
+
+    //
+    // Check how many row is selected to enable or disable edit and delete button
+    //
+    $("#hostRunningService").change(function () {
+        var data = $("#hostRunningService").bootstrapTable('getSelections');
+        var editBtn = $("#edit");
+        var delBtn = $("#delete");
+        if(data.length!=1){
+            editBtn.addClass("disabled");
+        }
+        else{
+            editBtn.removeClass("disabled");
+        }
+        if(data.length==0 ){
+            delBtn.addClass("disabled");
+        }
+        else{
+            delBtn.removeClass("disabled");
+        }
+    }),
+
+    // show delete warning
+    $("#delete").click(function () {
+        var data = $("#hostRunningService").bootstrapTable('getSelections');
+        if(data.length > 0){
+            if(data.length == 1){
+                $('#msgOnDelete').text("Are you sure to delete " + data.length + " selected running service?");
+            }
+            else{
+                $('#msgOnDelete').text("Are you sure to delete " + data.length + " selected running services?");
+            }
+            $('#warningOnDeleteModal').modal('show')
+        }
+    }),
 );
 
 // Format href for bootstrap table

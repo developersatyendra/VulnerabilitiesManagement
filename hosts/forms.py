@@ -1,5 +1,6 @@
 from django import forms
 from .models import HostModel
+from services.models import ServiceModel
 
 
 class HostForm(forms.ModelForm):
@@ -57,3 +58,9 @@ class HostIDForm(forms.ModelForm):
     class Meta:
         model = HostModel
         fields = ['id']
+
+
+class HostServiceRunningForm(forms.Form):
+    service = forms.ModelChoiceField(ServiceModel.objects.order_by('name'),
+                                  widget=forms.Select(attrs={'class': 'form-control'}), required=True)
+    id = forms.IntegerField(required=True)

@@ -94,7 +94,7 @@ $(document).ready(
     }),
 
     //
-    // Add New Service
+    // Add New Host
     //
     $("#addHostPostForm").submit(function(e){
         $.post("./api/addhost", $(this).serialize(), function(data){

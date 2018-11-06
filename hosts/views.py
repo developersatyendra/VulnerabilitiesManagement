@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView
 from dashboard.views import RenderSideBar
-from .forms import HostForm
+from .forms import HostForm, HostServiceRunningForm
 
 PAGE_DEFAULT = 1
 NUM_ENTRY_DEFAULT = 50
@@ -62,8 +62,10 @@ class HostRunningServiceView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         sidebarHtml = RenderSideBar(request)
+        form = HostServiceRunningForm()
         context = {
             'sidebar': sidebarHtml,
+            'form': form,
         }
         return render(request, self.template, context)
 

@@ -19,7 +19,7 @@ class ReportForm(forms.ModelForm):
 
 
 class ReportFormHost(forms.ModelForm):
-    host = forms.ModelChoiceField(HostModel.objects.order_by('hostName'),widget = forms.Select(attrs={'class': 'form-control'}), required=True)
+    host = forms.ModelChoiceField(HostModel.objects.order_by('hostName'), widget=forms.Select(attrs={'class': 'form-control'}), required=True)
     class Meta:
         model = ReportModel
         exclude = ('createBy', 'scanProject', 'scanTask')

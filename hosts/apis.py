@@ -1,6 +1,7 @@
 from django.utils.datastructures import MultiValueDictKeyError
+from services.models import ServiceModel
 from .models import HostModel
-from .forms import HostForm, HostIDForm
+from .forms import HostForm, HostIDForm, HostServiceRunningForm
 from .serializers import HostSerializer, HostVulnSerializer, HostOSSerializer
 from .ultil import GetHostsVuln, GetHosts, GetHostsCurrentVuln
 from django.contrib.auth.models import User
@@ -315,7 +316,7 @@ class APIDeleteHost(APIView):
             for rawID in ids:
                 try:
                     id = int(rawID)
-                except ValueError:
+                except (ValueError, TypeError):
                     pass
                 else:
                     try:
@@ -357,3 +358,76 @@ class APIUpdateHost(APIView):
             return Response({'status': '0', 'object': dataSerialized.data})
         else:
             return Response({'status': '-1', 'message': 'Form is invalid', 'detail': hostForm.errors})
+
+
+# APIAddRunningService add running service to Host
+#   Params: (id, service)
+class APIAddRunningService(APIView):
+
+    @method_decorator(permission_required('hosts.change_hostmodel', raise_exception=True))
+    def post(self, request):
+        runSrvForm = HostServiceRunningForm(request.POST)
+        if runSrvForm.is_valid():
+            hostID = runSrvForm.cleaned_data['id']
+            service = runSrvForm.cleaned_data['service']
+            try:
+                host = HostModel.objects.get(pk=hostID)
+            except HostModel.DoesNotExist:
+                return Response({'status': '-1', 'message': 'Host doest not exist', 'detail': {"id": [{"message": "Host doest not exist", "code": "not exist"}]}})
+            if service in host.services.all():
+                return Response({'status': '-1', 'message': 'Service has already existed',
+                                 'detail': {"serivce": [{"message": "Service has already existed", "code": "duplicate"}]}})
+            host.services.add(service)
+            host.save()
+            dataSerialized = HostSerializer(host, many=False)
+            return Response({'status': '0', 'object': dataSerialized.data})
+        else:
+            return Response({'status': '-1', 'message': 'Form is invalid', 'detail': runSrvForm.errors})
+
+
+# APIRemoveRunningService remove running service to Host
+#   Params: (id, service)
+class APIRemoveRunningService(APIView):
+
+    @method_decorator(permission_required('hosts.change_hostmodel', raise_exception=True))
+    def post(self, request):
+        hostID = request.POST.get('id', None)
+        if hostID:
+            try:
+                host = HostModel.objects.get(pk=int(hostID))
+            except (ValueError, TypeError) as e:
+                return Response({'status': '-1', 'message': 'id is not integer',
+                                 'detail': {"id": [{"message": "this field is not integer", "code": "type error"}]}})
+            except HostModel.DoesNotExist as e:
+                return Response({'status': '-1', 'message': 'Host doest not exist',
+                                 'detail': {"id": [{"message": "Host doest not exist", "code": "not exist"}]}})
+        else:
+            return Response({'status': '-1', 'message': 'Host id is required',
+                             'detail': {"id": [{"message": "this field is required", "code": "required"}]}})
+        serviceIDs = request.POST.get('services', None)
+        if serviceIDs:
+            successOnDelete = 0
+            try:
+                ids = serviceIDs.split(',')
+            except MultiValueDictKeyError:
+                return Response({'status': '-1', 'message': 'service is not array',
+                                 'detail': {"serivces": [{"message": "service is not array", "code": "type error"}]}})
+            for id in ids:
+                try:
+                    service = ServiceModel.objects.get(pk=int(id))
+                except (TypeError, ValueError, ServiceModel.DoesNotExist) as e:
+                    pass
+                else:
+                    if service in host.services.all():
+                        host.services.remove(service)
+                        successOnDelete = successOnDelete + 1
+            host.save()
+            if successOnDelete==1:
+                return Response(
+                    {'status': '0', 'message': '1 running serivce is successfully deleted.', 'numDeleted': successOnDelete})
+            else:
+                return Response(
+                            {'status': '0', 'message': '{} running services are successfully deleted.'.format(successOnDelete), 'numDeleted': successOnDelete})
+        else:
+            return Response({'status': '-1', 'message': 'service(s) is required',
+                             'detail': {"services": [{"message": "this field is required", "code": "required"}]}})

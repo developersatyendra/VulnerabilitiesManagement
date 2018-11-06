@@ -15,7 +15,7 @@ class ServiceModel(models.Model):
         unique_together = ('name', 'port')
 
     def __str__(self):
-        return self.name
+        return self.name + ' - ' + self.port
 
     def __unicode__(self):
-        return self.name
+        return self.name + ' - ' + self.port

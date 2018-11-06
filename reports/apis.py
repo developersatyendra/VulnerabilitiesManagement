@@ -137,7 +137,6 @@ class APIAddReport(APIView):
     @method_decorator(permission_required('reports.add_reportmodel', raise_exception=True))
     def post(self, request):
         mode = request.POST.get('mode')
-        print(mode)
         if mode:
             try:
                 mode = int(mode)
@@ -170,11 +169,9 @@ class APIAddReport(APIView):
                 dataSerialized = ReportSerializer(reportObj, many=False)
                 return Response({'status': '0', 'object': dataSerialized.data})
             else:
-                print(reportForm.errors.as_data())
                 return Response({'status': '-1', 'message': 'Form is invalid', 'detail': reportForm.errors.as_data()})
         else:
             reportForm = ReportForm(request.POST)
-            print(reportForm.errors.as_data())
             return Response({'status': '-1', 'message': 'Form is invalid', 'detail': reportForm.errors.as_data()})
 
 
