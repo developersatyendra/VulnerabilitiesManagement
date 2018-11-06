@@ -2,6 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7e1e5878-3e63-44a6-b2e6-eb13b43afe37" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/media/img/logo16x16.ico" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media/img/logo32x32.ico" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/pages/hosts/host_statistics.js" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/static/pages/projects/project_statistics.js" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/templates/hosts/host_statistics.html" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/templates/projects/project_statistics.html" afterDir="false" />
@@ -213,7 +216,7 @@
       <file leaf-file-name="settings_accountmanagement.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/templates/settings/settings_accountmanagement.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="238">
+            <state relative-caret-position="1122">
               <caret line="66" column="51" lean-forward="true" selection-start-line="66" selection-start-column="51" selection-end-line="66" selection-end-column="51" />
             </state>
           </provider>
@@ -460,32 +463,6 @@
               <item name="VulnerablititesManagement" type="b2602c69:ProjectViewProjectNode" />
               <item name="VulnerablititesManagement" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="VulnerablititesManagement" type="b2602c69:ProjectViewProjectNode" />
-              <item name="VulnerablititesManagement" type="462c0819:PsiDirectoryNode" />
-              <item name="dashboard" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="VulnerablititesManagement" type="b2602c69:ProjectViewProjectNode" />
-              <item name="VulnerablititesManagement" type="462c0819:PsiDirectoryNode" />
-              <item name="settings" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="VulnerablititesManagement" type="b2602c69:ProjectViewProjectNode" />
-              <item name="VulnerablititesManagement" type="462c0819:PsiDirectoryNode" />
-              <item name="templates" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="VulnerablititesManagement" type="b2602c69:ProjectViewProjectNode" />
-              <item name="VulnerablititesManagement" type="462c0819:PsiDirectoryNode" />
-              <item name="templates" type="462c0819:PsiDirectoryNode" />
-              <item name="settings" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="VulnerablititesManagement" type="b2602c69:ProjectViewProjectNode" />
-              <item name="VulnerablititesManagement" type="462c0819:PsiDirectoryNode" />
-              <item name="VulnerablititesManagement" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
@@ -597,7 +574,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1616" height="886" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
@@ -605,8 +581,8 @@
       <window_info anchor="bottom" id="Version Control" order="8" />
       <window_info anchor="bottom" id="Python Console" order="13" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.32912987" />
-      <window_info anchor="bottom" x="0" y="23" width="1600" height="847" id="Terminal" order="10" type="WINDOWED" visible="true" weight="0.4035309" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.20875" />
+      <window_info active="true" anchor="bottom" x="0" y="23" width="1600" height="847" id="Terminal" order="10" type="WINDOWED" visible="true" weight="0.4035309" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.20875" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="right" id="Database" order="3" />
       <window_info anchor="right" id="SciView" order="4" />
@@ -1072,7 +1048,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/templates/settings/settings_accountmanagement.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
+        <state relative-caret-position="1122">
           <caret line="66" column="51" lean-forward="true" selection-start-line="66" selection-start-column="51" selection-end-line="66" selection-end-column="51" />
         </state>
       </provider>
